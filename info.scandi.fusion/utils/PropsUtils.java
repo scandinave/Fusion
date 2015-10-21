@@ -21,7 +21,6 @@ public class PropsUtils {
      */
     private final static Log LOGGER = LogFactory.getLog(PropsUtils.class);
 
-
     /**
      * Format des clés des propriétés à concerver. Explication : - (%s) : 1 chaîne de caractère apposée via String.format trouvée 0 ou 1 fois (condition), - *
      * [a-zA-Z]* : 1 chaîne alphabétique de n caractères, - \\. : 1 caractère point, - [a-zA-Z]* : 1 chaîne alphabétique de n caractères.
@@ -40,6 +39,11 @@ public class PropsUtils {
             load();
         }
         return properties;
+    }
+
+    public static boolean exist() {
+        File file = new File(NAME);
+        return file.exists();
     }
 
     /**

@@ -45,8 +45,9 @@ public class Runner extends Cucumber {
      */
     @Override
     public void run(RunNotifier notifier) {
+    	IWorker worker = null;
         try {
-            IWorker worker = getWorker();
+            worker = getWorker();
             worker.start();
 
             LOGGER.info("Ouverture du driver.");
@@ -59,7 +60,12 @@ public class Runner extends Cucumber {
 
             worker.stop();
         } catch (TatamiException e) {
-            e.printStackTrace();
+        	try {
+        		worker.stop();
+        	} catch(TatamiException e2) {
+        		throw new RuntimeException(e2);
+        	}
+        	e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

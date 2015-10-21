@@ -22,6 +22,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 import dbunit.bdd.TableBDD;
 import dbunit.worker.AbstractWorker;
 import exception.TatamiException;
+import runner.ConfigurationManager;
 import utils.FileUtil;
 
 /**
@@ -45,12 +46,16 @@ public class Saver implements Serializable {
 
     private Set<TableBDD> tables;
 
+    private ConfigurationManager manager;
+
     /**
      * @param abstractWorker
+     * @throws TatamiException
      */
-    public Saver(IDatabaseConnection databaseConnect, AbstractWorker abstractWorker) {
+    public Saver(IDatabaseConnection databaseConnect, AbstractWorker abstractWorker) throws TatamiException {
         this.databaseConnect = databaseConnect;
         this.abstractWorker = abstractWorker;
+        manager = ConfigurationManager.getInstance();
     }
 
     /**
@@ -67,9 +72,10 @@ public class Saver implements Serializable {
 
     /**
      * Supprime la sauvegarde précédente dans le répertoire xmlDirectorySave.
+     * @throws TatamiException
      */
-    private void destruction() {
-        FileUtil.cleanDirectories(abstractWorker.xmlDirectorySave);
+    private void destruction() throws TatamiException {
+        FileUtil.cleanDirectories(manager.getSaveDirectory());
     }
 
     /**
@@ -82,7 +88,7 @@ public class Saver implements Serializable {
             Set<TableBDD> setTables = getTables();
             for (Iterator<TableBDD> iterator = setTables.iterator(); iterator.hasNext();) {
                 TableBDD tableBDD = iterator.next();
-                File file = new File(abstractWorker.xmlDirectorySave + "/" + tableBDD.getNomSchema() + "." + tableBDD.getNomTable() + ".xml");
+                File file = new File(manager.getSaveDirectory() + "/" + tableBDD.getNomSchema() + "." + tableBDD.getNomTable() + ".xml");
                 File parent = file.getParentFile();
                 if (!file.getParentFile().exists()) {
                     parent.mkdirs();

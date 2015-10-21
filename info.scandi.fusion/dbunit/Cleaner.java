@@ -23,6 +23,7 @@ import dbunit.worker.AbstractWorker;
 import dbunit.xml.Columns;
 import exception.RequeteException;
 import exception.TatamiException;
+import runner.ConfigurationManager;
 
 /**
  * Vide la base de données de toutes ses données.
@@ -45,13 +46,17 @@ public class Cleaner implements Serializable {
 
     private Set<TableBDD> tables;
 
+    private ConfigurationManager manager;
+
     /**
      * @param abstractWorker
+     * @throws TatamiException
      */
-    public Cleaner(IDatabaseConnection databaseConnect, AbstractWorker abstractWorker, boolean avecLiquibase) {
+    public Cleaner(IDatabaseConnection databaseConnect, AbstractWorker abstractWorker, boolean avecLiquibase) throws TatamiException {
         this.databaseConnect = databaseConnect;
         this.abstractWorker = abstractWorker;
         this.avecLiquibase = avecLiquibase;
+        manager = ConfigurationManager.getInstance();
     }
 
     /**
@@ -69,14 +74,14 @@ public class Cleaner implements Serializable {
      * @throws TatamiException
      */
     public void execution() throws TatamiException {
-        abstractWorker.load(abstractWorker.xmlFilePurge, DatabaseOperation.DELETE_ALL);
+        abstractWorker.load(manager.getPurgeFilePath(), DatabaseOperation.DELETE_ALL);
 
         LOGGER.info("Mise à jour des séquences à 1");
         abstractWorker.cleanSequence();
 
         if (avecLiquibase) {
             LOGGER.info("Insertion données liquibase");
-            abstractWorker.load(abstractWorker.xmlFileLiquibase, DatabaseOperation.INSERT);
+            abstractWorker.load(manager.getLiquibaseFile(), DatabaseOperation.INSERT);
         }
     }
 
@@ -87,7 +92,7 @@ public class Cleaner implements Serializable {
     private void construction() throws TatamiException {
         if (avecLiquibase) {
             LOGGER.debug("Construction du fichier flatXmlDataSet liquibase dans le cas où liquibase est lancé en même temps que le serveur");
-            LiquibaseGen liquibaseGen = new LiquibaseGen(abstractWorker.xmlFileLiquibase, false, 0);
+            LiquibaseGen liquibaseGen = new LiquibaseGen(manager.getLiquibaseFile(), false, 0);
             liquibaseGen.setSetRowsLiquibaseDatabasechangelog(getRowsLiquibaseDatabasechangelog());
             liquibaseGen.start();
         }
@@ -95,7 +100,7 @@ public class Cleaner implements Serializable {
 
         tables = abstractWorker.getAllTablesTypeTable();
 
-        PurgeGen purgeGen = new PurgeGen(abstractWorker.xmlFilePurge, false, 0);
+        PurgeGen purgeGen = new PurgeGen(manager.getPurgeFilePath(), false, 0);
         purgeGen.setSetTables(tables);
         purgeGen.start();
     }
@@ -108,7 +113,7 @@ public class Cleaner implements Serializable {
     private Set<RowLiquibaseDatabasechangelogBDD> getRowsLiquibaseDatabasechangelog() throws TatamiException {
         RowLiquibaseDatabasechangelogBDD attribut = null;
         Set<RowLiquibaseDatabasechangelogBDD> attributs = new TreeSet<RowLiquibaseDatabasechangelogBDD>();
-        TableBDD databasechangelog = new TableBDD(abstractWorker.liquibaseSchemaName, abstractWorker.liquibaseDatabasechangelogName);
+        TableBDD databasechangelog = new TableBDD(manager.getLiquibaseSchema(), manager.getLiquibaseChangelogName());
         Columns colonnes = new Columns();
         try {
             String sql = "SELECT * "

@@ -31,11 +31,9 @@ import org.dbunit.operation.DatabaseOperation;
 import dbunit.Cleaner;
 import dbunit.Saver;
 import dbunit.bdd.TableBDD;
-import exception.ConfigurationException;
 import exception.RequeteException;
 import exception.TatamiException;
-import exception.UtilitaireException;
-import utils.PropsUtils;
+import runner.ConfigurationManager;
 
 /**
  * Un worker est la classe permettant l'accès et la manipulation des données d'une base de donnée. Toute classe héritant de cette classe doit impérativement
@@ -49,6 +47,7 @@ public abstract class AbstractWorker implements IWorker {
      */
     private Log LOGGER = LogFactory.getLog(AbstractWorker.class);
     protected IDatabaseConnection databaseConnect;
+    private ConfigurationManager manager;
 
     /**
      * Permet de reférencer tous les paramètres applicables pour l'insertion de données.
@@ -58,164 +57,22 @@ public abstract class AbstractWorker implements IWorker {
     /**
      * Liste des options.
      */
-    private final static String ROOT_PATH = "tatami.rootPath";
-    private final static String PROPERTY_DATABASE_URL = "database.url";
-    private final static String PROPERTY_DATABASE_DRIVER = "database.driver";
-    private final static String PROPERTY_DATABASE_USERNAME = "database.username";
-    private final static String PROPERTY_DATABASE_PASSWORD = "database.password";
-
-    private final static String PROPERTY_XML_FILE_PURGE = "database.optionalXmlFilePurge";
-
-    private final static String PROPERTY_AVEC_LIQUIBASE = "database.optionalAvecLiquibase";
-    private final static String PROPERTY_XML_FILE_LIQUIBASE = "database.optionalXmlFileLiquibase";
-    private static final String PROPERTY_LIQUIBASE_SCHEMA_NAME = "database.optionalLiquibaseSchemaName";
-    private static final String PROPERTY_LIQUIBASE_DATABASECHANGELOG = "database.optionalLiquibaseDatabasechangelogName";
-
-    private final static String PROPERTY_AVEC_INIT = "database.optionalAvecInit";
-    private final static String PROPERTY_XML_FILE_INIT = "database.optionalXmlFileInit";
-
-    private final static String PROPERTY_AVEC_SAUVEGARDE = "database.optionalAvecSauvegarde";
-    private final static String PROPERTY_XML_DIRECTORY_SAVE = "database.optionalXmlDirectorySave";
-
-    private final static String PROPERTY_REPLACE_EMPTY_DATABASE_VALUE = "tatami.emptyStringToNull";
-
-    private static String FLATXMLDATASET_DIR;
-    public static String COMMUN_DIR;
-    public static String DISTINCT_DIR;
-
-    private static String rootPath;
-    public String xmlFilePurge;
-
-    public String xmlFileLiquibase;
-    public static String xmlFileInit;
-    public String xmlDirectorySave;
-
-    public boolean avecLiquibase = false;
-    public static boolean avecInit = false;
-    public static boolean avecSauvegarde = true;
-    public static boolean replaceEmptyDatabaseValue = false;
-    public String liquibaseSchemaName = "liquibase";
-    public String liquibaseDatabasechangelogName = "databasechangelog";
 
     /**
      * @throws TatamiException
      */
     protected AbstractWorker() throws TatamiException {
-        try {
-            rootPath = PropsUtils.getProperties().getProperty(ROOT_PATH);
-        } catch (UtilitaireException e) {
-            throw new TatamiException(new ConfigurationException(e));
-        }
-        COMMUN_DIR = getCommunDir();
-        DISTINCT_DIR = getDistinctDir();
-        optionsParDefaut();
-    }
-
-    /**
-     * Méthode optionsParDefaut.
-     * @throws TatamiException
-     */
-    private void optionsParDefaut() throws TatamiException {
-        xmlFilePurge = FLATXMLDATASET_DIR.concat("/init/purge.xml");
-
-        xmlFileLiquibase = FLATXMLDATASET_DIR.concat("/init/liquibase.xml");
-        xmlFileInit = FLATXMLDATASET_DIR.concat("/init/init.xml");
-        xmlDirectorySave = FLATXMLDATASET_DIR.concat("/save");
-    }
-
-    /**
-     * Méthode getCommunDir.
-     * @param rootPath
-     * @return
-     * @throws TatamiException
-     * @throws UtilitaireException
-     */
-    public static String getCommunDir() throws TatamiException {
-        FLATXMLDATASET_DIR = rootPath + "flatXmlDataSet";
-        COMMUN_DIR = FLATXMLDATASET_DIR.concat("/commun");
-        return COMMUN_DIR;
-    }
-
-    /**
-     * Méthode getCommunDir.
-     * @return
-     * @throws TatamiException
-     * @throws UtilitaireException
-     */
-    public static String getDistinctDir() throws TatamiException {
-        FLATXMLDATASET_DIR = rootPath + "flatXmlDataSet";
-        DISTINCT_DIR = FLATXMLDATASET_DIR.concat("/distinct");
-        return DISTINCT_DIR;
+        manager = ConfigurationManager.getInstance();
     }
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#init()
+     * @see worker.IBDDWorker#init()
      */
     @Override
     public void init() throws TatamiException {
         LOGGER.info("Initialisation");
         initConnexion();
-        initOptions();
-    }
-
-    /**
-     * Méthode initProperties.
-     * @throws TatamiException
-     */
-    private void initOptions() throws TatamiException {
-        String propertyCleanFile;
-        try {
-            propertyCleanFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_FILE_PURGE);
-
-            if (propertyCleanFile != null && !"".equals(propertyCleanFile)) {
-                xmlFilePurge = propertyCleanFile;
-            }
-
-            String propertyAvecLiquibase = PropsUtils.getProperties().getProperty(PROPERTY_AVEC_LIQUIBASE);
-            if (propertyAvecLiquibase != null && !"".equals(propertyAvecLiquibase)) {
-                avecLiquibase = "true".equals(propertyAvecLiquibase) ? true : false;
-                String propertyLiquibaseFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_FILE_LIQUIBASE);
-                if (propertyLiquibaseFile != null && !"".equals(propertyLiquibaseFile)) {
-                    xmlFileLiquibase = propertyLiquibaseFile;
-                }
-
-                String propertyLiquibaseSchemaName = PropsUtils.getProperties().getProperty(PROPERTY_LIQUIBASE_SCHEMA_NAME);
-                if (propertyLiquibaseSchemaName != null && !"".equals(propertyLiquibaseSchemaName)) {
-                    liquibaseSchemaName = propertyLiquibaseSchemaName;
-                }
-
-                String propertyLiquibaseDatabasechangelogName = PropsUtils.getProperties().getProperty(PROPERTY_LIQUIBASE_DATABASECHANGELOG);
-                if (propertyLiquibaseDatabasechangelogName != null && !"".equals(propertyLiquibaseDatabasechangelogName)) {
-                    liquibaseDatabasechangelogName = propertyLiquibaseDatabasechangelogName;
-                }
-            }
-
-            String propertyAvecInit = PropsUtils.getProperties().getProperty(PROPERTY_AVEC_INIT);
-            if (propertyAvecInit != null && !"".equals(propertyAvecInit)) {
-                avecInit = "true".equals(propertyAvecInit) ? true : false;
-                String propertyInitFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_FILE_INIT);
-                if (propertyInitFile != null && !"".equals(propertyInitFile)) {
-                    xmlFileInit = propertyInitFile;
-                }
-            }
-
-            String propertyAvecSauvegarde = PropsUtils.getProperties().getProperty(PROPERTY_AVEC_SAUVEGARDE);
-            if (propertyAvecSauvegarde != null && !"".equals(propertyAvecSauvegarde)) {
-                avecSauvegarde = "true".equals(propertyAvecSauvegarde) ? true : false;
-                String propertySaveFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_DIRECTORY_SAVE);
-                if (propertySaveFile != null && !"".equals(propertySaveFile)) {
-                    xmlDirectorySave = propertySaveFile;
-                }
-            }
-
-            String propertyReplaceDatabaseValue = PropsUtils.getProperties().getProperty(PROPERTY_REPLACE_EMPTY_DATABASE_VALUE);
-            if (propertyReplaceDatabaseValue != null && !"".equals(propertyReplaceDatabaseValue)) {
-                replaceEmptyDatabaseValue = "true".equals(propertyReplaceDatabaseValue) ? true : false;
-            }
-        } catch (UtilitaireException e) {
-            throw new TatamiException(e);
-        }
     }
 
     /**
@@ -223,28 +80,16 @@ public abstract class AbstractWorker implements IWorker {
      * @throws TatamiException
      */
     private void initConnexion() throws TatamiException {
-        try {
-            System.setProperty(
-                PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL,
-                PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_URL));
-            System.setProperty(
-                PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS,
-                PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_DRIVER));
-            System.setProperty(
-                PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME,
-                PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_USERNAME));
-
-            System.setProperty(
-                PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD,
-                PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_PASSWORD));
-        } catch (UtilitaireException e) {
-            throw new TatamiException(e);
-        }
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, manager.getDatabaseUrl());
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, manager.getDatabaseDriver());
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, manager.getDatabaseUsername());
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, manager.getDatabasePassword());
         try {
             IDatabaseTester jdbcConnection = new PropertiesBasedJdbcDatabaseTester();
             databaseConnect = jdbcConnection.getConnection();
             // Permet d'inserer des CLOB
             DatabaseConfig config = databaseConnect.getConfig();
+            // TODO Enlever la dépendance à posgresql
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new PostgresqlDataTypeFactory());
             config.setProperty(DatabaseConfig.FEATURE_BATCHED_STATEMENTS, true);
             config.setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, true);
@@ -257,16 +102,16 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#clean()
+     * @see worker.IBDDWorker#clean()
      */
     @Override
     public void clean() throws TatamiException {
-        new Cleaner(databaseConnect, this, avecLiquibase).start();
+        new Cleaner(databaseConnect, this, manager.isLiquibaseEnable()).start();
     }
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#start()
+     * @see worker.IBDDWorker#start()
      */
     @Override
     public void start() throws TatamiException {
@@ -274,16 +119,16 @@ public abstract class AbstractWorker implements IWorker {
         try {
             databaseConnect.getConnection().setAutoCommit(false);
             this.toogleContrainte(false);
-            if (avecSauvegarde) {
+            if (manager.isSaveEnable()) {
                 this.save();
             }
-            if (avecInit) {
+            if (manager.isInitialLoad()) {
                 this.reset();
             } else {
                 this.clean();
             }
             LOGGER.info("Insertion des données de tests");
-            this.load(COMMUN_DIR);
+            this.load(manager.getCommunDir());
             this.toogleContrainte(true);
             databaseConnect.getConnection().commit();
             databaseConnect.getConnection().setAutoCommit(true);
@@ -299,7 +144,7 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#reset()
+     * @see worker.IBDDWorker#reset()
      */
     @Override
     public void reset() throws TatamiException {
@@ -309,7 +154,7 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#load(java.lang.String)
+     * @see worker.IBDDWorker#load(java.lang.String)
      */
     @Override
     public void load(String filePath) throws TatamiException {
@@ -319,7 +164,7 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#load(java.lang.String)
+     * @see worker.IBDDWorker#load(java.lang.String)
      */
     @Override
     public void load(String filePath, DatabaseOperation operation) throws TatamiException {
@@ -329,7 +174,7 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#load(java.io.File)
+     * @see worker.IBDDWorker#load(java.io.File)
      */
     @Override
     public void load(File file) throws TatamiException {
@@ -338,7 +183,7 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#load(java.io.File)
+     * @see worker.IBDDWorker#load(java.io.File)
      */
     @Override
     public void load(File file, DatabaseOperation operation) throws TatamiException {
@@ -370,7 +215,7 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IWorker#save()
+     * @see worker.IWorker#save()
      */
     @Override
     public void save() throws TatamiException {
@@ -379,22 +224,22 @@ public abstract class AbstractWorker implements IWorker {
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IWorker#restore()
+     * @see worker.IWorker#restore()
      */
     @Override
     public void restore() throws TatamiException {
         new Cleaner(databaseConnect, this, false).execution();
         LOGGER.info("Insertion des données de la base sauvegardée");
-        load(xmlDirectorySave, DatabaseOperation.INSERT);
+        load(manager.getSaveDirectory(), DatabaseOperation.INSERT);
     }
 
     /*
      * (non-Javadoc)
-     * @see dbunit.worker.IBDDWorker#stop()
+     * @see worker.IBDDWorker#stop()
      */
     @Override
     public void stop() throws TatamiException {
-        if (avecSauvegarde) {
+        if (manager.isSaveEnable()) {
             try {
                 databaseConnect.getConnection().setAutoCommit(false);
                 this.toogleContrainte(false);
@@ -516,16 +361,17 @@ public abstract class AbstractWorker implements IWorker {
      * @throws TatamiException
      */
     private IDataSet getDataSet(File file) throws TatamiException {
+        // TODO Factoriser le contenu de cette méthode
         IDataSet dataSet = null;
-        int index = xmlFilePurge.lastIndexOf(file.getName());
+        int index = manager.getPurgeFilePath().lastIndexOf(file.getName());
         if (index > 0) {
-            if (xmlFilePurge.substring(index).equals(file.getName())) {
+            if (manager.getPurgeFilePath().substring(index).equals(file.getName())) {
                 dataSet = getBuilder(file);
             } else {
                 // Permet de reférencer tous les paramètres applicables pour l'insertion de données.
                 HashMap<String, Object> replacementObjects = new HashMap<String, Object>();
                 // Remplace les valeurs "" par valeur null lors d'insertion en BDD.
-                if (replaceEmptyDatabaseValue) {
+                if (!manager.allowEmptyString()) {
                     replacementObjects.put("", null);
                 }
                 dataSet = new ReplacementDataSet(getBuilder(file), replacementObjects, null);
@@ -534,7 +380,7 @@ public abstract class AbstractWorker implements IWorker {
             // Permet de reférencer tous les paramètres applicables pour l'insertion de données.
             HashMap<String, Object> replacementObjects = new HashMap<String, Object>();
             // Remplace les valeurs "" par valeur null lors d'insertion en BDD.
-            if (replaceEmptyDatabaseValue) {
+            if (!manager.allowEmptyString()) {
                 replacementObjects.put("", null);
             }
             dataSet = new ReplacementDataSet(getBuilder(file), replacementObjects, null);
@@ -549,7 +395,7 @@ public abstract class AbstractWorker implements IWorker {
      */
     private void initBddForServer() throws TatamiException {
         LOGGER.info("Insertion des données nécessaires pour le démarrage du l'application");
-        load(xmlFileInit);
+        load(manager.getInitialLoadFile());
     }
 
     /**
