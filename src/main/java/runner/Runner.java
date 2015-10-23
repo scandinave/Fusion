@@ -16,7 +16,7 @@ import org.junit.runners.model.InitializationError;
 import cucumber.api.junit.Cucumber;
 import dbunit.worker.IWorker;
 import exception.ConfigurationException;
-import exception.TatamiException;
+import exception.FusionException;
 import exception.UtilitaireException;
 import utils.PropsUtils;
 
@@ -45,8 +45,9 @@ public class Runner extends Cucumber {
      */
     @Override
     public void run(RunNotifier notifier) {
+    	IWorker worker = null;
         try {
-            IWorker worker = getWorker();
+            worker = getWorker();
             worker.start();
 
             LOGGER.info("Ouverture du driver.");
@@ -57,11 +58,18 @@ public class Runner extends Cucumber {
             LOGGER.info("Fermeture du driver.");
             ConnectionFactory.closeDriver();
 
-            worker.stop();
-        } catch (TatamiException e) {
+            
+        } catch (FusionException e) {
+        	try {
+        		worker.stop();
+        	} catch(FusionException e2) {
+        		throw new RuntimeException(e2);
+        	}
             e.printStackTrace();
             throw new RuntimeException(e);
-        }
+        } catch (ConfigurationException e) {
+			throw new RuntimeException("Configuration error", e);
+		}
     }
 
     /**
@@ -69,12 +77,12 @@ public class Runner extends Cucumber {
      * @return
      * @throws ConfigurationException
      */
-    private IWorker getWorker() throws TatamiException {
+    private IWorker getWorker() throws FusionException {
         Class<?> clazz;
         try {
             clazz = getTatamiWorker();
         } catch (ConfigurationException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
 
         IWorker worker = getInstance(clazz);
@@ -85,16 +93,16 @@ public class Runner extends Cucumber {
      * Méthode getTatamiWorker.
      * @return
      * @throws ConfigurationException
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private Class<?> getTatamiWorker() throws ConfigurationException, TatamiException {
+    private Class<?> getTatamiWorker() throws ConfigurationException, FusionException {
         Class<?> tatamiWorker = null;
         try {
             tatamiWorker = Class.forName(PropsUtils.getProperties().getProperty(TATAMI_WORKER));
         } catch (ClassNotFoundException e) {
             throw new ConfigurationException("Problème de configuration pour " + TATAMI_WORKER, e);
         } catch (UtilitaireException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
         return tatamiWorker;
     }
@@ -103,16 +111,16 @@ public class Runner extends Cucumber {
      * Méthode getConstructeur.
      * @param clazz
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private Constructor<?> getConstructeur(Class<?> clazz) throws TatamiException {
+    private Constructor<?> getConstructeur(Class<?> clazz) throws FusionException {
         Constructor<?> cons;
         try {
             cons = clazz.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         } catch (SecurityException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
         return cons;
     }
@@ -121,9 +129,9 @@ public class Runner extends Cucumber {
      * Méthode getInstance.
      * @param clazz
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private IWorker getInstance(Class<?> clazz) throws TatamiException {
+    private IWorker getInstance(Class<?> clazz) throws FusionException {
         IWorker worker;
         try {
             Constructor<?> cons = getConstructeur(clazz);
@@ -132,7 +140,7 @@ public class Runner extends Cucumber {
             Method instance = clazz.getDeclaredMethod("getInstance", (Class<?>[]) null);
             worker = (IWorker) instance.invoke(worker, new Object[] {});
         } catch (Exception e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
         return worker;
     }

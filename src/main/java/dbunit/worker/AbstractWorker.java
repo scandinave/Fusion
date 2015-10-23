@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dbunit.DatabaseUnitException;
@@ -33,7 +34,7 @@ import dbunit.Saver;
 import dbunit.bdd.TableBDD;
 import exception.ConfigurationException;
 import exception.RequeteException;
-import exception.TatamiException;
+import exception.FusionException;
 import exception.UtilitaireException;
 import utils.PropsUtils;
 
@@ -45,7 +46,7 @@ import utils.PropsUtils;
 public abstract class AbstractWorker implements IWorker {
 
     /**
-     * Logger de la classe.
+     * Class logger.
      */
     private Log LOGGER = LogFactory.getLog(AbstractWorker.class);
     protected IDatabaseConnection databaseConnect;
@@ -98,13 +99,13 @@ public abstract class AbstractWorker implements IWorker {
     public String liquibaseDatabasechangelogName = "databasechangelog";
 
     /**
-     * @throws TatamiException
+     * @throws FusionException
      */
-    protected AbstractWorker() throws TatamiException {
+    protected AbstractWorker() throws FusionException {
         try {
             rootPath = PropsUtils.getProperties().getProperty(ROOT_PATH);
         } catch (UtilitaireException e) {
-            throw new TatamiException(new ConfigurationException(e));
+            throw new FusionException(new ConfigurationException(e));
         }
         COMMUN_DIR = getCommunDir();
         DISTINCT_DIR = getDistinctDir();
@@ -113,9 +114,9 @@ public abstract class AbstractWorker implements IWorker {
 
     /**
      * Méthode optionsParDefaut.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private void optionsParDefaut() throws TatamiException {
+    private void optionsParDefaut() throws FusionException {
         xmlFilePurge = FLATXMLDATASET_DIR.concat("/init/purge.xml");
 
         xmlFileLiquibase = FLATXMLDATASET_DIR.concat("/init/liquibase.xml");
@@ -127,10 +128,10 @@ public abstract class AbstractWorker implements IWorker {
      * Méthode getCommunDir.
      * @param rootPath
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      * @throws UtilitaireException
      */
-    public static String getCommunDir() throws TatamiException {
+    public static String getCommunDir() throws FusionException {
         FLATXMLDATASET_DIR = rootPath + "flatXmlDataSet";
         COMMUN_DIR = FLATXMLDATASET_DIR.concat("/commun");
         return COMMUN_DIR;
@@ -139,10 +140,10 @@ public abstract class AbstractWorker implements IWorker {
     /**
      * Méthode getCommunDir.
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      * @throws UtilitaireException
      */
-    public static String getDistinctDir() throws TatamiException {
+    public static String getDistinctDir() throws FusionException {
         FLATXMLDATASET_DIR = rootPath + "flatXmlDataSet";
         DISTINCT_DIR = FLATXMLDATASET_DIR.concat("/distinct");
         return DISTINCT_DIR;
@@ -153,7 +154,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#init()
      */
     @Override
-    public void init() throws TatamiException {
+    public void init() throws ConfigurationException {
         LOGGER.info("Initialisation");
         initConnexion();
         initOptions();
@@ -161,9 +162,9 @@ public abstract class AbstractWorker implements IWorker {
 
     /**
      * Méthode initProperties.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private void initOptions() throws TatamiException {
+    private void initOptions() throws ConfigurationException {
         String propertyCleanFile;
         try {
             propertyCleanFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_FILE_PURGE);
@@ -214,15 +215,15 @@ public abstract class AbstractWorker implements IWorker {
                 replaceEmptyDatabaseValue = "true".equals(propertyReplaceDatabaseValue) ? true : false;
             }
         } catch (UtilitaireException e) {
-            throw new TatamiException(e);
+            throw new ConfigurationException(e);
         }
     }
 
     /**
      * Méthode initConnexion.
-     * @throws TatamiException
+     * @throws ConfigurationException
      */
-    private void initConnexion() throws TatamiException {
+    private void initConnexion() throws ConfigurationException {
         try {
             System.setProperty(
                 PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL,
@@ -238,7 +239,7 @@ public abstract class AbstractWorker implements IWorker {
                 PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD,
                 PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_PASSWORD));
         } catch (UtilitaireException e) {
-            throw new TatamiException(e);
+            throw new ConfigurationException("Impossible de récupérer les informations de connexion à la base de données.", e);
         }
         try {
             IDatabaseTester jdbcConnection = new PropertiesBasedJdbcDatabaseTester();
@@ -249,8 +250,8 @@ public abstract class AbstractWorker implements IWorker {
             config.setProperty(DatabaseConfig.FEATURE_BATCHED_STATEMENTS, true);
             config.setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, true);
         } catch (Exception e) {
-            throw new TatamiException(
-                "Un problème est survenu lors de l'initialisation de la connexion dbUnit!",
+            throw new ConfigurationException(
+                "Un problème est survenu lors de l'initialisation de la connexion à la base de données!",
                 e);
         }
     }
@@ -260,7 +261,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#clean()
      */
     @Override
-    public void clean() throws TatamiException {
+    public void clean() throws FusionException {
         new Cleaner(databaseConnect, this, avecLiquibase).start();
     }
 
@@ -269,7 +270,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#start()
      */
     @Override
-    public void start() throws TatamiException {
+    public void start() throws FusionException, ConfigurationException {
         this.init();
         try {
             databaseConnect.getConnection().setAutoCommit(false);
@@ -291,9 +292,9 @@ public abstract class AbstractWorker implements IWorker {
             try {
                 databaseConnect.getConnection().rollback();
             } catch (SQLException e) {
-                throw new TatamiException(e);
+                throw new FusionException(e);
             }
-            throw new TatamiException(e1);
+            throw new FusionException(e1);
         }
     }
 
@@ -302,7 +303,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#reset()
      */
     @Override
-    public void reset() throws TatamiException {
+    public void reset() throws FusionException {
         this.clean();
         this.initBddForServer();
     }
@@ -312,7 +313,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#load(java.lang.String)
      */
     @Override
-    public void load(String filePath) throws TatamiException {
+    public void load(String filePath) throws FusionException {
         File file = new File(filePath);
         load(file);
     }
@@ -322,7 +323,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#load(java.lang.String)
      */
     @Override
-    public void load(String filePath, DatabaseOperation operation) throws TatamiException {
+    public void load(String filePath, DatabaseOperation operation) throws FusionException {
         File file = new File(filePath);
         load(file, operation);
     }
@@ -332,7 +333,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#load(java.io.File)
      */
     @Override
-    public void load(File file) throws TatamiException {
+    public void load(File file) throws FusionException {
         this.load(file, DatabaseOperation.INSERT);
     }
 
@@ -341,7 +342,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#load(java.io.File)
      */
     @Override
-    public void load(File file, DatabaseOperation operation) throws TatamiException {
+    public void load(File file, DatabaseOperation operation) throws FusionException {
         // try {
         // databaseConnect.getConnection().setAutoCommit(false);
 
@@ -352,7 +353,7 @@ public abstract class AbstractWorker implements IWorker {
             try {
                 chemin = file.getCanonicalPath();
             } catch (IOException e) {
-                throw new TatamiException(String.format(
+                throw new FusionException(String.format(
                     "Le chemin \"%s\" n'existe pas! impossible de traiter les données!", chemin));
             }
         }
@@ -373,7 +374,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IWorker#save()
      */
     @Override
-    public void save() throws TatamiException {
+    public void save() throws FusionException {
         new Saver(databaseConnect, this).start();
     }
 
@@ -382,7 +383,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IWorker#restore()
      */
     @Override
-    public void restore() throws TatamiException {
+    public void restore() throws FusionException {
         new Cleaner(databaseConnect, this, false).execution();
         LOGGER.info("Insertion des données de la base sauvegardée");
         load(xmlDirectorySave, DatabaseOperation.INSERT);
@@ -393,7 +394,7 @@ public abstract class AbstractWorker implements IWorker {
      * @see dbunit.worker.IBDDWorker#stop()
      */
     @Override
-    public void stop() throws TatamiException {
+    public void stop() throws FusionException {
         if (avecSauvegarde) {
             try {
                 databaseConnect.getConnection().setAutoCommit(false);
@@ -406,16 +407,16 @@ public abstract class AbstractWorker implements IWorker {
                 try {
                     databaseConnect.getConnection().rollback();
                 } catch (SQLException e) {
-                    throw new TatamiException(e);
+                    throw new FusionException(e);
                 }
-                throw new TatamiException(e1);
+                throw new FusionException(e1);
             }
         }
 
         try {
             databaseConnect.close();
         } catch (SQLException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
     }
 
@@ -424,15 +425,19 @@ public abstract class AbstractWorker implements IWorker {
      * @param file
      * @param hasParameters
      * @param operation
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private void recursive(File file, DatabaseOperation operation) throws TatamiException {
+    private void recursive(File file, DatabaseOperation operation) throws FusionException {
         if (file.isDirectory()) {
             for (File childFile : file.listFiles()) {
                 recursive(childFile, operation);
             }
         } else {
-            dataOperation(file, operation);
+        	if("xml".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
+        		dataOperation(file, operation);
+        	} else {
+        		LOGGER.warn(file.getAbsolutePath() + " is not a valid file and should not be here.");
+        	}
         }
     }
 
@@ -440,9 +445,9 @@ public abstract class AbstractWorker implements IWorker {
      * Méthode dataOperation.
      * @param file
      * @param operation
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private void dataOperation(File file, DatabaseOperation operation) throws TatamiException {
+    private void dataOperation(File file, DatabaseOperation operation) throws FusionException {
         String ope = "";
         if (operation.equals(DatabaseOperation.CLEAN_INSERT)) {
             ope = "CLEAN_INSERT";
@@ -476,15 +481,15 @@ public abstract class AbstractWorker implements IWorker {
             } catch (SQLException e) {
                 if (e instanceof BatchUpdateException) {
                     SQLException next = ((BatchUpdateException) e).getNextException();
-                    throw new TatamiException(new RequeteException(next));
+                    throw new FusionException(new RequeteException(next));
                 }
                 if (e instanceof SQLException) {
-                    throw new TatamiException(new RequeteException(e));
+                    throw new FusionException(new RequeteException(e));
                 }
-                throw new TatamiException(e);
+                throw new FusionException(e);
             } catch (DatabaseUnitException e) {
                 SQLException next = ((BatchUpdateException) e.getCause()).getNextException();
-                throw new TatamiException(new RequeteException(next));
+                throw new FusionException(new RequeteException(next));
             }
         }
     }
@@ -492,9 +497,9 @@ public abstract class AbstractWorker implements IWorker {
     /**
      * Permet de créer un dataSet pouvant parser un fichier xml.
      * @return {@link IDataSet}
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private IDataSet getBuilder(File file) throws TatamiException {
+    private IDataSet getBuilder(File file) throws FusionException {
         FlatXmlDataSetBuilder dataSetBuilder = new FlatXmlDataSetBuilder();
         dataSetBuilder.setColumnSensing(true);
         dataSetBuilder.setCaseSensitiveTableNames(true);
@@ -505,7 +510,7 @@ public abstract class AbstractWorker implements IWorker {
             // xmlInputFile.close();
             return dataSet;
         } catch (Exception e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
     }
 
@@ -513,9 +518,9 @@ public abstract class AbstractWorker implements IWorker {
      * Permet de créer un dataSet pouvant parser un fichier xml. Va permettre de remplacer des expressions présentes dans ce fichier pour leurs attribuer des
      * valeurs.
      * @return {@link IDataSet}
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private IDataSet getDataSet(File file) throws TatamiException {
+    private IDataSet getDataSet(File file) throws FusionException {
         IDataSet dataSet = null;
         int index = xmlFilePurge.lastIndexOf(file.getName());
         if (index > 0) {
@@ -547,7 +552,7 @@ public abstract class AbstractWorker implements IWorker {
      * Méthode initBddForServer.
      * @throws Exception
      */
-    private void initBddForServer() throws TatamiException {
+    private void initBddForServer() throws FusionException {
         LOGGER.info("Insertion des données nécessaires pour le démarrage du l'application");
         load(xmlFileInit);
     }
@@ -555,9 +560,9 @@ public abstract class AbstractWorker implements IWorker {
     /**
      * Méthode getTables. Pour les autree type passez par la méthode getTablesParType.
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public Set<TableBDD> getAllTablesTypeTable() throws TatamiException {
+    public Set<TableBDD> getAllTablesTypeTable() throws FusionException {
         String[] types = {"TABLE"};
         return getTablesParTypeWithExclusions(types, null, null);
     }
@@ -565,18 +570,18 @@ public abstract class AbstractWorker implements IWorker {
     /**
      * Méthode getTables. Pour les autree type passez par la méthode getTablesParType.
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public Set<TableBDD> getTablesParType(String[] types) throws TatamiException {
+    public Set<TableBDD> getTablesParType(String[] types) throws FusionException {
         return getTablesParTypeWithExclusions(types, null, null);
     }
 
     /**
      * Méthode getTables.
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public Set<TableBDD> getTablesTypeTableWithExclusions(String[] schemaExclusions, String[] tablesExclusions) throws TatamiException {
+    public Set<TableBDD> getTablesTypeTableWithExclusions(String[] schemaExclusions, String[] tablesExclusions) throws FusionException {
         String[] types = {"TABLE"};
         return getTablesParTypeWithExclusions(types, schemaExclusions, tablesExclusions);
     }
@@ -585,9 +590,9 @@ public abstract class AbstractWorker implements IWorker {
      * Méthode getTablesParType.
      * @param types : TABLE_TYPE String => table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS",
      *        "SYNONYM".
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public Set<TableBDD> getTablesParTypeWithExclusions(String[] types, String[] schemaExclusions, String[] tablesExclusions) throws TatamiException {
+    public Set<TableBDD> getTablesParTypeWithExclusions(String[] types, String[] schemaExclusions, String[] tablesExclusions) throws FusionException {
         TableBDD tableBDD;
         String nomTable;
         TreeSet<TableBDD> setTables = new TreeSet<TableBDD>();
@@ -630,15 +635,15 @@ public abstract class AbstractWorker implements IWorker {
                 }
             }
         } catch (SQLException e) {
-            throw new TatamiException(new RequeteException(e));
+            throw new FusionException(new RequeteException(e));
         } catch (Exception e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         } finally {
             try {
                 schemas.close();
                 tables.close();
             } catch (SQLException e) {
-                throw new TatamiException(e);
+                throw new FusionException(e);
             }
         }
         return setTables;

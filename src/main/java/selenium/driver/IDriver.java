@@ -17,7 +17,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import exception.TatamiException;
+import exception.FusionException;
 
 /**
  * Propose des méthodes utilitairs de manipulation du DOM utilisé par les test cucumber. Les Drivers utilisé par les projets de Test doivent implémenter cette
@@ -178,9 +178,9 @@ public interface IDriver extends WebDriver, JavascriptExecutor, FindsById, Finds
     /**
      * Permet la connexion à l'application de l'utilisateur passé en paramère.
      * @param user
-     * @throws TatamiException
+     * @throws FusionException
      */
-    void connexion(String login) throws TatamiException;
+    void connexion(String login) throws FusionException;
 
     /**
      * Permet de se déconnecter de l'application.
@@ -195,7 +195,7 @@ public interface IDriver extends WebDriver, JavascriptExecutor, FindsById, Finds
 
     /**
      * Attend que le layout de la page soit chargé. Cette méthode est un raccouris de la méthode raffraichir mais avec un élément prédéfinis.
-     * @see cucumber.ITester#raffraichir(String, String)
+     * @see cucumber.ITester#refresh(String, String)
      */
     void attendrePage();
 

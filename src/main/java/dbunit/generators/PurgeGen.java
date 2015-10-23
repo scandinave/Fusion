@@ -11,35 +11,42 @@ import java.util.Set;
 
 import dbunit.FlatXmlBuilder;
 import dbunit.bdd.TableBDD;
+import dbunit.worker.AbstractWorker;
 
 /**
+ * Generates purge.xml file used purge the database. Some table can be skip by redefining the worker save method .
+ * @see AbstractWorker#save()
+ * @see AbstractWorker#getTablesParTypeWithExclusions(String[], String[], String[])
  * @author Nonorc
  */
 public class PurgeGen extends FlatXmlBuilder {
 
+	/**
+	 * List of tables that need to be purged. 
+	 */
     private Set<TableBDD> setTables = new HashSet<TableBDD>();
 
     /**
-     * @param prefix
-     * @param devMode
-     * @param defaultStartId
-     * @param abstractWorker
+     * Default constructor.
+     * @param outputPath Path to save the generated file.
+     * @param devMode True if the generated xml must be display on the console instead of file. 
+     * @param defaultStartId The default start id used to generate rows id.
      */
     public PurgeGen(String outputPath, boolean devMode, long defaultStartId) {
         super(outputPath, devMode, defaultStartId);
     }
 
     /**
-     * Getter de setTables.
-     * @return the setTables
+     * Returns the list of tables that need to be purged.
+     * @return the setTables the list of tables that need to be purged.
      */
     public Set<TableBDD> getSetTables() {
         return setTables;
     }
 
     /**
-     * Setter de setTables.
-     * @param setTables the setTables to set
+     * Changes the list of tables that need to be purged.
+     * @param setTables The new list of tables that need to be purged.
      */
     public void setSetTables(Set<TableBDD> setTables) {
         this.setTables = setTables;
@@ -51,11 +58,7 @@ public class PurgeGen extends FlatXmlBuilder {
      */
     @Override
     public void addData() throws FileNotFoundException, IOException {
-        ajouterLignes();
-    }
-
-    private void ajouterLignes() {
-        Iterator<TableBDD> it = setTables.iterator();
+    	Iterator<TableBDD> it = setTables.iterator();
         while (it.hasNext()) {
             TableBDD tableBDD = (TableBDD) it.next();
             this.newRow(tableBDD.getRowXML()).add();

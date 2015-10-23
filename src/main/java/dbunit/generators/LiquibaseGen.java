@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dbunit.generators;
 
 import java.io.FileNotFoundException;
@@ -14,6 +11,8 @@ import dbunit.FlatXmlBuilder;
 import dbunit.bdd.RowLiquibaseDatabasechangelogBDD;
 
 /**
+ * Generates liquibase.xml file used to save the liquibase datachangelog before the purge. 
+ * This data are restore after purge.
  * @author Nonorc
  */
 public class LiquibaseGen extends FlatXmlBuilder implements Serializable {
@@ -25,17 +24,17 @@ public class LiquibaseGen extends FlatXmlBuilder implements Serializable {
     private Set<RowLiquibaseDatabasechangelogBDD> setRowsLiquibaseDatabasechangelog = new HashSet<RowLiquibaseDatabasechangelogBDD>();
 
     /**
-     * @param prefix
-     * @param devMode
-     * @param defaultStartId
-     * @param abstractWorker
+     * Default constructor.
+     * @param outputPath Path to save the generated file.
+     * @param devMode True if the generated xml must be display on the console instead of file. 
+     * @param defaultStartId The default start id used to generate rows id.
      */
     public LiquibaseGen(String outputPath, boolean devMode, long defaultStartId) {
         super(outputPath, devMode, defaultStartId);
     }
 
     /**
-     * Getter de setRowsLiquibaseDatabasechangelog.
+     * Returns the list of row in the Liquibase table.
      * @return the setRowsLiquibaseDatabasechangelog
      */
     public Set<RowLiquibaseDatabasechangelogBDD> getSetRowsLiquibaseDatabasechangelog() {
@@ -43,7 +42,7 @@ public class LiquibaseGen extends FlatXmlBuilder implements Serializable {
     }
 
     /**
-     * Setter de setRowsLiquibaseDatabasechangelog.
+     * Changes the list of row in the Liquibase table.
      * @param setRowsLiquibaseDatabasechangelog the setRowsLiquibaseDatabasechangelog to set
      */
     public void setSetRowsLiquibaseDatabasechangelog(Set<RowLiquibaseDatabasechangelogBDD> setRowsLiquibaseDatabasechangelog) {
@@ -56,11 +55,7 @@ public class LiquibaseGen extends FlatXmlBuilder implements Serializable {
      */
     @Override
     public void addData() throws FileNotFoundException, IOException {
-        ajouterLignes();
-    }
-
-    private void ajouterLignes() {
-        Iterator<RowLiquibaseDatabasechangelogBDD> it = setRowsLiquibaseDatabasechangelog.iterator();
+    	Iterator<RowLiquibaseDatabasechangelogBDD> it = setRowsLiquibaseDatabasechangelog.iterator();
         while (it.hasNext()) {
             RowLiquibaseDatabasechangelogBDD row = (RowLiquibaseDatabasechangelogBDD) it.next();
             this.add(row.getRowXML());

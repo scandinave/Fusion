@@ -8,99 +8,102 @@ import java.io.IOException;
 
 import org.dbunit.operation.DatabaseOperation;
 
-import exception.TatamiException;
+import exception.ConfigurationException;
+import exception.FusionException;
 
 /**
- * Permet de controller et d'effectuer des opérations sur une base de donnée pour un projet définis. Cette classe peut être implémenter pour chaque projet. En
- * rêgle général les projets choisiront d'étendre la classe BDDWorker pour plus de faciliter.
+ * Implementations of this interface are used to control and manipulate data in the database. 
+ * The implementation is responsible to load, to purge and clean the data before and / or after the tests.
+ * Implementations must be singleton.
  * @author Scandinave
  */
 public interface IWorker {
 
     /**
-     * Initialise le worker avec les données issue du fichier properties.
-     * @throws TatamiException
+     * Initializes the worker with the configuration from fusion.properties.
+     * @throws ConfigurationException 
      */
-    void init() throws TatamiException;
+    void init() throws ConfigurationException;
 
     /**
-     * Démarre le processus d'initialisation de la base de donnée avant les tests. Cette méthode est appelée automatique par le runner de cucumber.
-     * @throws TatamiException
+     * Start the initialization process of the database before tests.
+     * @throws FusionException
+     * @throws ConfigurationException 
      */
-    void start() throws TatamiException;
+    void start() throws FusionException, ConfigurationException;
 
     /**
-     * Point d'ancrage exécuté à la fin des tests. Après la fermeture du driver. Surchargez cette méthode pour ajouter des comportements à la fin des tests.
-     * @throws TatamiException
+     * Restores the database if the save and restore were activated and closes the connection to the database . 
+     * Any actions that must be perform after the tests can be done by overriding this method.
+     * @throws FusionException
      */
-    void stop() throws TatamiException;
+    void stop() throws FusionException;
 
     /**
-     * Vide l'ensemble des tables de la base de données sans les supprimer.
-     * @throws TatamiException
+     * Empty all tables in the database.
+     * @throws FusionException
      */
-    void clean() throws TatamiException;
+    void clean() throws FusionException;
 
     /**
-     * Fait un clean puis initialise la base de données avec les données de référence nécessaire au démarrage du projet.
-     * @throws TatamiException
+     * Make a clean then initialize the database with reference data required to start the project.
+     * @throws FusionException
      */
-    void reset() throws TatamiException;
+    void reset() throws FusionException;
 
     /**
-     * Charge un fichier xml et son contenu en base de données. DatabaseOperation.INSERT par défaut.
-     * @param filePath
-     * @throws TatamiException
+     * Loads the content of a xml file into database.
+     * @param filePath Path of the file to load.
+     * @throws FusionException
      */
-    void load(String filePath) throws TatamiException;
+    void load(String filePath) throws FusionException;
 
     /**
-     * Charge un fichier xml et son contenu en base de données.
-     * @param filePath
-     * @param operation
-     * @throws TatamiException
+     * Loads the content of a xml file into database.
+     * @param filePath Path of the file to load.
+     * @param operation Database operation to execute.
+     * @throws FusionException
      */
-    void load(String filePath, DatabaseOperation operation) throws TatamiException;
+    void load(String filePath, DatabaseOperation operation) throws FusionException;
 
     /**
-     * Charge un fichier xml et son contenu en base de données. DatabaseOperation.INSERT par défaut.
-     * @param file
-     * @throws TatamiException
+     * Loads the content of a xml file into database.
+     * @param File to load
+     * @throws FusionException
      */
-    void load(File file) throws TatamiException;
+    void load(File file) throws FusionException;
 
     /**
-     * Permet d'activer ou de désactiver les contraintes sur une base de donnée.
-     * @param toogle
-     * @throws TatamiException
+     * Toggles constraints on a database.
+     * @param toogle if true enables constraints, if false disables constraints
+     * @throws FusionException
      */
-    void toogleContrainte(boolean toogle) throws TatamiException;
+    void toogleContrainte(boolean toogle) throws FusionException;
 
     /**
-     * Méthode appelée automatiquement après une purge pour réinitialiser les séquences à 0. correspondante.
-     * @throws TatamiException
+     * Initializes sequence to 0.
+     * @throws FusionException
      */
-    void cleanSequence() throws TatamiException;
+    void cleanSequence() throws FusionException;
 
     /**
-     * Traite un fichier xml et son contenu en base de données suivant l'operation indiquée.
-     * @param file
-     * @param operation
-     * @throws TatamiException
-     * @throws IOException
+     * Loads the content of a xml file into database.
+     * @param file File to load
+     * @param operation Database operation to execute.
+     * @throws FusionException
      */
-    void load(File file, DatabaseOperation operation) throws TatamiException;
+    void load(File file, DatabaseOperation operation) throws FusionException;
 
     /**
-     * Sauvegarde les tables de la base de données dans des fichiers XML. (Une table pour un fichier nomschema.nomtable.xml).
-     * @throws TatamiException
+     * Saves all table into xml files. One file by table.
+     * @throws FusionException
      */
-    void save() throws TatamiException;
+    void save() throws FusionException;
 
     /**
-     * Restaure la base de données à partir des fichiers XML de la sauvegarde.
-     * @throws TatamiException
+     * Restores the database with the xml files produced during the backup.
+     * @throws FusionException
      */
-    void restore() throws TatamiException;
+    void restore() throws FusionException;
 
 }

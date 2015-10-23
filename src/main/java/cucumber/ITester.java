@@ -3,170 +3,182 @@
  */
 package cucumber;
 
-import exception.TatamiException;
+import exception.FusionException;
+import selenium.BySelec;
+import selenium.driver.AbstractDriver;
 
 /**
- * Test spécifique à chaque projet.
+ * A tester is a class that defines Cucumber steps definitions
+ * Fusion provide its own common steps definitions with this interface. 
+ * Some step definition are not implemented in the driver and must be define by the test project.
  * @author Scandinave
  */
 public interface ITester {
 
     /**
-     * Permet la connexion à l'application de l'utilisateur passé en paramère.
-     * @param user
-     * @throws TatamiException
+     * Log in the user to the application. 
+     * This method must be implemented by the application driver.
+     * @param user User login.
+     * @see AbstractDriver
+     * @throws FusionException
      */
-    void connexion(String login) throws TatamiException;
+    void connection(String login) throws FusionException;
 
     /**
-     * Permet de se déconnecter de l'application.
+     * Log of the user to the application.
+     * This method must be implemented by the application driver.
      */
-    void deconnexion();
+    void disconnection();
 
     /**
-     * Charge une page en cliquant sur le lien de navigation passé en paramètre.
-     * @param target
+     * Loads a page by clicking on a link.
+     * This method must be implemented by the application driver.
+     * @param target Target text link.
      */
     void navigation(String target);
 
     /**
-     * Attend que le layout de la page soit chargé. Cette méthode est un raccouris de la méthode raffraichir mais avec un élément prédéfinis.
-     * @see info.scandi.fusion.cucumber.ITester#raffraichir(String, String)
+     * Wait for page to load. This method is a shortcut of the refresh method with a predefined element.
+     * This method must be implemented by the application driver.
      */
-    void attendrePage();
+    void waitForPage();
 
     /**
-     * Test la présence d'un message d'erreur sur l'application.
+     * Tests if the application returns an error message.
+     * This method must be implemented by the application driver.
      */
-    void messageErreur();
+    void errorMessage();
 
     /**
-     * Test la présence d'un message d'alerte sur l'application.
+     * Tests if the application returns an warning message.
+     * This method must be implemented by the application driver.
      */
-    void messageWarn();
+    void warningMessage();
 
     /**
-     * Test la présence d'un message d'info sur l'application.
+     * Tests if the application returns an info message.
+     * This method must be implemented by the application driver.
      */
-    void messageInfo();
+    void infoMessage();
 
     /**
-     * Compte le nombre de ligne dans une table.
-     * @param type
-     * @param selector
-     * @param attendu
+     * Counts the number of row in the table.
+     * This method must be implemented by the application driver.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
+     * @param expected The number of row expected.
      */
-    void countRowsTable(String type, String selector, int attendu);
+    void countRowsTable(String type, String selector, int expected);
 
     /**
-     * Permet de retourner à l'accueil de l'application.
+     * Goes to the application home page.
      */
-    void accueil();
+    void home();
 
     /**
-     * Méthode utilitaire permettant de valider des tests qui se sont correctement déroulé jusqu'a présent. Retourne sur True.
+     * Convenience method to tell that this test is good at this moment if no other result is awaited.
      */
     void ok();
 
     /**
-     * Attend qu'un élément soit présent sur la page avant de continuer.
-     * @param type
-     * @param selector
+     * Wait for a element to be present before resume. 
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void attendre(String type, String selector);
+    void wait(String type, String selector);
 
     /**
-     * Raffraichis la page et attend que l'élément passer en paramètre soit chargé.
-     * @param type
-     * @param selector
+     * Refreshes the current page and wait for an element to be load.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void raffraichir(String type, String selector);
+    void refresh(String type, String selector);
 
     /**
-     * Permet de tester l'affichage d'un message d'erreur sur un champs imput.
-     * @param selector
+     * Tests if the application returns an html error message.
+     * @param selector Javascript selector of the input
      */
     void html5Erreur(String selector);
 
     /**
-     * Permet de cliquer sur un élément via son id.
-     * @param type
-     * @param selector
+     * Clicks on a element.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void cliquer(String type, String selector);
+    void click(String type, String selector);
 
     /**
-     * Permet de remplir un champ via un type(id, name, css, xpath, tagName, linkText, partialLinkText). La valeur peut être vide.
-     * @param type
-     * @param selector
-     * @param valeur
+     * Fills a input with a value.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
+     * @param valeur The value to fill. Can be empty.
      */
-    void remplir(String type, String selector, String valeur);
+    void fill(String type, String selector, String valeur);
 
     /**
-     * Permet de selectionner un champ d'une liste deroulante via son id. La valeur peut être vide.
-     * @param type
-     * @param selector
-     * @param valeur
+     * Selects element into a select box.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
+     * @param valeur The value to select.
      */
-    void selectionner(String type, String selector, String valeur);
+    void select(String type, String selector, String valeur);
 
     /**
-     * Permet de savoir si un élément est désactiver (grisé).
-     * @param type
-     * @param selector
+     * Tests if the selected element is disabled.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void etreDesactiver(String type, String selector);
+    void isDisabled(String type, String selector);
 
     /**
-     * Permet de savoir si un élément est actif.
-     * @param type
-     * @param selector
+     * Tests if the selected element is enabled.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void etreActiver(String type, String selector);
+    void isEnabled(String type, String selector);
 
     /**
-     * Permet de savoir si un champ texte est renseigné.
-     * @param type
-     * @param selector
+     * Tests if the selected input has a value.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void etrePlein(String type, String selector);
+    void isFull(String type, String selector);
 
     /**
-     * Permet de savoir si un champ texte n'est pas renseigner.
-     * @param type
-     * @param selector
+     * Tests if the selected input is empty.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void etreVide(String type, String selector);
+    void isEmpty(String type, String selector);
 
     /**
-     * Permet de savoir si un élément est visible.
-     * @param type
-     * @param selector
+     * Tests if the selected element is visible.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void etreVisible(String type, String selector);
+    void isVisible(String type, String selector);
 
     /**
-     * Permet de savoir si un élément n'est pas visible.
-     * @param type
-     * @param selector
+     * Tests if the selected element is hidden.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
      */
-    void etreInvisible(String type, String selector);
+    void isHidden(String type, String selector);
 
     /**
-     * Permet de checker une checkbox.
-     * @param type
-     * @param selector
-     * @param valeur
+     * Toggles the state of a checkbox.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
+     * @param valeur The value of the checkbox to toggle.
      */
-    void checker(String type, String selector, String valeur);
+    void check(String type, String selector, String valeur);
 
     /**
-     * Permet de savoir si une valeur d'un select est sélectionné.
-     * @param type
-     * @param selector
-     * @param valeur
+     * Tests if a value is selected in the target select element.
+     * @param type Selector type {@link BySelec}
+     * @param selector Selector value
+     * @param valeur The value that will be tested.
      */
-    void etreSelectionne(String type, String selector, String valeur);
+    void isSelected(String type, String selector, String valeur);
 
 }

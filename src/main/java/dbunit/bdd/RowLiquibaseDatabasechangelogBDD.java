@@ -7,16 +7,23 @@ import dbunit.xml.Columns;
 import dbunit.xml.Row;
 
 /**
+ * Corresponds to an entry in the Liquibase table.
  * @author Nonorc
  */
 public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<RowLiquibaseDatabasechangelogBDD> {
 
     private static final String ELEMENT_COMPARAISON = "id";
+    /**
+     * Liquibase table name
+     */
     private TableBDD tableBDD;
+    /**
+     * List of Liquibase fields and values.
+     */
     private Columns attributs;
 
     /**
-     * Getter de tableBDD.
+     * Returns the Liquibase table name.
      * @return the tableBDD
      */
     public TableBDD getTableBDD() {
@@ -24,16 +31,16 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
     }
 
     /**
-     * Setter de tableBDD.
-     * @param tableBDD the tableBDD to set
+     * Changes the Liquibase table name.
+     * @param tableBDD New table name.
      */
     public void setTableBDD(TableBDD tableBDD) {
         this.tableBDD = tableBDD;
     }
 
     /**
-     * @param tableBDD
-     * @param attributs
+     * @param tableBDD The name of Liquibase table
+     * @param attributs The list of of Liquibase fields and values.
      */
     public RowLiquibaseDatabasechangelogBDD(TableBDD tableBDD, Columns attributs) {
         super();
@@ -42,7 +49,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
     }
 
     /**
-     * Getter de attributs.
+     * Returns the Liquibase fields and values for one row in dataTable.
      * @return the attributs
      */
     public Columns getAttributs() {
@@ -50,7 +57,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
     }
 
     /**
-     * Setter de attributs.
+     * Changes the Liquibase list fields and values for one row in datatable.
      * @param attributs the attributs to set
      */
     public void setAttributs(Columns attributs) {

@@ -15,23 +15,24 @@ import org.apache.commons.logging.LogFactory;
 
 import dbunit.bdd.SequenceBDD;
 import exception.RequeteException;
-import exception.TatamiException;
+import exception.FusionException;
 
 /**
- * Implémentation d'un worker dédié à PostgreSQL. Les projets utilisant PostgreSQL comme base de données devrait étendre de cette classe.
+ * Default implementation of the PostgreSQL DBMS worker.
  * @author Scandinave
  */
 public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 
     /**
-     * @throws TatamiException
+     * Default constructor.
+     * @throws FusionException
      */
-    protected AbstractPosgreSQLWorker() throws TatamiException {
+    protected AbstractPosgreSQLWorker() throws FusionException {
         super();
     }
 
     /**
-     * Logger de la classe.
+     * Class logger.
      */
     private Log LOGGER = LogFactory.getLog(AbstractPosgreSQLWorker.class);
 
@@ -40,7 +41,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
      * @see dbunit.worker.IBDDWorker#toogleContrainte(boolean)
      */
     @Override
-    public void toogleContrainte(boolean toogle) throws TatamiException {
+    public void toogleContrainte(boolean toogle) throws FusionException {
         LOGGER.info(toogle ? "Activation des contraintes" : "Désactivation des contraintes");
         try {
             String update = "UPDATE pg_trigger SET tgenabled = " + (toogle ? "'O'" : "'D'");
@@ -48,7 +49,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
             statement.executeUpdate(update);
             statement.close();
         } catch (Exception e) {
-            throw new TatamiException(
+            throw new FusionException(
                 String.format("Problème lors de %s des contraintes.",
                     toogle ? "l'activation" : "la désactivation"),
                 e);
@@ -60,7 +61,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
      * @see dbunit.worker.IWorker#cleanSequence()
      */
     @Override
-    public void cleanSequence() throws TatamiException {
+    public void cleanSequence() throws FusionException {
         TreeSet<SequenceBDD> sequences = getSequences();
         for (Iterator<SequenceBDD> iterator = sequences.iterator(); iterator.hasNext();) {
             SequenceBDD sequenceBDD = iterator.next();
@@ -69,11 +70,11 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
     }
 
     /**
-     * Méthode getSequences.
+     * Returns list of sequences in the database.
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private TreeSet<SequenceBDD> getSequences() throws TatamiException {
+    private TreeSet<SequenceBDD> getSequences() throws FusionException {
         String nomSchema;
         String nomSequence;
         SequenceBDD sequence;
@@ -97,24 +98,24 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
             }
             statement.close();
         } catch (SQLException e) {
-            throw new TatamiException(new RequeteException(e));
+            throw new FusionException(new RequeteException(e));
         }
         return setSequences;
     }
 
     /**
-     * Méthode sequenceZero.
-     * @param sequenceBDD
-     * @throws TatamiException
+     * Reset the sequence to 0.
+     * @param sequenceBDD The sequence to reset.
+     * @throws FusionException
      */
-    private void setSequenceZero(SequenceBDD sequenceBDD) throws TatamiException {
+    private void setSequenceZero(SequenceBDD sequenceBDD) throws FusionException {
         try {
             String sql = "SELECT setval('" + sequenceBDD.getNomSchema() + "." + sequenceBDD.getNomSequence() + "', 1)";
             PreparedStatement statement = databaseConnect.getConnection().prepareStatement(sql);
             statement.executeQuery();
             statement.close();
         } catch (SQLException e) {
-            throw new TatamiException(new RequeteException(e));
+            throw new FusionException(new RequeteException(e));
         }
     }
 }

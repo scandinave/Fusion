@@ -87,7 +87,7 @@ public class TableBDD implements IRowBDD, Comparable<TableBDD> {
      */
     @Override
     public Row getRowXML() {
-        return new Row(nomSchema + Constantes.SEPARATEUR + nomTable);
+        return new Row(nomSchema + Constants.SEPARATOR + nomTable);
     }
 
     /*

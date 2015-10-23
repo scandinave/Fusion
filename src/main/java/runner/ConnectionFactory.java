@@ -16,7 +16,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import exception.ConfigurationException;
-import exception.TatamiException;
+import exception.FusionException;
 import exception.UtilitaireException;
 import selenium.driver.IDriver;
 import utils.PropsUtils;
@@ -46,7 +46,7 @@ public class ConnectionFactory {
      * @return
      * @throws Exception
      */
-    public static IDriver getDriver() throws TatamiException {
+    public static IDriver getDriver() throws FusionException {
         if (driver == null) {
             driver = openDriver();
         }
@@ -92,18 +92,18 @@ public class ConnectionFactory {
      * @param url L'url du remoteDriver si nécessaire, null sinon
      * @param profil
      * @return IDriver Retourne l'instance du Driver.
-     * @throws TatamiException
+     * @throws FusionException
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    private static IDriver openDriver() throws TatamiException {
+    private static IDriver openDriver() throws FusionException {
         IDriver tatamiDriver = null;
         try {
             boolean remote = Boolean.valueOf((PropsUtils.getProperties().getProperty("browser.remote", "false")));
             Class<IDriver> clazz = (Class<IDriver>) Class.forName(PropsUtils.getProperties().getProperty(TATAMI_DRIVER));
             Constructor<IDriver> cons;
             if (remote) {
-                cons = clazz.getConstructor(String.class, DesiredCapabilities.class);
+                cons = clazz.getConstructor(URL.class, DesiredCapabilities.class);
                 tatamiDriver = cons.newInstance(new URL(PropsUtils.getProperties().getProperty("selenium.grid")), DesiredCapabilities.firefox());
             } else {
                 FirefoxProfile profile = new FirefoxProfile();
@@ -113,7 +113,7 @@ public class ConnectionFactory {
                         profile.addExtension(new File(PropsUtils.getProperties().getProperty("extension.firebug")));
                         profile.addExtension(new File(PropsUtils.getProperties().getProperty("extension.webdeveloper")));
                     } catch (IOException e) {
-                        throw new TatamiException(e);
+                        throw new FusionException(e);
                     }
                 }
                 cons = clazz.getConstructor(FirefoxDriver.class);
@@ -127,11 +127,11 @@ public class ConnectionFactory {
             }
 
         } catch (ClassNotFoundException e) {
-            throw new TatamiException(new ConfigurationException("Problème de configuration pour " + TATAMI_DRIVER, e));
+            throw new FusionException(new ConfigurationException("Problème de configuration pour " + TATAMI_DRIVER, e));
         } catch (UtilitaireException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         } catch (Exception e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
         return tatamiDriver;
     }

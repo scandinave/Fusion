@@ -7,19 +7,19 @@ package exception;
  * @author Scandinave
  */
 @SuppressWarnings("serial")
-public class TatamiException extends Exception {
+public class FusionException extends Exception {
 
     /**
      * @param e
      */
-    public TatamiException(Exception e) {
+    public FusionException(Exception e) {
         super(e);
     }
 
     /**
      * @param message
      */
-    public TatamiException(String message) {
+    public FusionException(String message) {
         super(message);
     }
 
@@ -27,7 +27,7 @@ public class TatamiException extends Exception {
      * @param message
      * @param e
      */
-    public TatamiException(String message, Exception e) {
+    public FusionException(String message, Exception e) {
         super(message, e);
     }
 }

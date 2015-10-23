@@ -21,7 +21,7 @@ import dbunit.generators.PurgeGen;
 import dbunit.worker.AbstractPosgreSQLWorker;
 import dbunit.xml.Columns;
 import dbunit.xml.Row;
-import exception.TatamiException;
+import exception.FusionException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CleanerTest {
@@ -65,7 +65,7 @@ public class CleanerTest {
 		liquid.setSetRowsLiquibaseDatabasechangelog(rows);
 		try {
 			liquid.start();
-		} catch (TatamiException e) {
+		} catch (FusionException e) {
 			fail(e.getMessage());
 		}
 	}
@@ -81,14 +81,14 @@ public class CleanerTest {
 		tables.add(new TableBDD("public", "common"));
 		try {
 			Mockito.when(worker.getAllTablesTypeTable()).thenReturn(tables);
-		} catch (TatamiException e1) {
+		} catch (FusionException e1) {
 			fail(e1.getMessage());
 		}
 		PurgeGen purgeGen = new PurgeGen(worker.xmlFilePurge, false, 0);
         try {
 			purgeGen.setSetTables(worker.getAllTablesTypeTable());
 			purgeGen.start();
-		} catch (TatamiException e) {
+		} catch (FusionException e) {
 			fail(e.getMessage());
 		}
 	}

@@ -21,7 +21,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import dbunit.bdd.TableBDD;
 import dbunit.worker.AbstractWorker;
-import exception.TatamiException;
+import exception.FusionException;
 import utils.FileUtil;
 
 /**
@@ -55,9 +55,9 @@ public class Saver implements Serializable {
 
     /**
      * Méthode start.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public void start() throws TatamiException {
+    public void start() throws FusionException {
         if (tables == null) {
             tables = abstractWorker.getAllTablesTypeTable();
         }
@@ -74,9 +74,9 @@ public class Saver implements Serializable {
 
     /**
      * Méthode construction.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private void construction() throws TatamiException {
+    private void construction() throws FusionException {
         LOGGER.info("Début de la sauvegarde de la base de données");
         try {
             Set<TableBDD> setTables = getTables();
@@ -95,11 +95,11 @@ public class Saver implements Serializable {
                 LOGGER.debug(file.getCanonicalPath() + " sauvegardé");
             }
         } catch (AmbiguousTableNameException e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         } catch (FileNotFoundException e1) {
-            throw new TatamiException(e1);
+            throw new FusionException(e1);
         } catch (DataSetException | IOException e2) {
-            throw new TatamiException(e2);
+            throw new FusionException(e2);
         }
         LOGGER.info("Sauvegarde effectuée avec succès.");
     }

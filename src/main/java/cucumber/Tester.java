@@ -3,9 +3,11 @@
  */
 package cucumber;
 
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.fr.Alors;
 import cucumber.api.java.fr.Soit;
-import exception.TatamiException;
+import exception.FusionException;
 
 /**
  * Test générique valable pour l'ensemble des projets.
@@ -19,19 +21,19 @@ public class Tester extends AbstractTester implements ITester {
     private static final long serialVersionUID = -6581608978102622951L;
 
     /**
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public Tester() throws TatamiException {
+    public Tester() throws FusionException {
         super();
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#acceuil()
+     * @see cucumber.ITester#home()
      */
     @Override
-    @Soit("^accueil$")
-    public void accueil() {
+    @Given("^home$")
+    public void home() {
         this.driver.accueil();
     }
 
@@ -40,28 +42,28 @@ public class Tester extends AbstractTester implements ITester {
      * @see cucumber.ITester#ok()
      */
     @Override
-    @Soit("^ok$")
+    @Then("^ok$")
     public void ok() {
         this.driver.ok();
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#attendre(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#wait(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^attendre " + REGTEXT + ":" + REGTEXT + "$")
-    public void attendre(String type, String selector) {
+    @Given("^wait " + REGTEXT + ":" + REGTEXT + "$")
+    public void wait(String type, String selector) {
         this.driver.attendre(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#raffraichir(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#refresh(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^attendre raffraichissement " + REGTEXT + ":" + REGTEXT + "$")
-    public void raffraichir(String type, String selector) {
+    @Given("^wait refresh " + REGTEXT + ":" + REGTEXT + "$")
+    public void refresh(String type, String selector) {
         this.driver.raffraichir(type, selector);
     }
 
@@ -70,140 +72,140 @@ public class Tester extends AbstractTester implements ITester {
      * @see cucumber.ITester#html5Erreur(java.lang.String)
      */
     @Override
-    @Alors("^erreur required " + REGTEXT + "$")
+    @Then("^html5Erreur " + REGTEXT + "$")
     public void html5Erreur(String selector) {
         this.driver.html5Erreur(selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#cliquer(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#click(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^clic " + REGTEXT + ":" + REGTEXT + "$")
-    public void cliquer(String type, String selector) {
+    @Given("^click " + REGTEXT + ":" + REGTEXT + "$")
+    public void click(String type, String selector) {
         this.driver.cliquer(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#remplir(java.lang.String, java.lang.String, java.lang.String)
+     * @see cucumber.ITester#fill(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^remplir " + REGTEXT + ":" + REGTEXT + ", valeur:" + REGTEXT + "$")
-    public void remplir(String type, String selector, String valeur) {
+    @Given("^fill " + REGTEXT + ":" + REGTEXT + ", value:" + REGTEXT + "$")
+    public void fill(String type, String selector, String valeur) {
         this.driver.remplir(type, selector, valeur);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#selectionner(java.lang.String, java.lang.String, java.lang.String)
+     * @see cucumber.ITester#select(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^selectionner " + REGTEXT + ":" + REGTEXT + ", valeur:" + REGTEXT
+    @Given("^select " + REGTEXT + ":" + REGTEXT + ", value:" + REGTEXT
         + "$")
-    public void selectionner(String type, String selector, String valeur) {
+    public void select(String type, String selector, String valeur) {
         this.driver.selectionner(type, selector, valeur);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#etreDesactiver(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#isDisabled(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^est inactif " + REGTEXT + ":" + REGTEXT + "$")
-    public void etreDesactiver(String type, String selector) {
+    @Given("^is disabled " + REGTEXT + ":" + REGTEXT + "$")
+    public void isDisabled(String type, String selector) {
         this.driver.etreDesactiver(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#etreActiver(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#isEnabled(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^est actif " + REGTEXT + ":" + REGTEXT + "$")
-    public void etreActiver(String type, String selector) {
+    @Given("^is enabled " + REGTEXT + ":" + REGTEXT + "$")
+    public void isEnabled(String type, String selector) {
         this.driver.etreActiver(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#etrePlein(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#isFull(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^est pas vide " + REGTEXT + ":" + REGTEXT + "$")
-    public void etrePlein(String type, String selector) {
+    @Given("^is full " + REGTEXT + ":" + REGTEXT + "$")
+    public void isFull(String type, String selector) {
         this.driver.etrePlein(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#etreVide(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#isEmpty(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^est vide " + REGTEXT + ":" + REGTEXT + "$")
-    public void etreVide(String type, String selector) {
+    @Given("^is empty " + REGTEXT + ":" + REGTEXT + "$")
+    public void isEmpty(String type, String selector) {
         this.driver.etreVide(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#etreVisible(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#isVisible(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^est visible " + REGTEXT + ":" + REGTEXT + "$")
-    public void etreVisible(String type, String selector) {
+    @Given("^is visible " + REGTEXT + ":" + REGTEXT + "$")
+    public void isVisible(String type, String selector) {
         this.driver.etreVisible(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#etreInvisible(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#isHidden(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^est invisible " + REGTEXT + ":" + REGTEXT + "$")
-    public void etreInvisible(String type, String selector) {
+    @Given("^is hidden " + REGTEXT + ":" + REGTEXT + "$")
+    public void isHidden(String type, String selector) {
         this.driver.etreInvisible(type, selector);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#checker(java.lang.String, java.lang.String)
+     * @see cucumber.ITester#check(java.lang.String, java.lang.String)
      */
     @Override
-    @Soit("^cocher " + REGTEXT + ":" + REGTEXT + ", valeur:" + REGTEXT + "$")
-    public void checker(String type, String selector, String valeur) {
+    @Given("^check " + REGTEXT + ":" + REGTEXT + ", valeur:" + REGTEXT + "$")
+    public void check(String type, String selector, String valeur) {
         this.driver.checker(type, selector, valeur);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#navigation(java.lang.String)
+     * @see cucumber.ITester#isSelected(java.lang.String)
      */
     @Override
-    @Soit("^etre selectionne " + REGTEXT + ":" + REGTEXT + ", valeur:" + REGTEXT
+    @Given("^is selected " + REGTEXT + ":" + REGTEXT + ", valeur:" + REGTEXT
         + "$")
-    public void etreSelectionne(String type, String selector, String valeur) {
+    public void isSelected(String type, String selector, String valeur) {
         this.driver.etreSelectionne(type, selector, valeur);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#connexion(java.lang.String)
+     * @see cucumber.ITester#connection(java.lang.String)
      */
     @Override
-    @Soit("^connexion login:" + REGTEXT + "$")
-    public void connexion(String login) throws TatamiException {
+    @Given("^connection login:" + REGTEXT + "$")
+    public void connection(String login) throws FusionException {
         this.driver.connexion(login);
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#deconnexion()
+     * @see cucumber.ITester#disconnection()
      */
     @Override
-    @Soit("^deconnexion$")
-    public void deconnexion() {
+    @Given("^disconnection$")
+    public void disconnection() {
         this.driver.deconnexion();
 
     }
@@ -213,7 +215,7 @@ public class Tester extends AbstractTester implements ITester {
      * @see cucumber.ITester#navigation(java.lang.String)
      */
     @Override
-    @Soit("^navigation " + REGTEXT + "$")
+    @Given("^navigation " + REGTEXT + "$")
     public void navigation(String target) {
         this.driver.navigation(target);
 
@@ -221,43 +223,43 @@ public class Tester extends AbstractTester implements ITester {
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#attendrePage()
+     * @see cucumber.ITester#waitForPage()
      */
     @Override
-    @Soit("^attendre page$")
-    public void attendrePage() {
+    @Given("^wait for page$")
+    public void waitForPage() {
         this.driver.attendrePage();
 
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#messageErreur()
+     * @see cucumber.ITester#errorMessage()
      */
     @Override
-    @Alors("^erreur$")
-    public void messageErreur() {
+    @Then("^error$")
+    public void errorMessage() {
         this.driver.messageErreur();
 
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#messageWarn()
+     * @see cucumber.ITester#warningMessage()
      */
     @Override
-    @Alors("^alert$")
-    public void messageWarn() {
+    @Then("^warning$")
+    public void warningMessage() {
         this.driver.messageWarn();
     }
 
     /*
      * (non-Javadoc)
-     * @see cucumber.ITester#messageInfo()
+     * @see cucumber.ITester#infoMessage()
      */
     @Override
-    @Alors("^info$")
-    public void messageInfo() {
+    @Then("^info$")
+    public void infoMessage() {
         this.driver.messageInfo();
 
     }
@@ -267,9 +269,9 @@ public class Tester extends AbstractTester implements ITester {
      * @see cucumber.ITester#countRowsTable(java.lang.String, java.lang.String, int)
      */
     @Override
-    @Alors("^compter ligne dans table " + REGTEXT + ":" + REGTEXT + ", attendu:" + REGTEXT
+    @Then("^count row in table " + REGTEXT + ":" + REGTEXT + ", expected:" + REGTEXT
         + "$")
-    public void countRowsTable(String type, String selector, int attendu) {
-        this.driver.countRowsTable(type, selector, attendu);
+    public void countRowsTable(String type, String selector, int expected) {
+        this.driver.countRowsTable(type, selector, expected);
     }
 }

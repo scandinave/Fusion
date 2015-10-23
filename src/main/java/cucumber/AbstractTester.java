@@ -6,11 +6,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import runner.ConnectionFactory;
-import exception.TatamiException;
+import exception.FusionException;
 import selenium.driver.IDriver;
 
 /**
- * Classe définissant des tests cucumber générique pour l'ensemble des projets.
+ * Abstract class that provides commons variables and functions for tester implementations.
  * @author Scandinave
  */
 public abstract class AbstractTester implements Serializable {
@@ -19,19 +19,25 @@ public abstract class AbstractTester implements Serializable {
      * serialVersionUID long.
      */
     private static final long serialVersionUID = 6220087950122012558L;
-    protected static final String REGTEXT = "(?:\\<|\")([^\"]*)(?:\\>|\")"; // Match
+    /**
+     * Default regex for cucumber steps definitions.
+     * This regex accept string in the form "string" or &#60string&#62 
+     */
+    protected static final String REGTEXT = "(?:\\<|\")([^\"]*)(?:\\>|\")"; 
     protected final Log logger = LogFactory.getLog(this.getClass());
-    // Todo injecter le driver
+    /**
+     * Driver instance use by the tester.
+     */
     protected IDriver driver;
 
     /**
-     * @throws TatamiException
+     * @throws FusionException if the driver instantiation failed.
      */
-    public AbstractTester() throws TatamiException {
+    public AbstractTester() throws FusionException {
         try {
             driver = ConnectionFactory.getDriver();
         } catch (Exception e) {
-            throw new TatamiException("Impossible d'instancier le Driver");
+            throw new FusionException("The driver instantiation failed");
         }
     }
 

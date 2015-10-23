@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import dbunit.xml.Row;
-import exception.TatamiException;
+import exception.FusionException;
 
 /**
  * Génère un fichier XML pour DBUnit
@@ -214,9 +214,9 @@ public abstract class FlatXmlBuilder {
 
     /**
      * Démarre la génération du fichier xml.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public void start() throws TatamiException {
+    public void start() throws FusionException {
         try {
             File outputFile = new File(outputPath);
             if (outputFile.exists()) {
@@ -233,7 +233,7 @@ public abstract class FlatXmlBuilder {
             this.write(new FileWriter(new File(outputPath),
                 true), false, true);
         } catch (Exception e) {
-            throw new TatamiException(e);
+            throw new FusionException(e);
         }
     }
 

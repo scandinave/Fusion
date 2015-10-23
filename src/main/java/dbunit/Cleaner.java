@@ -22,7 +22,7 @@ import dbunit.generators.PurgeGen;
 import dbunit.worker.AbstractWorker;
 import dbunit.xml.Columns;
 import exception.RequeteException;
-import exception.TatamiException;
+import exception.FusionException;
 
 /**
  * Vide la base de données de toutes ses données.
@@ -56,9 +56,9 @@ public class Cleaner implements Serializable {
 
     /**
      * Méthode start.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public void start() throws TatamiException {
+    public void start() throws FusionException {
         construction();
         execution();
     }
@@ -66,9 +66,9 @@ public class Cleaner implements Serializable {
     /**
      * Méthode execution.
      * @param avecLiquibase
-     * @throws TatamiException
+     * @throws FusionException
      */
-    public void execution() throws TatamiException {
+    public void execution() throws FusionException {
         abstractWorker.load(abstractWorker.xmlFilePurge, DatabaseOperation.DELETE_ALL);
 
         LOGGER.info("Mise à jour des séquences à 1");
@@ -82,9 +82,9 @@ public class Cleaner implements Serializable {
 
     /**
      * Méthode construction.
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private void construction() throws TatamiException {
+    private void construction() throws FusionException {
         if (avecLiquibase) {
             LOGGER.debug("Construction du fichier flatXmlDataSet liquibase dans le cas où liquibase est lancé en même temps que le serveur");
             LiquibaseGen liquibaseGen = new LiquibaseGen(abstractWorker.xmlFileLiquibase, false, 0);
@@ -103,9 +103,9 @@ public class Cleaner implements Serializable {
     /**
      * Méthode getRowsLiquibaseDatabasechangelog.
      * @return
-     * @throws TatamiException
+     * @throws FusionException
      */
-    private Set<RowLiquibaseDatabasechangelogBDD> getRowsLiquibaseDatabasechangelog() throws TatamiException {
+    private Set<RowLiquibaseDatabasechangelogBDD> getRowsLiquibaseDatabasechangelog() throws FusionException {
         RowLiquibaseDatabasechangelogBDD attribut = null;
         Set<RowLiquibaseDatabasechangelogBDD> attributs = new TreeSet<RowLiquibaseDatabasechangelogBDD>();
         TableBDD databasechangelog = new TableBDD(abstractWorker.liquibaseSchemaName, abstractWorker.liquibaseDatabasechangelogName);
@@ -136,7 +136,7 @@ public class Cleaner implements Serializable {
             resultSet.close();
             statement.close();
         } catch (SQLException e) {
-            throw new TatamiException(new RequeteException(e));
+            throw new FusionException(new RequeteException(e));
         }
         return attributs;
     }
