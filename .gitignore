@@ -7,4 +7,5 @@
 /bin/
 /gradle
 /gradlew*
+/.gradle/
 /build/
