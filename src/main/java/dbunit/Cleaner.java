@@ -22,7 +22,7 @@ import dbunit.bdd.TableBDD;
 import dbunit.generators.LiquibaseGen;
 import dbunit.generators.PurgeGen;
 import dbunit.worker.AbstractWorker;
-import exception.RequeteException;
+import exception.RequestException;
 import exception.FusionException;
 
 /**
@@ -152,7 +152,7 @@ public class Cleaner implements Serializable {
             resultSet.close();
             statement.close();
         } catch (SQLException e) {
-            throw new FusionException(new RequeteException(e));
+            throw new FusionException(new RequestException(e));
         }
         return attributs;
     }

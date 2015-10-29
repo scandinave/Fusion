@@ -21,7 +21,7 @@ import exception.UtilitaireException;
 import utils.PropsUtils;
 
 /**
- * Classe lançant les tests. Pour l'utiliser, Ajouter l'annotation @RunWith(Runner.class) à chaque suite de test.
+ * Entry point to launch Fsion test. This runner must be use with the JUnit RunWith annotation.
  * @author Scandinave
  * @see org.junit.runner.RunWith
  */
@@ -37,7 +37,7 @@ public class Runner extends Cucumber {
     }
 
     private final static Log LOGGER = LogFactory.getLog(Runner.class);
-    private static final String TATAMI_WORKER = "tatami.worker";
+    private static final String FUSION_WORKER = "fusion.worker";
 
     /*
      * (non-Javadoc)
@@ -73,44 +73,28 @@ public class Runner extends Cucumber {
     }
 
     /**
-     * Méthode getWorker.
-     * @return
+     * Return the project worker.
+     * @return the project worker.
      * @throws ConfigurationException
      */
-    private IWorker getWorker() throws FusionException {
+    private IWorker getWorker() throws FusionException, ConfigurationException {
         Class<?> clazz;
         try {
-            clazz = getTatamiWorker();
-        } catch (ConfigurationException e) {
-            throw new FusionException(e);
-        }
+            clazz = Class.forName(PropsUtils.getProperties().getProperty(FUSION_WORKER));
+        } catch (ClassNotFoundException e) {
+        	throw new ConfigurationException("Problème de configuration pour " + FUSION_WORKER, e);
+		} catch (UtilitaireException e) {
+			throw new FusionException(e);
+		}
 
         IWorker worker = getInstance(clazz);
         return worker;
     }
 
     /**
-     * Méthode getTatamiWorker.
-     * @return
-     * @throws ConfigurationException
-     * @throws FusionException
-     */
-    private Class<?> getTatamiWorker() throws ConfigurationException, FusionException {
-        Class<?> tatamiWorker = null;
-        try {
-            tatamiWorker = Class.forName(PropsUtils.getProperties().getProperty(TATAMI_WORKER));
-        } catch (ClassNotFoundException e) {
-            throw new ConfigurationException("Problème de configuration pour " + TATAMI_WORKER, e);
-        } catch (UtilitaireException e) {
-            throw new FusionException(e);
-        }
-        return tatamiWorker;
-    }
-
-    /**
-     * Méthode getConstructeur.
-     * @param clazz
-     * @return
+     * Return the class constructor
+     * @param clazz The class from which get the constructor
+     * @return the class constructor
      * @throws FusionException
      */
     private Constructor<?> getConstructeur(Class<?> clazz) throws FusionException {
@@ -126,9 +110,9 @@ public class Runner extends Cucumber {
     }
 
     /**
-     * Méthode getInstance.
-     * @param clazz
-     * @return
+     * Return the instance of singleton class.
+     * @param clazz The class from which get the instance
+     * @return the class instance.
      * @throws FusionException
      */
     private IWorker getInstance(Class<?> clazz) throws FusionException {

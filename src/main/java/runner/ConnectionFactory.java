@@ -22,17 +22,29 @@ import selenium.driver.IDriver;
 import utils.PropsUtils;
 
 /**
+ * Class that manage the selenium driver.
  * @author Nonorc
  */
 public class ConnectionFactory {
 
+	/**
+	 * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
+	 */
     public final static int INPLICITLY_WAIT = 1000;
+    /**
+     * Amount of time a page can take to load itself.
+     * @see org.openqa.selenium.WebDriver.Timeouts#pageLoadTimeout(long, TimeUnit)
+     */
     public final static int PAGELOAD_TIMEOUT = 30;
+    /**
+     * Amount of time a script can take to execute itself.
+     * @see org.openqa.selenium.WebDriver.Timeouts#setScriptTimeout(long, TimeUnit)
+     */
     public final static int SCRIPT_TIMEOUT = 10;
-    private final static String TATAMI_DRIVER = "tatami.driver";
+    private final static String FUSION_DRIVER = "fusion.driver";
 
     /**
-     * 
+     * Selenium Driver
      */
     private static IDriver driver;
 
@@ -42,9 +54,9 @@ public class ConnectionFactory {
     private ConnectionFactory() {}
 
     /**
-     * Méthode openDriver.
-     * @return
-     * @throws Exception
+     * Get the driver. If the driver is not open, open it.
+     * @return the selenium driver.
+     * @throws Exception that occur if the driver cannot be open.
      */
     public static IDriver getDriver() throws FusionException {
         if (driver == null) {
@@ -54,19 +66,19 @@ public class ConnectionFactory {
     }
 
     /**
-     * ² Méthode closeDriver.
+     * Close the driver.
      */
     public static void closeDriver() {
-        if (driver == null) {
-            return;
+        if (driver != null) {
+        	driver.close();
+        	driver.quit();
+        	driver = null;
         }
-        driver.close();
-        driver.quit();
-        driver = null;
     }
 
     /**
-     * Méthode takeScreenShot.
+     * Take screenshot of the application when a problem occurs during a test. 
+     * The screenshot is store to the path define by the capture.path property.
      * @param method
      */
     public static void takeScreenShot(FrameworkMethod method) {
@@ -87,20 +99,16 @@ public class ConnectionFactory {
     }
 
     /**
-     * Instancie le driver nécéssaire.
-     * @param remote Indique si le driver s'éxécute à distance
-     * @param url L'url du remoteDriver si nécessaire, null sinon
-     * @param profil
-     * @return IDriver Retourne l'instance du Driver.
-     * @throws FusionException
-     * @throws Exception
+     * Open the selenium driver.
+     * @return The newly created driver.
+     * @throws FusionException Exception that occurs if something goes wrong during the opening
      */
     @SuppressWarnings("unchecked")
     private static IDriver openDriver() throws FusionException {
         IDriver tatamiDriver = null;
         try {
             boolean remote = Boolean.valueOf((PropsUtils.getProperties().getProperty("browser.remote", "false")));
-            Class<IDriver> clazz = (Class<IDriver>) Class.forName(PropsUtils.getProperties().getProperty(TATAMI_DRIVER));
+            Class<IDriver> clazz = (Class<IDriver>) Class.forName(PropsUtils.getProperties().getProperty(FUSION_DRIVER));
             Constructor<IDriver> cons;
             if (remote) {
                 cons = clazz.getConstructor(URL.class, DesiredCapabilities.class);
@@ -127,7 +135,7 @@ public class ConnectionFactory {
             }
 
         } catch (ClassNotFoundException e) {
-            throw new FusionException(new ConfigurationException("Problème de configuration pour " + TATAMI_DRIVER, e));
+            throw new FusionException(new ConfigurationException("Problème de configuration pour " + FUSION_DRIVER, e));
         } catch (UtilitaireException e) {
             throw new FusionException(e);
         } catch (Exception e) {

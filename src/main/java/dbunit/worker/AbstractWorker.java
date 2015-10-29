@@ -33,7 +33,7 @@ import dbunit.Cleaner;
 import dbunit.Saver;
 import dbunit.bdd.TableBDD;
 import exception.ConfigurationException;
-import exception.RequeteException;
+import exception.RequestException;
 import exception.FusionException;
 import exception.UtilitaireException;
 import utils.PropsUtils;
@@ -481,15 +481,15 @@ public abstract class AbstractWorker implements IWorker {
             } catch (SQLException e) {
                 if (e instanceof BatchUpdateException) {
                     SQLException next = ((BatchUpdateException) e).getNextException();
-                    throw new FusionException(new RequeteException(next));
+                    throw new FusionException(new RequestException(next));
                 }
                 if (e instanceof SQLException) {
-                    throw new FusionException(new RequeteException(e));
+                    throw new FusionException(new RequestException(e));
                 }
                 throw new FusionException(e);
             } catch (DatabaseUnitException e) {
                 SQLException next = ((BatchUpdateException) e.getCause()).getNextException();
-                throw new FusionException(new RequeteException(next));
+                throw new FusionException(new RequestException(next));
             }
         }
     }
@@ -649,7 +649,7 @@ public abstract class AbstractWorker implements IWorker {
                 }
             }
         } catch (SQLException e) {
-            throw new FusionException(new RequeteException(e));
+            throw new FusionException(new RequestException(e));
         } catch (Exception e) {
             throw new FusionException(e);
         } finally {

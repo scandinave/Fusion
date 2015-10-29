@@ -4,12 +4,13 @@
 package exception;
 
 /**
+ * Exception that occur when a configuration problem is detected.
  * @author Nonorc
  */
 @SuppressWarnings("serial")
 public class ConfigurationException extends Exception {
 
-    private static String message = "Mauvaise configuration";
+    private static String message = "Bad configuration";
 
     /**
      * @param e

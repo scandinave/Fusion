@@ -4,6 +4,7 @@
 package exception;
 
 /**
+ * Exception that occur when a problem is detected by Fusion.
  * @author Scandinave
  */
 @SuppressWarnings("serial")

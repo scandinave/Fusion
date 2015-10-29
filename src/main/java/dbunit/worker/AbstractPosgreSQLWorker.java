@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import dbunit.bdd.SequenceBDD;
-import exception.RequeteException;
+import exception.RequestException;
 import exception.FusionException;
 
 /**
@@ -98,7 +98,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
             }
             statement.close();
         } catch (SQLException e) {
-            throw new FusionException(new RequeteException(e));
+            throw new FusionException(new RequestException(e));
         }
         return setSequences;
     }
@@ -115,7 +115,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
             statement.executeQuery();
             statement.close();
         } catch (SQLException e) {
-            throw new FusionException(new RequeteException(e));
+            throw new FusionException(new RequestException(e));
         }
     }
 }
