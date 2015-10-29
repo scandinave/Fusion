@@ -25,7 +25,8 @@ import exception.FusionException;
 import utils.FileUtil;
 
 /**
- * Sauvegarde la base de données de toutes ses données.
+ * Saves the data of the database in xml files. One file by datatable.
+ * Tables can be exclude from the generation.
  * @author Scandinave
  */
 public class Saver implements Serializable {
@@ -36,17 +37,29 @@ public class Saver implements Serializable {
     private static final long serialVersionUID = 142577290372523301L;
 
     /**
-     * Logger de la classe.
+     * Class logger.
      */
     private Log LOGGER = LogFactory.getLog(Saver.class);
 
+    /**
+     * Database connection.
+     */
     private IDatabaseConnection databaseConnect;
+    
+    /**
+     * Database worker.
+     */
     private AbstractWorker abstractWorker;
 
+    /**
+     * List of tables to save.
+     */
     private Set<TableBDD> tables;
 
     /**
-     * @param abstractWorker
+     * Default constructor.
+     * @param databaseConnect Database connection
+     * @param abstractWorker {@link AbstractWorker}  Database worker.
      */
     public Saver(IDatabaseConnection databaseConnect, AbstractWorker abstractWorker) {
         this.databaseConnect = databaseConnect;
@@ -54,7 +67,7 @@ public class Saver implements Serializable {
     }
 
     /**
-     * Méthode start.
+     * Starts the save operation.
      * @throws FusionException
      */
     public void start() throws FusionException {
@@ -66,14 +79,14 @@ public class Saver implements Serializable {
     }
 
     /**
-     * Supprime la sauvegarde précédente dans le répertoire xmlDirectorySave.
+     * Deletes all xml file that was used for the last save.
      */
     private void destruction() {
         FileUtil.cleanDirectories(abstractWorker.xmlDirectorySave);
     }
 
     /**
-     * Méthode construction.
+     * Writes the data into xml files.
      * @throws FusionException
      */
     private void construction() throws FusionException {
@@ -105,7 +118,7 @@ public class Saver implements Serializable {
     }
 
     /**
-     * Getter de tables.
+     * Returns the list of tables to save.
      * @return the tables
      */
     public Set<TableBDD> getTables() {
@@ -113,7 +126,7 @@ public class Saver implements Serializable {
     }
 
     /**
-     * Setter de tables.
+     * Changes the list of tables to save.
      * @param tables the tables to set
      */
     public void setTables(Set<TableBDD> tables) {

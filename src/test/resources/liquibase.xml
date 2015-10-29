@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
-	<liquibase.databaseChangelog dateexecuted="2015-10-25 15:19:45.23" author="bsta" description="sqlFile" id="883" liquibase="3.3.2"/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
+	<liquibase.databaseChangelog{dateexecuted=2015-10-25 15:19:45.23, author=bsta, description=sqlFile, id=883, liquibase=3.3.2}/>
 </dataset>

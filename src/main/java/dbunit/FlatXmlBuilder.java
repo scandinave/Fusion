@@ -17,7 +17,7 @@ import dbunit.xml.Row;
 import exception.FusionException;
 
 /**
- * Génère un fichier XML pour DBUnit
+ * Base class for xml generator. All generator should extend from this class.
  * @author Scandinave
  * @since 12/04/2014
  * @version 1.0
@@ -26,22 +26,27 @@ public abstract class FlatXmlBuilder {
 
     private long defaultID;
 
+    /**
+     * Path where the generated file will be stored.
+     */
     private String outputPath;
 
-    /** Liste des lignes représentant un tupple d'une table à ajouter. */
+    /** Represents a line in the xml file and a tuple in the table of the database */
     protected final List<Row> rows;
 
-    /** Ligne en cours de traitement. */
+    /** Processed row */
     private Row currentRow;
 
     /**
-     * Si false écrit le résultat de la génération dans un fichier xml. Si true l'écrit dans la console.
+     * If true write the generated result in console instead of a file. Default to false.
      */
     private boolean devMode = false;
 
     /**
-     * Génère une nouvel identifiant unique en se basant sur le defaultID. la méthode utilisée est defaultID + 1
-     * @return le nouvel identifiant généré
+     * Computes a new unique id that id equal to current id + 1.
+     * This method must be use instead of an arbitrary id to avoid collisions 
+     * and avoid to the next developers to search for the last created id into the generator.
+     * @return The new unique id.
      */
     protected Long newId() {
         this.defaultID++;
@@ -49,10 +54,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Génère une chaine de caractère aléatoire d'une longeur comprise dans un intervalle.
-     * @param start Taille minimale de la chaine.
-     * @param end Taille maximale de la chaine.
-     * @return La chaine de caractère aléatoire
+     * Generates a random string with a size comprised between start and end.
+     * @param start Minimal size of the string
+     * @param end Maximal size of the string
+     * @return The generated string.
      */
     protected String randomString(Integer start, Integer end) {
         String characters = "abcdefghijklmnopqrstuvwxyz";
@@ -66,9 +71,9 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Génère une chaine de caractère aléatoire d'une longeur fixe.
-     * @param length Taille de la chaine.
-     * @return La chaine de caractère aléatoire
+     * Generates a random string with a size comprised between 0 and end.
+     * @param length size of the string
+     * @return The generated string.
      */
     protected String randomString(Integer length) {
         String characters = "abcdefghijklmnopqrstuvwxyz";
@@ -81,10 +86,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Génère une date entre dans l'intervalle d'année spécifier.
-     * @param startYear L'année de départ de l'intervalle
-     * @param endYear l'année de fin de l'intervalle
-     * @return La date généré
+     * Generates a random date between to years.
+     * @param startYear The minimal year
+     * @param endYear The maximal year
+     * @return The generated date.
      */
     protected Date randomDate(Integer startYear, Integer endYear) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -102,10 +107,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Ajoute ou retire un jour à la date.
-     * @param date La date à modifier.
-     * @param value la valeur de l'incrément.
-     * @return La date modifiée.
+     * Adds or remove days to a date.
+     * @param date The date in which add the days
+     * @param value The number of days to add.
+     * @return The new date augmented with the number of mdays.
      */
     protected Date addDay(Date date, Integer value) {
         GregorianCalendar gc = new GregorianCalendar();
@@ -115,10 +120,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Ajoute ou retire un mois à la date.
-     * @param date La date à modifier.
-     * @param value la valeur de l'incrément.
-     * @return La date modifiée.
+     * Adds or remove months to a date.
+     * @param date The date in which add the months
+     * @param value The number of months to add.
+     * @return The new date augmented with the number of months.
      */
     protected Date addMonth(Date date, Integer value) {
         GregorianCalendar gc = new GregorianCalendar();
@@ -128,10 +133,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Ajoute ou retire un année à la date.
-     * @param date La date à modifier.
-     * @param value la valeur de l'incrément.
-     * @return La date modifiée.
+     * Adds or remove years to a date.
+     * @param date The date in which add the years
+     * @param value The number of years to add.
+     * @return The new date augmented with the number of years.
      */
     protected Date addYears(Date date, Integer value) {
         GregorianCalendar gc = new GregorianCalendar();
@@ -141,9 +146,9 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Retourne une date correctement formatée au format string
-     * @param date La date à formater.
-     * @return La date formatée.
+     * Returns the date format as string with the following format dd/MM/yyyy HH:mm:SS
+     * @param date Date to format.
+     * @return The formated date.
      */
     protected String formatDate(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:SS");
@@ -151,10 +156,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Génère un entier aléatoire
-     * @param start Le début de l'interval
-     * @param end la fin de l'interval
-     * @return L'entier aléatoire.
+     * Generates a random Integer with a size comprised between start and end.
+     * @param start Minimal size of the Integer
+     * @param end Maximal size of the Integer
+     * @return The generated Integer.
      */
     protected Integer randomInt(Integer start, Integer end) {
         return ThreadLocalRandom.current().nextInt(start, end);
@@ -162,11 +167,11 @@ public abstract class FlatXmlBuilder {
 
     /**
      * <p>
-     * Génère une adresse aléatoire.
+     * Generate a random address.
      * </p>
      * <ul>
-     * <li>Le numéro de la rue sera compris entre 0 et 100.</li>
-     * <li>Le type sera choisi au hasard parmis les suivants : {"Rue", "Allée", "Impasse", "Avenue", "Boulevard", "Chemin", "Route", "Place"}</li>
+     * <li>Address number will be between 0 and 100</li>
+     * <li>Type will be choose randomly inside : {"Rue", "Allée", "Impasse", "Avenue", "Boulevard", "Chemin", "Route", "Place"}</li>
      * <li>Le nom de la rue sera choisi au hasard parmis les suivants {"du général De Gaulle", "du Maréchal Foch", "Clémenceau", "Alphonse Daudet", "Picasso",
      * "des lilas", "Henri de Monterlan", "de l'Eglise", "de la mairie", "du stade","Pasteur", "Victor-Hugo"}</li>
      * <li>Le code postal sera compris entre 0 et 98000</li>
@@ -189,12 +194,12 @@ public abstract class FlatXmlBuilder {
 
     }
 
-    /**
-     * Génère un fichier de donnée en XML
-     * @param devMode Si false écrit le résultat de la génération dans un fichier xml. Si true l'écrit dans la console.
-     * @param defaultStartId Identifiant de base pour la génération automatique d'identifiant unique. Indiquer un grand nombre différent par générateur ( ex :
-     *        1000000, 20000000) permet d'éviter les collions en base de donnée.
-     */
+   /**
+    * Default Constructor
+    * @param outputPath Path where the generated file will be stored.
+    * @param devMode If true write the generated result in console instead of a file. Default to false.
+    * @param defaultStartId Number from where to start the id generation.
+    */
     public FlatXmlBuilder(String outputPath, boolean devMode, long defaultStartId) {
         super();
         this.outputPath = outputPath;
@@ -204,19 +209,19 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Ajoute la Row à la liste des rows à ajouter au fichier xml
-     * @param currentRow La row à ajouter
+     * Adds the row to the list of row that will be generated into the xml file.
+     * @param currentRow The row to add.
      */
-    public void add(Row currentRow) {
+    protected void add(Row currentRow) {
         this.currentRow = currentRow;
         this.add();
     }
 
     /**
-     * Démarre la génération du fichier xml.
+     * Start the xml file generation.
      * @throws FusionException
      */
-    public void start() throws FusionException {
+    protected void start() throws FusionException {
         try {
             File outputFile = new File(outputPath);
             if (outputFile.exists()) {
@@ -238,61 +243,51 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Permet de créer une nouvelle ligne.
-     * @param row {@link Row}
-     * @return
+     * Creates a new row.
+     * @param row {@link String} Name of the table in which the row will be add.
+     * @return FlatXmlBuilder The generator.
      */
-    public FlatXmlBuilder newRow(Row row) {
-        this.currentRow = row;
-        return this;
-    }
-
-    /**
-     * Permet de créer une nouvelle ligne.
-     * @param row {@link String} le nom de la table sur laquel ajouter la row.
-     * @return FlatXmlBuilder L'object FlatXmlBuilder pour chainage.
-     */
-    public FlatXmlBuilder newRow(String row) {
+    protected FlatXmlBuilder newRow(String row) {
         this.currentRow = new Row(row);
         return this;
     }
 
     /**
-     * Ajoute une valeur pour une colonne.
-     * @param columnName {@link String} Le nom de la colonne
-     * @param value {@link Object} La valeur de la colonne
-     * @return FlatXmlBuilder L'object FlatXmlBuilder pour chainage.
+     * Adds value to the row.
+     * @param columnName {@link String} The name of the column
+     * @param value {@link Object} The value of the column
+     * @return FlatXmlBuilder The generator.
      */
-    public FlatXmlBuilder with(String columnName, Object value) {
-        this.currentRow.putColumnRow(columnName, value);
+    protected FlatXmlBuilder with(String columnName, Object value) {
+        this.currentRow.putValues(columnName, value);
         return this;
     }
 
     /**
-     * Méthode utilitaire équivalente à with("id", this.newId());
-     * @return {@link FlatXmlBuilder}
+     * Shorcut methode of  with("id", this.newId());
+     * @return {@link FlatXmlBuilder} The generator
      */
-    public FlatXmlBuilder withNewId() {
+    protected FlatXmlBuilder withNewId() {
         return this.with("id", this.newId());
     }
 
     /**
-     * Valide la création d'un ligne(row) en base de donnée. Cette méthode est à appeler obligatoirement pour générer une ligne.
+     * Triggers the write into the xml file.
      */
     public void add() {
         this.rows.add(this.currentRow);
     }
 
     /**
-     * Permet d'ajouter des données pour alimenter les lignes.
+     * Represents the data that will be add to the xml file.
      * @throws IOException
      * @throws FileNotFoundException
      */
-    public abstract void addData() throws FileNotFoundException, IOException;
+    protected abstract void addData() throws FileNotFoundException, IOException;
 
     /**
-     * Permet l'écriture des lignes dans un flux.
-     * @param out {@link OutputStream}
+     * Writes data into an outputStream.
+     * @param out {@link OutputStream} Target OutputStream.
      * @throws IOException
      */
     protected void write(OutputStream out) throws IOException {
@@ -315,8 +310,10 @@ public abstract class FlatXmlBuilder {
     }
 
     /**
-     * Permet l'écriture des lignes dans un flux.
-     * @param out {@link OutputStream}
+     * Writes data into a file.
+     * @param fw The fileWriter used to write the data.
+     * @param debut If true generates header for the xml file.
+     * @param fin If true generates footer for the xml file.
      * @throws IOException
      */
     protected void write(FileWriter fw, boolean debut, boolean fin)

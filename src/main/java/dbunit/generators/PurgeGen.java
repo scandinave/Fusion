@@ -61,7 +61,7 @@ public class PurgeGen extends FlatXmlBuilder {
     	Iterator<TableBDD> it = setTables.iterator();
         while (it.hasNext()) {
             TableBDD tableBDD = (TableBDD) it.next();
-            this.newRow(tableBDD.getRowXML()).add();
+            this.add(tableBDD.getRowXML());
         }
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-	<public.autorization/>
-	<public.profil/>
-	<public.common/>
-	<public.organisation/>
-	<public.adress/>
-	<public.user/>
+	<public.common{}/>
+	<public.adress{}/>
+	<public.organisation{}/>
+	<public.autorization{}/>
+	<public.profil{}/>
+	<public.user{}/>
 </dataset>

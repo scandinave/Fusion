@@ -3,7 +3,9 @@ package dbunit;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.dbunit.database.IDatabaseConnection;
@@ -19,7 +21,6 @@ import dbunit.bdd.TableBDD;
 import dbunit.generators.LiquibaseGen;
 import dbunit.generators.PurgeGen;
 import dbunit.worker.AbstractPosgreSQLWorker;
-import dbunit.xml.Columns;
 import dbunit.xml.Row;
 import exception.FusionException;
 
@@ -48,7 +49,7 @@ public class CleanerTest {
 	public void liquibaseGen() {
 		System.out.println("toto");
 		Set<RowLiquibaseDatabasechangelogBDD> rows = new HashSet<RowLiquibaseDatabasechangelogBDD>();
-		Columns attributs = new Columns();
+		Map<String, Object> attributs = new HashMap<String, Object>();
 		attributs.put("id", "883");
 		attributs.put("author", "bsta");
 		attributs.put("liquibase", "3.3.2");

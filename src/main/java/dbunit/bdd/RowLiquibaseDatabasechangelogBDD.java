@@ -3,7 +3,8 @@
  */
 package dbunit.bdd;
 
-import dbunit.xml.Columns;
+import java.util.Map;
+
 import dbunit.xml.Row;
 
 /**
@@ -20,7 +21,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
     /**
      * List of Liquibase fields and values.
      */
-    private Columns attributs;
+    private Map<String, Object> attributs;
 
     /**
      * Returns the Liquibase table name.
@@ -42,7 +43,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
      * @param tableBDD The name of Liquibase table
      * @param attributs The list of of Liquibase fields and values.
      */
-    public RowLiquibaseDatabasechangelogBDD(TableBDD tableBDD, Columns attributs) {
+    public RowLiquibaseDatabasechangelogBDD(TableBDD tableBDD, Map<String, Object> attributs) {
         super();
         this.tableBDD = tableBDD;
         this.attributs = attributs;
@@ -52,7 +53,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
      * Returns the Liquibase fields and values for one row in dataTable.
      * @return the attributs
      */
-    public Columns getAttributs() {
+    public Map<String, Object> getAttributs() {
         return attributs;
     }
 
@@ -60,7 +61,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
      * Changes the Liquibase list fields and values for one row in datatable.
      * @param attributs the attributs to set
      */
-    public void setAttributs(Columns attributs) {
+    public void setAttributs(Map<String, Object> attributs) {
         this.attributs = attributs;
     }
 
@@ -79,7 +80,7 @@ public class RowLiquibaseDatabasechangelogBDD implements IRowBDD, Comparable<Row
      */
     @Override
     public int compareTo(RowLiquibaseDatabasechangelogBDD o) {
-        return attributs.getColumns().get(ELEMENT_COMPARAISON).toString().compareTo(
-            o.getAttributs().getColumns().get(ELEMENT_COMPARAISON).toString());
+        return attributs.get(ELEMENT_COMPARAISON).toString().compareTo(
+            o.getAttributs().get(ELEMENT_COMPARAISON).toString());
     }
 }

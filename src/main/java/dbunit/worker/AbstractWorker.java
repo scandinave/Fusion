@@ -39,8 +39,9 @@ import exception.UtilitaireException;
 import utils.PropsUtils;
 
 /**
- * Un worker est la classe permettant l'accès et la manipulation des données d'une base de donnée. Toute classe héritant de cette classe doit impérativement
- * implémenter le pattern singleton avec une méthode getInstance();
+ * Abstract base class that implements behavior common to all workers. 
+ * Every workers implementation must extend this class.
+ * All worker implementation must implement the singleton pattern.
  * @author Scandinave
  */
 public abstract class AbstractWorker implements IWorker {
@@ -52,7 +53,7 @@ public abstract class AbstractWorker implements IWorker {
     protected IDatabaseConnection databaseConnect;
 
     /**
-     * Permet de reférencer tous les paramètres applicables pour l'insertion de données.
+     * Element that need to be replaced in xml before the loading into database.
      */
     protected Map<String, Object> replacementObjects;
 
@@ -161,7 +162,7 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode initProperties.
+     * Initializes Fusion properties with the fusion.properties file.
      * @throws FusionException
      */
     private void initOptions() throws ConfigurationException {
@@ -220,7 +221,7 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode initConnexion.
+     * Initializes the database connection.
      * @throws ConfigurationException
      */
     private void initConnexion() throws ConfigurationException {
@@ -421,10 +422,9 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode recursive.
-     * @param file
-     * @param hasParameters
-     * @param operation
+     * Loads recursively all file into a specific folder.
+     * @param file File or folder to load
+     * @param operation Database operation to execute.
      * @throws FusionException
      */
     private void recursive(File file, DatabaseOperation operation) throws FusionException {
@@ -442,9 +442,9 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode dataOperation.
-     * @param file
-     * @param operation
+     * Execute database operation with a file.
+     * @param file File to process.
+     * @param operation Database operation to execute.
      * @throws FusionException
      */
     private void dataOperation(File file, DatabaseOperation operation) throws FusionException {
@@ -495,7 +495,8 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Permet de créer un dataSet pouvant parser un fichier xml.
+     * Returns a dataset to parse the target file.
+     * @param file File to parse.
      * @return {@link IDataSet}
      * @throws FusionException
      */
@@ -515,8 +516,7 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Permet de créer un dataSet pouvant parser un fichier xml. Va permettre de remplacer des expressions présentes dans ce fichier pour leurs attribuer des
-     * valeurs.
+     * Returns a dataset to parse the target file.
      * @return {@link IDataSet}
      * @throws FusionException
      */
@@ -549,17 +549,20 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode initBddForServer.
+     * Insert data that are required by the server to start.
      * @throws Exception
      */
+    //TODO Should be remove.
     private void initBddForServer() throws FusionException {
         LOGGER.info("Insertion des données nécessaires pour le démarrage du l'application");
         load(xmlFileInit);
     }
 
     /**
-     * Méthode getTables. Pour les autree type passez par la méthode getTablesParType.
-     * @return
+     * Returns all table with type Table.
+     * Other type are "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS",
+     * "SYNONYM"
+     * @return List of table with type Table.
      * @throws FusionException
      */
     public Set<TableBDD> getAllTablesTypeTable() throws FusionException {
@@ -568,8 +571,11 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode getTables. Pour les autree type passez par la méthode getTablesParType.
-     * @return
+     * Returns all table with target type.
+     * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS",
+     * "SYNONYM"
+     * @param types Filter return table by type.
+     * @return List of table with target type.
      * @throws FusionException
      */
     public Set<TableBDD> getTablesParType(String[] types) throws FusionException {
@@ -577,8 +583,12 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode getTables.
-     * @return
+     * Returns all table with type table. Can be filter by schema or specific table.
+     * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS",
+     * "SYNONYM"
+     * @param schemaExclusions Remove schema from the result.
+     * @param tablesExclusions Remove table from the result.
+     * @return List of table with type table.
      * @throws FusionException
      */
     public Set<TableBDD> getTablesTypeTableWithExclusions(String[] schemaExclusions, String[] tablesExclusions) throws FusionException {
@@ -587,11 +597,15 @@ public abstract class AbstractWorker implements IWorker {
     }
 
     /**
-     * Méthode getTablesParType.
-     * @param types : TABLE_TYPE String => table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS",
-     *        "SYNONYM".
+     * Returns all table with target type. Can be filter by schema or specific table.
+     * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS",
+     * "SYNONYM"
+     * @param schemaExclusions Remove schema from the result.
+     * @param tablesExclusions Remove table from the result.
+     * @return List of table with target type.
      * @throws FusionException
      */
+    //TODO verifier que l'implémentation n'est pas scécifique à PostgreSQL. Sinon adapter la méthode ou la déplacer dans le worker de postgresql
     public Set<TableBDD> getTablesParTypeWithExclusions(String[] types, String[] schemaExclusions, String[] tablesExclusions) throws FusionException {
         TableBDD tableBDD;
         String nomTable;
