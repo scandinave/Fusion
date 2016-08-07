@@ -4,189 +4,147 @@
 package dbunit;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Statement;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.operation.DatabaseOperation;
 
-import dbunit.bdd.RowLiquibaseDatabasechangelogBDD;
 import dbunit.bdd.TableBDD;
-import dbunit.generators.LiquibaseGen;
-import dbunit.generators.PurgeGen;
 import dbunit.worker.AbstractWorker;
-import exception.RequestException;
 import exception.FusionException;
+import exception.RequestException;
+import utils.Worker;
 
 /**
- * Cleans all data from a database. This process don't alter the database structure.
+ * Cleans all data from a database. This process don't alter the database
+ * structure.
+ * 
  * @author Scandinave
  */
+@Named
+@ApplicationScoped
 public class Cleaner implements Serializable {
 
-    /**
-     * serialVersionUID long.
-     */
-    private static final long serialVersionUID = 142577290372523301L;
+	/**
+	 * serialVersionUID long.
+	 */
+	private static final long serialVersionUID = 142577290372523301L;
 
-    /**
-     * Logger de la classe.
-     */
-    private Log LOGGER = LogFactory.getLog(Cleaner.class);
-    /**
-     * Connection to the database.
-     */
-    private IDatabaseConnection databaseConnect;
-    /**
-     * Application worker.
-     */
-    private AbstractWorker abstractWorker;
-    /**
-     * If true a Liquibase update will be performed.
-     */
-    private boolean avecLiquibase;
+	@Inject
+	private Logger LOGGER;
+	@Inject
+	private IDatabaseConnection databaseConnect;
+	@Inject
+	@Worker
+	private AbstractWorker abstractWorker;
 
-    /**
-     * List of table to process.
-     */
-    private Set<TableBDD> tables;
+	private static final String COMMAND_SQL = "TRUNCATE ";
+	private static final String SEPARATEUR_SQL = ", ";
+	private static final String END_COMMAND_SQL = " RESTART IDENTITY CASCADE";
 
-    /**
-     * Instantiates Cleaner.
-     * @param databaseConnect Connection to the database.
-     * @param abstractWorker Application worker.
-     * @param avecLiquibase If true a Liquibase update will be performed.
-     */
-    public Cleaner(IDatabaseConnection databaseConnect, AbstractWorker abstractWorker, boolean avecLiquibase) {
-        this.databaseConnect = databaseConnect;
-        this.abstractWorker = abstractWorker;
-        this.avecLiquibase = avecLiquibase;
-    }
+	private String[] exclusionSchemas;
+	private String[] exclusionTables;
 
-    /**
-     * Starts the clean process.
-     * @throws FusionException
-     */
-    public void start() throws FusionException {
-        construction();
-        execution();
-    }
+	/**
+	 * List of table to process.
+	 */
+	private Set<TableBDD> tables;
 
-    /**
-     * Executes the clean process.
-     * @param avecLiquibase
-     * @throws FusionException
-     */
-    public void execution() throws FusionException {
-        abstractWorker.load(abstractWorker.xmlFilePurge, DatabaseOperation.DELETE_ALL);
+	/**
+	 * Starts the clean process.
+	 * 
+	 * @throws FusionException
+	 */
+	public void start(String[] exclusionSchemas, String[] exclusionTables) throws FusionException {
+		this.exclusionSchemas = exclusionSchemas;
+		this.exclusionTables = exclusionTables;
+		tables = abstractWorker.getTablesTypeTableWithExclusions(exclusionSchemas, exclusionTables);
+		execution();
+	}
 
-        LOGGER.info("Mise à jour des séquences à 1");
-        abstractWorker.cleanSequence();
+	/**
+	 * Executes the clean process.
+	 * 
+	 * @param withLiquibase
+	 * @throws FusionException
+	 */
+	public void execution() throws FusionException {
+		abstractWorker.cleanSequence();
+		emptyBase();
+	}
 
-        if (avecLiquibase) {
-            LOGGER.info("Insertion données liquibase");
-            abstractWorker.load(abstractWorker.xmlFileLiquibase, DatabaseOperation.INSERT);
-        }
-    }
+	private void emptyBase() throws FusionException {
+		LOGGER.fine("purging the database");
 
-    /**
-     * Builds the files that are necessary to the clean process.
-     * @throws FusionException
-     */
-    private void construction() throws FusionException {
-        if (avecLiquibase) {
-            LOGGER.debug("Construction du fichier flatXmlDataSet liquibase dans le cas où liquibase est lancé en même temps que le serveur");
-            LiquibaseGen liquibaseGen = new LiquibaseGen(abstractWorker.xmlFileLiquibase, false, 0);
-            liquibaseGen.setSetRowsLiquibaseDatabasechangelog(getRowsLiquibaseDatabasechangelog());
-            liquibaseGen.start();
-        }
-        LOGGER.debug("Construction du fichier flatXmlDataSet de purge (le remplace le cas échéant)");
+		int i = 1;
+		String table;
+		boolean mustBeEmpty = true;
+		StringBuilder sql = new StringBuilder();
+		sql.append(COMMAND_SQL);
+		for (TableBDD tableBDD : tables) {
+			mustBeEmpty = true;
+			table = tableBDD.getSchemaName() + "." + tableBDD.getTableName();
+			if (exclusionSchemas != null) {
+				for (int j = 0; j < exclusionSchemas.length; j++) {
+					String schema = exclusionSchemas[j];
+					if (schema.equals(tableBDD.getSchemaName())) {
+						mustBeEmpty = false;
+					}
+				}
+			}
 
-        tables = abstractWorker.getAllTablesTypeTable();
+			if (exclusionTables != null) {
+				for (int j = 0; j < exclusionTables.length; j++) {
+					String schemaDotTable = exclusionTables[j];
+					if (schemaDotTable.equals(table)) {
+						mustBeEmpty = false;
+					}
+				}
+			}
 
-        PurgeGen purgeGen = new PurgeGen(abstractWorker.xmlFilePurge, false, 0);
-        purgeGen.setSetTables(tables);
-        purgeGen.start();
-    }
+			if (mustBeEmpty) {
+				sql.append(table);
+				if (i < tables.size()) {
+					sql.append(SEPARATEUR_SQL);
+				}
+			}
+			i++;
+		}
+		String lastTwoChar = sql.substring(sql.length() - 2);
+		if (SEPARATEUR_SQL.equals(lastTwoChar)) {
+			sql.delete(sql.length() - 2, sql.length());
+		}
+		sql.append(END_COMMAND_SQL);
+		try (Statement statement = databaseConnect.getConnection().createStatement()) {
+			statement.executeUpdate(sql.toString());
+		} catch (SQLException e) {
+			throw new FusionException(new RequestException(e));
+		}
+	}
 
-    /**
-     * Returns the list of row from the liquibase table.
-     * @return The list of row from the liquibase table.
-     * @throws FusionException
-     */
-    private Set<RowLiquibaseDatabasechangelogBDD> getRowsLiquibaseDatabasechangelog() throws FusionException {
-        RowLiquibaseDatabasechangelogBDD attribut = null;
-        Set<RowLiquibaseDatabasechangelogBDD> attributs = new TreeSet<RowLiquibaseDatabasechangelogBDD>();
-        TableBDD databasechangelog = new TableBDD(abstractWorker.liquibaseSchemaName, abstractWorker.liquibaseDatabasechangelogName);
-        Map<String, Object> colonnes = new HashMap<String, Object>();
-        try {
-            String sql = "SELECT * "
-                + "FROM " + databasechangelog.getNomSchema() + "." + databasechangelog.getNomTable();
+	/**
+	 * Returns the list of table to process.
+	 * 
+	 * @return the tables
+	 */
+	public Set<TableBDD> getTables() {
+		return tables;
+	}
 
-            PreparedStatement statement = databaseConnect.getConnection().prepareStatement(sql);
-
-            ResultSet resultSet = statement.executeQuery();
-            String name;
-            Object value;
-            while (resultSet.next()) {
-                int columnCount = resultSet.getMetaData().getColumnCount();
-                colonnes = new HashMap<String, Object>();
-                for (int i = 0; i < columnCount; i++) {
-                    name = resultSet.getMetaData().getColumnName(i + 1);
-                    value = resultSet.getObject(i + 1);
-                    if (value != null && !value.equals("")) {
-                        colonnes.put(name, value);
-                    }
-                    attribut = new RowLiquibaseDatabasechangelogBDD(databasechangelog, colonnes);
-                }
-                attributs.add(attribut);
-            }
-
-            resultSet.close();
-            statement.close();
-        } catch (SQLException e) {
-            throw new FusionException(new RequestException(e));
-        }
-        return attributs;
-    }
-
-    /**
-     * Returns true if liquibase is enabled on the datatable. false otherwise.
-     * @return true if liquibase is enabled on the datatable. false otherwise.
-     */
-    public boolean isAvecLiquibase() {
-        return avecLiquibase;
-    }
-
-    /**
-     * True to enable liquibase support. False to disable it.
-     * @param avecLiquibase the avecLiquibase to set
-     */
-    public void setAvecLiquibase(boolean avecLiquibase) {
-        this.avecLiquibase = avecLiquibase;
-    }
-
-    /**
-     * Returns the list of table to process.
-     * @return the tables
-     */
-    public Set<TableBDD> getTables() {
-        return tables;
-    }
-
-    /**
-     * Changes the list of table to process.
-     * @param tables the tables to set
-     */
-    public void setTables(Set<TableBDD> tables) {
-        this.tables = tables;
-    }
+	/**
+	 * Changes the list of table to process.
+	 * 
+	 * @param tables
+	 *            the tables to set
+	 */
+	public void setTables(Set<TableBDD> tables) {
+		this.tables = tables;
+	}
 
 }

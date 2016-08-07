@@ -10,95 +10,104 @@ import dbunit.xml.Row;
  */
 public class TableBDD implements IRowBDD, Comparable<TableBDD> {
 
-    private String nomSchema;
-    private String nomTable;
-    private Integer ordreDeSuppression = 0;
+	private String schemaName;
+	private String tableName;
+	private Integer deleteOrder = 0;
+	private String primaryKey;
 
-    /**
-     * @param nomSchema
-     * @param nomTable
-     */
-    public TableBDD(String nomSchema, String nomTable) {
-        super();
-        this.nomSchema = nomSchema;
-        this.nomTable = nomTable;
-    }
+	/**
+	 * @param schemaName
+	 * @param tableName
+	 */
+	public TableBDD(String schemaName, String tableName) {
+		super();
+		this.schemaName = schemaName;
+		this.tableName = tableName;
+	}
 
-    /**
-     * Getter de nomSchema.
-     * @return the nomSchema
-     */
-    public String getNomSchema() {
-        return nomSchema;
-    }
+	/**
+	 * Getter de nomSchema.
+	 * 
+	 * @return the nomSchema
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
 
-    /**
-     * Setter de nomSchema.
-     * @param nomSchema the nomSchema to set
-     */
-    public void setNomSchema(String nomSchema) {
-        this.nomSchema = nomSchema;
-    }
+	/**
+	 * Setter de nomSchema.
+	 * 
+	 * @param nomSchema
+	 *            the nomSchema to set
+	 */
+	public void setSchemaName(String nomSchema) {
+		this.schemaName = nomSchema;
+	}
 
-    /**
-     * Getter de nomTable.
-     * @return the nomTable
-     */
-    public String getNomTable() {
-        return nomTable;
-    }
+	/**
+	 * Getter de nomTable.
+	 * 
+	 * @return the nomTable
+	 */
+	public String getTableName() {
+		return tableName;
+	}
 
-    /**
-     * Setter de nomTable.
-     * @param nomTable the nomTable to set
-     */
-    public void setNomTable(String nomTable) {
-        this.nomTable = nomTable;
-    }
+	/**
+	 * Setter de nomTable.
+	 * 
+	 * @param nomTable
+	 *            the nomTable to set
+	 */
+	public void setTableName(String nomTable) {
+		this.tableName = nomTable;
+	}
 
-    /**
-     * Getter de ordreDeSuppression.
-     * @return the ordreDeSuppression
-     */
-    public Integer getOrdreDeSuppression() {
-        return ordreDeSuppression;
-    }
+	public String getPrimaryKey() {
+		return primaryKey;
+	}
 
-    /**
-     * Setter de ordreDeSuppression.
-     * @param ordreDeSuppression the ordreDeSuppression to set
-     */
-    public void setOrdreDeSuppression(Integer ordreDeSuppression) {
-        this.ordreDeSuppression = ordreDeSuppression;
-    }
+	public void setPrimaryKey(String primaryKey) {
+		this.primaryKey = primaryKey;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return nomSchema + "." + nomTable;
-    }
+	/**
+	 * Getter de ordreDeSuppression.
+	 * 
+	 * @return the ordreDeSuppression
+	 */
+	public Integer getDeleteOrder() {
+		return deleteOrder;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see utils.dbUnit.bdd.RowBDD#getRowXML()
-     */
-    @Override
-    public Row getRowXML() {
-        return new Row(nomSchema + Constants.SEPARATOR + nomTable);
-    }
+	/**
+	 * Setter de ordreDeSuppression.
+	 * 
+	 * @param deleteOrder
+	 *            the ordreDeSuppression to set
+	 */
+	public void setDeleteOrder(Integer deleteOrder) {
+		this.deleteOrder = deleteOrder;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    @Override
-    public int compareTo(TableBDD o) {
-        if (ordreDeSuppression > 0 || o.getOrdreDeSuppression() > 0) {
-            return ordreDeSuppression.compareTo(o.getOrdreDeSuppression());
-        }
-        return getRowXML().toString().compareTo(o.getRowXML().toString());
-    }
+	/*
+	 * (non-Javadoc)
+	 * @see utils.dbUnit.bdd.RowBDD#getRowXML()
+	 */
+	@Override
+	public Row getRowXML() {
+		return new Row(schemaName + Constants.SEPARATOR + tableName);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(TableBDD o) {
+		if (deleteOrder > 0 || o.getDeleteOrder() > 0) {
+			return deleteOrder.compareTo(o.getDeleteOrder());
+		}
+		return getRowXML().toString().compareTo(o.getRowXML().toString());
+	}
 }

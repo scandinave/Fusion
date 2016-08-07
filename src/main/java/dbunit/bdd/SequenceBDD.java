@@ -3,72 +3,95 @@
  */
 package dbunit.bdd;
 
-
 /**
  * @author Nonorc
  */
 public class SequenceBDD implements Comparable<SequenceBDD> {
 
-    private String nomSchema;
-    private String nomSequence;
+	private String schemaName;
+	private TableBDD tableBDD;
+	private String sequenceName;
 
-    /**
-     * @param nomSchema
-     * @param nomSequence
-     */
-    public SequenceBDD(String nomSchema, String nomSequence) {
-        super();
-        this.nomSchema = nomSchema;
-        this.nomSequence = nomSequence;
-    }
+	/**
+	 * @param schemaName
+	 * @param nomSequence
+	 */
+	public SequenceBDD(TableBDD tableBDD, String nomSequence) {
+		super();
+		this.tableBDD = tableBDD;
+		this.sequenceName = nomSequence;
+		this.schemaName = tableBDD.getSchemaName() + "." + nomSequence;
 
-    /**
-     * Getter de nomSchema.
-     * @return the nomSchema
-     */
-    public String getNomSchema() {
-        return nomSchema;
-    }
+	}
 
-    /**
-     * Setter de nomSchema.
-     * @param nomSchema the nomSchema to set
-     */
-    public void setNomSchema(String nomSchema) {
-        this.nomSchema = nomSchema;
-    }
+	/**
+	 * Getter de nomSchema.
+	 * 
+	 * @return the nomSchema
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
 
-    /**
-     * Getter de nomSequence.
-     * @return the nomSequence
-     */
-    public String getNomSequence() {
-        return nomSequence;
-    }
+	/**
+	 * Setter de nomSchema.
+	 * 
+	 * @param nomSchema
+	 *            the nomSchema to set
+	 */
+	public void setSchemaName(String nomSchema) {
+		this.schemaName = nomSchema;
+	}
 
-    /**
-     * Setter de nomSequence.
-     * @param nomSequence the nomSequence to set
-     */
-    public void setNomSequence(String nomSequence) {
-        this.nomSequence = nomSequence;
-    }
+	/**
+	 * Getter de nomSequence.
+	 * 
+	 * @return the nomSequence
+	 */
+	public String getSequenceName() {
+		return sequenceName;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "TableBDD [nomSchema=" + nomSchema + ", nomSequence=" + nomSequence + "]";
-    }
+	/**
+	 * Setter de nomSequence.
+	 * 
+	 * @param nomSequence
+	 *            the nomSequence to set
+	 */
+	public void setSequenceName(String nomSequence) {
+		this.sequenceName = nomSequence;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    @Override
-    public int compareTo(SequenceBDD o) {
-        return (getNomSchema() + getNomSequence()).compareTo(o.getNomSchema() + o.getNomSequence());
-    }
+	/**
+	 * Return the TableBDD object of the sequence
+	 * 
+	 * @return the TableBDD object of the sequence
+	 */
+	public TableBDD getTableBDD() {
+		return tableBDD;
+	}
+
+	/**
+	 * Update the TableBDD object of the sequence
+	 * 
+	 * @param tableBDD
+	 *            the TableBDD object of the sequence to update.
+	 */
+	public void setTableBDD(TableBDD tableBDD) {
+		this.tableBDD = tableBDD;
+	}
+
+	public String getSchemaNamePointSequenceName() {
+		return tableBDD.getSchemaName() + "." + sequenceName;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(SequenceBDD o) {
+		return (tableBDD.getSchemaName() + getSequenceName())
+				.compareTo(o.getTableBDD().getSchemaName() + o.getSequenceName());
+	}
 }

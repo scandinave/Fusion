@@ -1,13 +1,13 @@
 package cucumber;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.inject.Inject;
 
-import runner.ConnectionFactory;
-import exception.FusionException;
+
 import selenium.driver.IDriver;
+import utils.Driver;
 
 /**
  * Abstract class that provides commons variables and functions for tester implementations.
@@ -24,21 +24,12 @@ public abstract class AbstractTester implements Serializable {
      * This regex accept string in the form "string" or &#60string&#62 
      */
     protected static final String REGTEXT = "(?:\\<|\")([^\"]*)(?:\\>|\")"; 
-    protected final Log logger = LogFactory.getLog(this.getClass());
-    /**
-     * Driver instance use by the tester.
-     */
+    
+    @Inject
+    protected Logger logger;
+    
+    @Inject
+    @Driver
     protected IDriver driver;
-
-    /**
-     * @throws FusionException if the driver instantiation failed.
-     */
-    public AbstractTester() throws FusionException {
-        try {
-            driver = ConnectionFactory.getDriver();
-        } catch (Exception e) {
-            throw new FusionException("The driver instantiation failed");
-        }
-    }
 
 }
