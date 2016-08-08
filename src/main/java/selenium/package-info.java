@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author Scandinave
- *
- */
-package selenium;

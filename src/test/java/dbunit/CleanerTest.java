@@ -16,13 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import dbunit.bdd.RowLiquibaseDatabasechangelogBDD;
-import dbunit.bdd.TableBDD;
-import dbunit.generators.LiquibaseGen;
-import dbunit.generators.PurgeGen;
-import dbunit.worker.AbstractPosgreSQLWorker;
-import dbunit.xml.Row;
-import exception.FusionException;
+import info.scandi.fusion.dbunit.Cleaner;
+import info.scandi.fusion.dbunit.bdd.RowLiquibaseDatabasechangelogBDD;
+import info.scandi.fusion.dbunit.bdd.TableBDD;
+import info.scandi.fusion.dbunit.generators.LiquibaseGen;
+import info.scandi.fusion.dbunit.generators.PurgeGen;
+import info.scandi.fusion.dbunit.worker.AbstractPosgreSQLWorker;
+import info.scandi.fusion.dbunit.xml.Row;
+import info.scandi.fusion.exception.FusionException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CleanerTest {

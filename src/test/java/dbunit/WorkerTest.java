@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import dbunit.worker.AbstractWorker;
-import exception.FusionException;
+import info.scandi.fusion.dbunit.worker.AbstractWorker;
+import info.scandi.fusion.exception.FusionException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkerTest {
@@ -38,6 +38,5 @@ public class WorkerTest {
 	@Test
 	public void testFeatureInit() {
 		Mockito.when(worker.getFeature_path()).thenReturn("/src/test/resources/features/");
-		Mockito.when(worker.init()).thenCallRealMethod();
 	}
 }
