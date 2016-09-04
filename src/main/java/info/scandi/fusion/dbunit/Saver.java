@@ -75,7 +75,7 @@ public class Saver implements Serializable {
 	 * Deletes all xml file that was used for the last save.
 	 */
 	private void destruction() {
-		FileUtil.cleanDirectories(abstractWorker.xmlDirectorySave);
+		FileUtil.cleanDirectories(abstractWorker.getXmlDirectorySave());
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class Saver implements Serializable {
 			Set<TableBDD> setTables = getTables();
 			for (Iterator<TableBDD> iterator = setTables.iterator(); iterator.hasNext();) {
 				TableBDD tableBDD = iterator.next();
-				File file = new File(abstractWorker.xmlDirectorySave + "/" + tableBDD.getSchemaName() + "."
+				File file = new File(abstractWorker.getXmlDirectorySave() + "/" + tableBDD.getSchemaName() + "."
 						+ tableBDD.getTableName() + ".xml");
 				File parent = file.getParentFile();
 				if (!file.getParentFile().exists()) {

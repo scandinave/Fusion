@@ -73,7 +73,7 @@ public abstract class AbstractWorker implements IWorker {
 	/**
 	 * Liste des options.
 	 */
-	private final static String ROOT_PATH = "tatami.rootPath";
+	private final static String ROOT_PATH = "fusion.rootPath";
 
 	private final static String PROPERTY_AVEC_LIQUIBASE = "database.optionalAvecLiquibase";
 	private static final String PROPERTY_LIQUIBASE_SCHEMA_NAME = "database.optionalLiquibaseSchemaName";
@@ -85,7 +85,7 @@ public abstract class AbstractWorker implements IWorker {
 	private final static String PROPERTY_AVEC_SAUVEGARDE = "database.optionalAvecSauvegarde";
 	private final static String PROPERTY_XML_DIRECTORY_SAVE = "database.optionalXmlDirectorySave";
 
-	private final static String PROPERTY_REPLACE_EMPTY_DATABASE_VALUE = "tatami.emptyStringToNull";
+	private final static String PROPERTY_REPLACE_EMPTY_DATABASE_VALUE = "fusion.emptyStringToNull";
 
 	private String feature_path;
 
@@ -94,18 +94,18 @@ public abstract class AbstractWorker implements IWorker {
 	public static String DISTINCT_DIR;
 
 	public static String xmlFileInit;
-	public String xmlDirectorySave;
+	private String xmlDirectorySave;
 
-	public boolean withLiquibase = false;
+	private boolean withLiquibase = false;
 	protected boolean withInit = false;
 	protected boolean withSauvegarde = true;
 	public static boolean replaceEmptyDatabaseValue = false;
-	public String liquibaseSchemaName = "liquibase";
-	public String liquibaseDatabasechangelogName = "databasechangelog";
+	private String liquibaseSchemaName = "liquibase";
+	private String liquibaseDatabasechangelogName = "databasechangelog";
 	protected String[] exclusionSchemas;
 	protected String[] exclusionTables;
 
-	public Map<String, String> allScenarii = new HashMap<String, String>();
+	private Map<String, String> allScenarii = new HashMap<String, String>();
 
 	/**
 	 * @throws FusionException

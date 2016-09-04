@@ -10,14 +10,11 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.junit.Assert;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -40,16 +37,10 @@ import info.scandi.fusion.utils.PropsUtils;
  * 
  * @author Scandinave
  */
-@Named
-@ApplicationScoped
 public abstract class AbstractDriver extends RemoteWebDriver implements IDriver {
 
 	@Inject
 	protected Logger logger;
-
-	public AbstractDriver() {
-
-	}
 
 	@Inject
 	public AbstractDriver(@DriverExecutor CommandExecutor remoteAddress,
@@ -61,8 +52,6 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	@PostConstruct
 	public void init() {
 		// TODO make available at properties
-		Dimension targetSize = new Dimension(1920, 1080);
-		manage().window().setSize(targetSize);
 		manage().window().maximize();
 		manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS)
 				.pageLoadTimeout(Fusion.PAGELOAD_TIMEOUT, TimeUnit.MILLISECONDS)
@@ -73,7 +62,6 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	@PreDestroy
 	public void finish() {
-		this.close();
 		this.quit();
 	}
 
@@ -83,7 +71,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	 */
 	@Override
 	public void index() throws Exception {
-		this.get(PropsUtils.getProperties().getProperty("application.url"));
+		this.home();
 	}
 
 	/*
@@ -150,11 +138,12 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	 * @see selenium.driver.IDriver#accueil()
 	 */
 	@Override
-	public void accueil() {
+	public void home() {
 		try {
 			this.get(PropsUtils.getProperties().getProperty("application.url"));
 		} catch (Exception e) {
-			Assert.fail("Unable to access the application.url variable in the file fusion.properties");
+			Assert.fail(
+					"Unable to access the application.url variable in the file fusion.properties or unable to communite with the browser");
 		}
 
 	}
@@ -376,7 +365,8 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see tatami.selenium.driver.IDriver#hasClass(java.lang.String,
+	 * @see
+	 * info.scandi.fusion.selenium.driver.IDriver#hasClass(java.lang.String,
 	 * java.lang.String, int)
 	 */
 	@Override

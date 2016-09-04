@@ -88,9 +88,9 @@ public class Runner extends Cucumber {
 			throw new RuntimeException(e);
 		}
 		try {
-			LOGGER.info("Closing driver...");
+			LOGGER.info("Closing worker...");
 			worker.stop();
-			LOGGER.info("Driver closed");
+			LOGGER.info("Worker closed");
 		} catch (FusionException e) {
 			LOGGER.severe("Can't stop the worker");
 			LOGGER.fine(e.getMessage());

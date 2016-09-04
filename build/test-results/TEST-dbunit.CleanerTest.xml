@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dbunit.CleanerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2015-10-21T14:13:21" hostname="MacBook-Pro-de-Romain.local" time="0.435">
-  <properties/>
-  <testcase name="purgeGen" classname="dbunit.CleanerTest" time="0.381"/>
-  <testcase name="liquibaseGen" classname="dbunit.CleanerTest" time="0.054"/>
-  <system-out><![CDATA[toto
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

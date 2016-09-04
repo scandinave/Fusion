@@ -81,50 +81,52 @@ public class Cleaner implements Serializable {
 
 	private void emptyBase() throws FusionException {
 		LOGGER.fine("purging the database");
-
-		int i = 1;
-		String table;
-		boolean mustBeEmpty = true;
-		StringBuilder sql = new StringBuilder();
-		sql.append(COMMAND_SQL);
-		for (TableBDD tableBDD : tables) {
-			mustBeEmpty = true;
-			table = tableBDD.getSchemaName() + "." + tableBDD.getTableName();
-			if (exclusionSchemas != null) {
-				for (int j = 0; j < exclusionSchemas.length; j++) {
-					String schema = exclusionSchemas[j];
-					if (schema.equals(tableBDD.getSchemaName())) {
-						mustBeEmpty = false;
+		// Empty database only if table exist in this database
+		if (!tables.isEmpty()) {
+			int i = 1;
+			String table;
+			boolean mustBeEmpty = true;
+			StringBuilder sql = new StringBuilder();
+			sql.append(COMMAND_SQL);
+			for (TableBDD tableBDD : tables) {
+				mustBeEmpty = true;
+				table = tableBDD.getSchemaName() + "." + tableBDD.getTableName();
+				if (exclusionSchemas != null) {
+					for (int j = 0; j < exclusionSchemas.length; j++) {
+						String schema = exclusionSchemas[j];
+						if (schema.equals(tableBDD.getSchemaName())) {
+							mustBeEmpty = false;
+						}
 					}
 				}
-			}
 
-			if (exclusionTables != null) {
-				for (int j = 0; j < exclusionTables.length; j++) {
-					String schemaDotTable = exclusionTables[j];
-					if (schemaDotTable.equals(table)) {
-						mustBeEmpty = false;
+				if (exclusionTables != null) {
+					for (int j = 0; j < exclusionTables.length; j++) {
+						String schemaDotTable = exclusionTables[j];
+						if (schemaDotTable.equals(table)) {
+							mustBeEmpty = false;
+						}
 					}
 				}
-			}
 
-			if (mustBeEmpty) {
-				sql.append(table);
-				if (i < tables.size()) {
-					sql.append(SEPARATEUR_SQL);
+				if (mustBeEmpty) {
+					sql.append(table);
+					if (i < tables.size()) {
+						sql.append(SEPARATEUR_SQL);
+					}
 				}
+				i++;
 			}
-			i++;
-		}
-		String lastTwoChar = sql.substring(sql.length() - 2);
-		if (SEPARATEUR_SQL.equals(lastTwoChar)) {
-			sql.delete(sql.length() - 2, sql.length());
-		}
-		sql.append(END_COMMAND_SQL);
-		try (Statement statement = databaseConnect.getConnection().createStatement()) {
-			statement.executeUpdate(sql.toString());
-		} catch (SQLException e) {
-			throw new FusionException(new RequestException(e));
+			String lastTwoChar = sql.substring(sql.length() - 2);
+			if (SEPARATEUR_SQL.equals(lastTwoChar)) {
+				sql.delete(sql.length() - 2, sql.length());
+			}
+			sql.append(END_COMMAND_SQL);
+			try (Statement statement = databaseConnect.getConnection().createStatement()) {
+				statement.executeUpdate(sql.toString());
+			} catch (SQLException e) {
+				throw new FusionException(new RequestException(e));
+			}
 		}
 	}
 

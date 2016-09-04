@@ -85,7 +85,7 @@ public interface IDriver
 	/**
 	 * Permet de retourner à l'accueil de l'application.
 	 */
-	void accueil();
+	void home();
 
 	/**
 	 * Méthode utilitaire permettant de valider des tests qui se sont

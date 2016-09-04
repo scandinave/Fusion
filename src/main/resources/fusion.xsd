@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fusion.scandi.info"
+xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
+
+	<xsd:element name="liquibase">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="schemaName" type="xsd:token"/>
+				<xsd:element name="databaseChangelogName" type="xsd:token"/>
+			</xsd:all>
+			<xsd:attribute name="enabled" type="xsd:boolean"
+				default="false" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="backup">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="backupDirectory" type="xsd:token"/>
+			</xsd:all>
+			<xsd:attribute name="enabled" type="xsd:boolean"
+				default="false" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="database">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element ref="liquibase" />
+				<xsd:element name="driver" type="xsd:token"/>
+				<xsd:element name="url" type="xsd:token"/>
+				<xsd:element name="username" type="xsd:token"/>
+				<xsd:element name="password" type="xsd:token"/>
+				<xsd:element ref="backup"/>
+			</xsd:all>
+			<xsd:attribute name="connectionType" default="custom">
+				<xsd:simpleType>
+					<xsd:restriction>
+						<xsd:simpleType>
+							<xsd:list>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:token">
+										<xsd:enumeration value="custom" />
+										<xsd:enumeration value="env" />
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:list>
+						</xsd:simpleType>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element name="extension">
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:token" use="required"/>
+			<xsd:attribute name="path" type="xsd:anyURI" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="extensions">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="extension" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="enabled" type="xsd:boolean"
+				default="false" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="option">
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:token" use="required"/>
+			<xsd:attribute name="value" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="options">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="option" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="browser">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="extensions" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="binary" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="downloadDir" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="options" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="grid" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
+			<xsd:attribute name="enabled" type="xsd:boolean"
+				default="false" />
+			<xsd:attribute name="remote" type="xsd:boolean"
+				default="false" />
+			<xsd:attribute name="type" use="required">
+				<xsd:simpleType>
+					<xsd:restriction>
+						<xsd:simpleType>
+							<xsd:list>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:token">
+										<xsd:enumeration value="firefox" />
+										<xsd:enumeration value="safari" />
+										<xsd:enumeration value="edge" />
+										<xsd:enumeration value="ie" />
+										<xsd:enumeration value="opera" />
+										<xsd:enumeration value="chrome" />
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:list>
+						</xsd:simpleType>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="browsers">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="browser" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="common">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="appUrl" type="xsd:anyURI" />
+				<xsd:element name="rootPath" type="xsd:anyURI" />
+				<xsd:element name="logPath" type="xsd:anyURI" />
+				<xsd:element name="screenshotPath" type="xsd:anyURI" />
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="fusion">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element ref="database" />
+				<xsd:element ref="browsers" />
+				<xsd:element ref="common" />
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

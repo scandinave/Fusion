@@ -1,5 +1,7 @@
 package info.scandi.fusion.core;
 
+import javax.enterprise.util.AnnotationLiteral;
+
 import org.jboss.weld.environment.se.WeldContainer;
 
 import cucumber.api.java.ObjectFactory;
@@ -37,7 +39,8 @@ public class CucumberFactory implements ObjectFactory {
 
 	@Override
 	public <T> T getInstance(Class<T> type) {
-		return weld.instance().select(type).get();
+		return weld.instance().select(type, new AnnotationLiteral<info.scandi.fusion.utils.Tester>() {
+		}).get();
 	}
 
 }

@@ -3,13 +3,13 @@
  */
 package info.scandi.fusion.cucumber;
 
-import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import info.scandi.fusion.core.Runner;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.selenium.driver.IDriver;
+import info.scandi.fusion.utils.Driver;
 
 /**
  * Test générique valable pour l'ensemble des projets.
@@ -24,14 +24,9 @@ public class Tester extends AbstractTester implements ITester {
 	 */
 	private static final long serialVersionUID = -6581608978102622951L;
 
-	/**
-	 * @throws FusionException
-	 */
-	public Tester() throws FusionException {
-		super();
-		this.driver = Runner.lookup(IDriver.class, new AnnotationLiteral<info.scandi.fusion.utils.Driver>() {
-		});
-	}
+	@Inject
+	@Driver
+	private IDriver driver;
 
 	/*
 	 * (non-Javadoc)
@@ -40,7 +35,7 @@ public class Tester extends AbstractTester implements ITester {
 	@Override
 	@Given("^home$")
 	public void home() {
-		this.driver.accueil();
+		this.driver.home();
 	}
 
 	/*

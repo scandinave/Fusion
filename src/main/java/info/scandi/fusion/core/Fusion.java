@@ -13,17 +13,30 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.io.FileUtils;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.UtilitaireException;
@@ -40,7 +53,8 @@ import info.scandi.fusion.utils.PropsUtils;
 @ApplicationScoped
 @Named
 public class Fusion {
-	protected final static String ROOT_PATH = "tatami.rootPath";
+	protected final static String ROOT_PATH = "fusion.rootPath";
+	private static final String CONFIGURATION_FILE = "fusion.properties";
 	private final static String PROPERTY_CONNECTION_TYPE = "database.connectionType";
 	private final static String PROPERTY_DATABASE_ENV_URL = "database.envurl";
 	private final static String PROPERTY_DATABASE_ENV_DRIVER = "database.envdriver";
@@ -56,13 +70,13 @@ public class Fusion {
 	private static final String EXTENSION_WEBDEVELOPER = "extension.webdeveloper";
 	public static final String DOWNLOAD_DIR = "browser.download";
 
-	private final static String TATAMI_DRIVER = "tatami.driver";
 	private static final String BROWSER_REMOTE = "browser.remote";
+	private static final String BROWSER = "browser.type";
 	private static final String SELENIUM_GRID = "selenium.grid";
 
 	public final static int IMPLICITLY_WAIT = 1000;
 	public final static int EXPLICITLE_WAIT = 10;
-	public final static int PAGELOAD_TIMEOUT = 10;
+	public final static int PAGELOAD_TIMEOUT = 1000;
 	public final static int SCRIPT_TIMEOUT = 10;
 
 	private final static String TYPE_ENV = "env";
@@ -97,19 +111,59 @@ public class Fusion {
 		} else {
 			driver = openLocalDriver();
 		}
+		LOGGER.info("Driver Open");
 		return driver;
 	}
 
 	private CommandExecutor openLocalDriver() throws UtilitaireException {
+		LOGGER.info("Opening Driver...");
 		String browserPath = PropsUtils.getProperties().getProperty(SELENIUM_NAVIGATEUR).trim();
-		FirefoxDriver firefoxDriver;
-		if (browserPath.isEmpty()) {
-			firefoxDriver = new FirefoxDriver(getFireFoxProfile());
-		} else {
-			FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
-			firefoxDriver = new FirefoxDriver(binary, getFireFoxProfile());
+		RemoteWebDriver remoteDriver;
+		switch (PropsUtils.getProperties().getProperty(BROWSER)) {
+		case "firefox":
+			// System.setProperty("webdriver.gecko.driver",
+			// "/Users/Ninja/Documents/Developpement/Logiciel/geckodriver");
+			if (browserPath.isEmpty()) {
+				remoteDriver = new FirefoxDriver(getFireFoxProfile());
+			} else {
+				FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
+				remoteDriver = new FirefoxDriver(binary, getFireFoxProfile());
+			}
+			break;
+		case "safari":
+			remoteDriver = new SafariDriver(getSafariOptions());
+			break;
+		case "edge":
+			remoteDriver = new EdgeDriver(getEdgeOptions());
+			break;
+		case "ie":
+			remoteDriver = new InternetExplorerDriver();
+			break;
+		case "opera":
+			remoteDriver = new OperaDriver(getOperaOptions());
+			break;
+		case "chrome":
+			remoteDriver = new ChromeDriver(getChromeOptions(browserPath));
+			break;
+		// case "htmlUnit":
+		// remoteDriver = new HtmlUnitDriver(false);
+		// break;
+		// case "htmlUnitWithJs":
+		// remoteDriver = new HtmlUnitDriver(true);
+		// break;
+		// case "phantomjs":
+		// remoteDriver = new Phan
+		// break;
+		default:
+			if (browserPath.isEmpty()) {
+				remoteDriver = new FirefoxDriver(getFireFoxProfile());
+			} else {
+				FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
+				remoteDriver = new FirefoxDriver(binary, getFireFoxProfile());
+			}
+			break;
 		}
-		return firefoxDriver.getCommandExecutor();
+		return remoteDriver.getCommandExecutor();
 	}
 
 	private HttpCommandExecutor openRemoteDriver() throws UtilitaireException {
@@ -122,8 +176,41 @@ public class Fusion {
 
 	@Produces
 	@BrowserDesiredCapabilities
-	public DesiredCapabilities produceDesiredCapabilities() {
-		return DesiredCapabilities.firefox();
+	public DesiredCapabilities produceDesiredCapabilities() throws UtilitaireException {
+		DesiredCapabilities capabilities = null;
+		switch (PropsUtils.getProperties().getProperty(BROWSER)) {
+		case "firefox":
+			capabilities = DesiredCapabilities.firefox();
+			break;
+		case "safari":
+			capabilities = DesiredCapabilities.safari();
+			break;
+		case "edge":
+			capabilities = DesiredCapabilities.edge();
+			break;
+		case "ie":
+			capabilities = DesiredCapabilities.internetExplorer();
+			break;
+		case "opera":
+			capabilities = DesiredCapabilities.operaBlink();
+			break;
+		case "chrome":
+			capabilities = DesiredCapabilities.chrome();
+			break;
+		// case "htmlUnit":
+		// capabilities = DesiredCapabilities.htmlUnit();
+		// break;
+		// case "htmlUnitWithJs":
+		// capabilities = DesiredCapabilities.htmlUnitWithJs();
+		// break;
+		// case "phantomjs":
+		// capabilities = DesiredCapabilities.phantomjs();
+		// break;
+		default:
+			capabilities = DesiredCapabilities.firefox();
+			break;
+		}
+		return capabilities;
 	}
 
 	@Produces
@@ -173,6 +260,34 @@ public class Fusion {
 		}
 		// profile.setPreference("extensions.xpiState", "");
 		return profile;
+	}
+
+	/**
+	 * Defined option for the Safari Browser
+	 */
+	private SafariOptions getSafariOptions() {
+		SafariOptions options = new SafariOptions();
+		options.setUseCleanSession(true);
+		return options;
+	}
+
+	private EdgeOptions getEdgeOptions() {
+		EdgeOptions options = new EdgeOptions();
+		options.setPageLoadStrategy("normal");
+		return options;
+	}
+
+	private OperaOptions getOperaOptions() {
+		OperaOptions options = new OperaOptions();
+		return options;
+	}
+
+	private ChromeOptions getChromeOptions(String browserPath) {
+		ChromeOptions options = new ChromeOptions();
+		if (!browserPath.isEmpty()) {
+			options.setBinary(browserPath);
+		}
+		return options;
 	}
 
 	@Produces
@@ -265,6 +380,26 @@ public class Fusion {
 			if (databasePassword == null) {
 				throw new ConfigurationException("La propriété database.password est manquante");
 			}
+		}
+	}
+
+	@Produces
+	@ApplicationScoped
+	public XMLConfiguration getConfiguration() throws ConfigurationException {
+		try {
+			Parameters params = new Parameters();
+			FileBasedConfigurationBuilder<XMLConfiguration> builder = new FileBasedConfigurationBuilder<XMLConfiguration>(
+					XMLConfiguration.class)
+							.configure(params.xml().setFileName(CONFIGURATION_FILE).setSchemaValidation(true));
+
+			// This will throw a ConfigurationException if the XML document does
+			// not
+			// conform to its Schema.
+			XMLConfiguration config = builder.getConfiguration();
+			return config;
+
+		} catch (org.apache.commons.configuration2.ex.ConfigurationException cex) {
+			throw new ConfigurationException(cex);
 		}
 	}
 }
