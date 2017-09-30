@@ -12,13 +12,14 @@ import javax.inject.Qualifier;
 
 /**
  * Defined a class as a Fusion Driver
+ * 
  * @author Scandinave
  *
  */
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.FIELD })
 @Named
 @ApplicationScoped
 @Stereotype

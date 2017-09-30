@@ -21,19 +21,10 @@ public class ConfigExtension implements Extension {
 	void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
 		Reflections reflections = new Reflections();
 		Set<Class<?>> types = reflections.getTypesAnnotatedWith(Tester.class);
-		try {
-			types.add(Class.forName("info.scandi.fusionTest.FusionExampleDriver"));
-			types.add(Class.forName("info.scandi.fusionTest.FusionExampleWorker"));
-			types.add(Class.forName("info.scandi.fusionTest.FusionExampleTester"));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		types.addAll(reflections.getTypesAnnotatedWith(Driver.class));
 		types.addAll(reflections.getTypesAnnotatedWith(Worker.class));
 		Set<Class<?>> removable = new HashSet<>();
 		types.forEach(type -> {
-			System.out.println(type);
 			if (type.getName().startsWith("info.scandi.fusion.")) {
 				removable.add(type);
 			}
