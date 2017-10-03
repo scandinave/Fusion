@@ -22,6 +22,7 @@ import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
+import info.scandi.fusion.core.ConfigurationManager;
 import info.scandi.fusion.dbunit.bdd.TableBDD;
 import info.scandi.fusion.dbunit.worker.AbstractWorker;
 import info.scandi.fusion.exception.FusionException;
@@ -53,6 +54,9 @@ public class Saver implements Serializable {
 	@Worker
 	private AbstractWorker abstractWorker;
 
+	@Inject
+	private ConfigurationManager conf;
+
 	/**
 	 * List of tables to save.
 	 */
@@ -75,7 +79,7 @@ public class Saver implements Serializable {
 	 * Deletes all xml file that was used for the last save.
 	 */
 	private void destruction() {
-		FileUtil.cleanDirectories(abstractWorker.getXmlDirectorySave());
+		FileUtil.cleanDirectories(conf.getBackupDirectory());
 	}
 
 	/**
@@ -89,8 +93,8 @@ public class Saver implements Serializable {
 			Set<TableBDD> setTables = getTables();
 			for (Iterator<TableBDD> iterator = setTables.iterator(); iterator.hasNext();) {
 				TableBDD tableBDD = iterator.next();
-				File file = new File(abstractWorker.getXmlDirectorySave() + "/" + tableBDD.getSchemaName() + "."
-						+ tableBDD.getTableName() + ".xml");
+				File file = new File(
+						conf.getBackupDirectory() + "/" + tableBDD.getSchemaName() + "." + tableBDD.getTableName() + ".xml");
 				File parent = file.getParentFile();
 				if (!file.getParentFile().exists()) {
 					parent.mkdirs();

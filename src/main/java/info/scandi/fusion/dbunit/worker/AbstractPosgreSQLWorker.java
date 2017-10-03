@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import info.scandi.fusion.conf.ExclusionSchemas;
 import info.scandi.fusion.dbunit.bdd.SequenceBDD;
 import info.scandi.fusion.dbunit.bdd.TableBDD;
 import info.scandi.fusion.exception.FusionException;
@@ -45,7 +46,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 	@Override
 	public void restore() throws FusionException {
 		super.restore();
-		if (this.withSauvegarde) {
+		if (conf.getDatabase().getBackup().isEnabled()) {
 			this.vacuum();
 		}
 	}
@@ -75,7 +76,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 	@Override
 	public void cleanSequence() throws FusionException {
 		LOGGER.fine("Updates sequences to 1");
-		TreeSet<SequenceBDD> sequences = getSequences(exclusionSchemas, null);
+		TreeSet<SequenceBDD> sequences = getSequences(conf.getDatabase().getLiquibase().getExclusionSchemas(), null);
 		for (Iterator<SequenceBDD> iterator = sequences.iterator(); iterator.hasNext();) {
 			SequenceBDD sequenceBDD = iterator.next();
 			setSequence(sequenceBDD, "1");
@@ -84,7 +85,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 	}
 
 	public void majSequence() throws FusionException {
-		TreeSet<SequenceBDD> sequences = getSequences(exclusionSchemas, null);
+		TreeSet<SequenceBDD> sequences = getSequences(conf.getDatabase().getLiquibase().getExclusionSchemas(), null);
 		for (SequenceBDD sequence : sequences) {
 			setSequence(sequence, "(SELECT MAX(" + sequence.getTableBDD().getPrimaryKey() + ") FROM "
 					+ sequence.getSchemaNamePointSequenceName() + ")");
@@ -98,7 +99,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 	 * @throws FusionException
 	 */
 	// TODO rewrite the loop
-	private TreeSet<SequenceBDD> getSequences(String[] exclusionSchemas, String[] exclusionTables)
+	private TreeSet<SequenceBDD> getSequences(ExclusionSchemas exclusionSchemas, String[] exclusionTables)
 			throws FusionException {
 		String schemaName;
 		String sequenceName;
@@ -122,9 +123,8 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 					sequenceName = resultSet.getString("sequencename");
 					primaryKey = resultSet.getString("primaryKey");
 					if (exclusionSchemas != null) {
-						for (int i = 0; i < exclusionSchemas.length; i++) {
-							String excludeSchema = exclusionSchemas[i];
-							if (!schemaName.equals(excludeSchema)) {
+						for (String exclusionSchema : exclusionSchemas.getExclusionSchema()) {
+							if (!schemaName.equals(exclusionSchema)) {
 								if (exclusionTables != null) {
 									for (int j = 0; j < exclusionTables.length; j++) {
 										String exludeTable = exclusionTables[j];
@@ -143,6 +143,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 								}
 							}
 						}
+						;
 					} else {
 						TableBDD tableBDD = new TableBDD(schemaName, tableName);
 						tableBDD.setPrimaryKey(primaryKey);

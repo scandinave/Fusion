@@ -2,12 +2,23 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fusion.scandi.info"
 xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 
+	
+
+	<xsd:element name="exclusionSchemas">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="exclusionSchema" type="xsd:token" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
 	<xsd:element name="liquibase">
 		<xsd:complexType>
-			<xsd:all>
-				<xsd:element name="schemaName" type="xsd:token"/>
-				<xsd:element name="databaseChangelogName" type="xsd:token"/>
-			</xsd:all>
+			<xsd:sequence>
+				<xsd:element name="schemaName" type="xsd:token" minOccurs="1" maxOccurs="1"/>
+				<xsd:element name="databaseChangelogName" type="xsd:token" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="exclusionSchemas" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
 			<xsd:attribute name="enabled" type="xsd:boolean"
 				default="false" />
 		</xsd:complexType>
@@ -16,7 +27,17 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 	<xsd:element name="backup">
 		<xsd:complexType>
 			<xsd:all>
-				<xsd:element name="backupDirectory" type="xsd:token"/>
+				<xsd:element name="backupDirectory" type="xsd:token" default="/save"/>
+			</xsd:all>
+			<xsd:attribute name="enabled" type="xsd:boolean"
+				default="false" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="init">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="initFile" type="xsd:anyURI" default="/init.xml"/>
 			</xsd:all>
 			<xsd:attribute name="enabled" type="xsd:boolean"
 				default="false" />
@@ -32,6 +53,7 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 				<xsd:element name="username" type="xsd:token"/>
 				<xsd:element name="password" type="xsd:token"/>
 				<xsd:element ref="backup"/>
+				<xsd:element ref="init"/>
 			</xsd:all>
 			<xsd:attribute name="connectionType" default="custom">
 				<xsd:simpleType>
@@ -49,6 +71,7 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
+			<xsd:attribute name="allowEmptyString" default="true" type="xsd:boolean"/>
 		</xsd:complexType>
 	</xsd:element>
 	

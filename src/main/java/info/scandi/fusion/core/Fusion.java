@@ -10,12 +10,8 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.configuration2.XMLConfiguration;
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.io.FileUtils;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
@@ -54,7 +50,7 @@ import info.scandi.fusion.utils.PropsUtils;
 @Named
 public class Fusion {
 	protected final static String ROOT_PATH = "fusion.rootPath";
-	private static final String CONFIGURATION_FILE = "fusion.properties";
+	private static final String CONFIGURATION_FILE = "fusion.xml";
 	private final static String PROPERTY_CONNECTION_TYPE = "database.connectionType";
 	private final static String PROPERTY_DATABASE_ENV_URL = "database.envurl";
 	private final static String PROPERTY_DATABASE_ENV_DRIVER = "database.envdriver";
@@ -82,8 +78,7 @@ public class Fusion {
 	private final static String TYPE_ENV = "env";
 	private static final Object TYPE_CUSTOM = "custom";
 
-	@Inject
-	private Logger LOGGER;
+	private Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);;
 
 	@Produces
 	public Logger produceLogger(InjectionPoint injectionPoint) {
@@ -383,23 +378,4 @@ public class Fusion {
 		}
 	}
 
-	@Produces
-	@ApplicationScoped
-	public XMLConfiguration getConfiguration() throws ConfigurationException {
-		try {
-			Parameters params = new Parameters();
-			FileBasedConfigurationBuilder<XMLConfiguration> builder = new FileBasedConfigurationBuilder<XMLConfiguration>(
-					XMLConfiguration.class)
-							.configure(params.xml().setFileName(CONFIGURATION_FILE).setSchemaValidation(true));
-
-			// This will throw a ConfigurationException if the XML document does
-			// not
-			// conform to its Schema.
-			XMLConfiguration config = builder.getConfiguration();
-			return config;
-
-		} catch (org.apache.commons.configuration2.ex.ConfigurationException cex) {
-			throw new ConfigurationException(cex);
-		}
-	}
 }

@@ -19,7 +19,6 @@ public class ConfigExtension implements Extension {
 
 	@SuppressWarnings("unchecked")
 	void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		Reflections reflections = new Reflections();
 		Set<Class<?>> types = reflections.getTypesAnnotatedWith(Tester.class);
 		types.addAll(reflections.getTypesAnnotatedWith(Driver.class));

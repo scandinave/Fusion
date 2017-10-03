@@ -35,6 +35,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
+import info.scandi.fusion.core.ConfigurationManager;
 import info.scandi.fusion.core.Fusion;
 import info.scandi.fusion.dbunit.Cleaner;
 import info.scandi.fusion.dbunit.Saver;
@@ -64,6 +65,8 @@ public abstract class AbstractWorker implements IWorker {
 	protected Cleaner clenear;
 	@Inject
 	protected Cleaner cleanerRestore;
+	@Inject
+	protected ConfigurationManager conf;
 
 	/**
 	 * Element that need to be replaced in xml before the loading into database.
@@ -115,7 +118,6 @@ public abstract class AbstractWorker implements IWorker {
 		COMMUN_DIR = getCommunDir();
 		DISTINCT_DIR = getDistinctDir();
 		feature_path = getRootPath().concat("scenarii");
-		defaultOptions();
 	}
 
 	/*
@@ -147,16 +149,6 @@ public abstract class AbstractWorker implements IWorker {
 		} catch (UtilitaireException e) {
 			throw new FusionException(new ConfigurationException(e));
 		}
-	}
-
-	/**
-	 * Méthode optionsParDefaut.
-	 * 
-	 * @throws FusionException
-	 */
-	private void defaultOptions() throws FusionException {
-		xmlFileInit = FLATXMLDATASET_DIR.concat("/init/init.xml");
-		xmlDirectorySave = FLATXMLDATASET_DIR.concat("/save");
 	}
 
 	/**
@@ -194,7 +186,6 @@ public abstract class AbstractWorker implements IWorker {
 	public void init() throws ConfigurationException {
 		LOGGER.info("Initialisation");
 		initConnexion();
-		initOptions();
 		try {
 			initFeature();
 		} catch (IOException e) {
@@ -234,55 +225,35 @@ public abstract class AbstractWorker implements IWorker {
 	 */
 	private void initOptions() throws ConfigurationException {
 		LOGGER.info("initialization of Fusion base on fusion.properties file.");
-		try {
-			String propertyAvecLiquibase = PropsUtils.getProperties().getProperty(PROPERTY_AVEC_LIQUIBASE);
-			if (propertyAvecLiquibase != null && !"".equals(propertyAvecLiquibase)) {
-				withLiquibase = "true".equals(propertyAvecLiquibase) ? true : false;
+		// TODO used liquibase property
+		// String propertyAvecLiquibase =
+		// PropsUtils.getProperties().getProperty(PROPERTY_AVEC_LIQUIBASE);
+		// if (propertyAvecLiquibase != null &&
+		// !"".equals(propertyAvecLiquibase)) {
+		// withLiquibase = "true".equals(propertyAvecLiquibase) ? true :
+		// false;
+		//
+		// String propertyLiquibaseSchemaName = PropsUtils.getProperties()
+		// .getProperty(PROPERTY_LIQUIBASE_SCHEMA_NAME);
+		// if (propertyLiquibaseSchemaName != null &&
+		// !"".equals(propertyLiquibaseSchemaName)) {
+		// liquibaseSchemaName = propertyLiquibaseSchemaName;
+		// }
+		//
+		// if (withLiquibase) {
+		// exclusionSchemas = new String[] { liquibaseSchemaName };
+		// }
+		//
+		// String propertyLiquibaseDatabasechangelogName =
+		// PropsUtils.getProperties()
+		// .getProperty(PROPERTY_LIQUIBASE_DATABASECHANGELOG);
+		// if (propertyLiquibaseDatabasechangelogName != null
+		// && !"".equals(propertyLiquibaseDatabasechangelogName)) {
+		// liquibaseDatabasechangelogName =
+		// propertyLiquibaseDatabasechangelogName;
+		// }
+		// }
 
-				String propertyLiquibaseSchemaName = PropsUtils.getProperties()
-						.getProperty(PROPERTY_LIQUIBASE_SCHEMA_NAME);
-				if (propertyLiquibaseSchemaName != null && !"".equals(propertyLiquibaseSchemaName)) {
-					liquibaseSchemaName = propertyLiquibaseSchemaName;
-				}
-
-				if (withLiquibase) {
-					exclusionSchemas = new String[] { liquibaseSchemaName };
-				}
-
-				String propertyLiquibaseDatabasechangelogName = PropsUtils.getProperties()
-						.getProperty(PROPERTY_LIQUIBASE_DATABASECHANGELOG);
-				if (propertyLiquibaseDatabasechangelogName != null
-						&& !"".equals(propertyLiquibaseDatabasechangelogName)) {
-					liquibaseDatabasechangelogName = propertyLiquibaseDatabasechangelogName;
-				}
-			}
-
-			String propertyAvecInit = PropsUtils.getProperties().getProperty(PROPERTY_AVEC_INIT);
-			if (propertyAvecInit != null && !"".equals(propertyAvecInit)) {
-				withInit = "true".equals(propertyAvecInit) ? true : false;
-				String propertyInitFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_FILE_INIT);
-				if (propertyInitFile != null && !"".equals(propertyInitFile)) {
-					xmlFileInit = propertyInitFile;
-				}
-			}
-
-			String propertyAvecSauvegarde = PropsUtils.getProperties().getProperty(PROPERTY_AVEC_SAUVEGARDE);
-			if (propertyAvecSauvegarde != null && !"".equals(propertyAvecSauvegarde)) {
-				withSauvegarde = "true".equals(propertyAvecSauvegarde) ? true : false;
-				String propertySaveFile = PropsUtils.getProperties().getProperty(PROPERTY_XML_DIRECTORY_SAVE);
-				if (propertySaveFile != null && !"".equals(propertySaveFile)) {
-					xmlDirectorySave = propertySaveFile;
-				}
-			}
-
-			String propertyReplaceDatabaseValue = PropsUtils.getProperties()
-					.getProperty(PROPERTY_REPLACE_EMPTY_DATABASE_VALUE);
-			if (propertyReplaceDatabaseValue != null && !"".equals(propertyReplaceDatabaseValue)) {
-				replaceEmptyDatabaseValue = "true".equals(propertyReplaceDatabaseValue) ? true : false;
-			}
-		} catch (UtilitaireException e) {
-			throw new ConfigurationException(e);
-		}
 	}
 
 	/**
@@ -327,7 +298,7 @@ public abstract class AbstractWorker implements IWorker {
 			LOGGER.info("Preparation of the database");
 			databaseConnect.getConnection().setAutoCommit(false);
 			this.toogleContrainte(false);
-			if (withInit) {
+			if (conf.getDatabase().getInit().isEnabled()) {
 				this.reset();
 			} else {
 				this.clean();
@@ -428,7 +399,7 @@ public abstract class AbstractWorker implements IWorker {
 	 */
 	@Override
 	public void save() throws FusionException {
-		if (withSauvegarde) {
+		if (this.conf.getDatabase().getBackup().isEnabled()) {
 			LOGGER.info("Saving database...");
 			saver.start();
 		}
@@ -440,7 +411,7 @@ public abstract class AbstractWorker implements IWorker {
 	 */
 	@Override
 	public void restore() throws FusionException {
-		if (withSauvegarde) {
+		if (this.conf.getDatabase().getBackup().isEnabled()) {
 			LOGGER.info("Restoring database...");
 			try {
 				databaseConnect.getConnection().setAutoCommit(false);
@@ -450,7 +421,7 @@ public abstract class AbstractWorker implements IWorker {
 				cleanerRestore.setTables(tables);
 				cleanerRestore.execution();
 
-				load(xmlDirectorySave, DatabaseOperation.INSERT);
+				load(conf.getBackupDirectory(), DatabaseOperation.INSERT);
 				this.majSequence();
 				this.toogleContrainte(true);
 				databaseConnect.getConnection().commit();
@@ -595,7 +566,7 @@ public abstract class AbstractWorker implements IWorker {
 	private IDataSet getDataSet(File file) throws FusionException {
 		IDataSet dataSet = null;
 		HashMap<String, Object> replacementObjects = new HashMap<String, Object>();
-		if (replaceEmptyDatabaseValue) {
+		if (!conf.getDatabase().isAllowEmptyString()) {
 			replacementObjects.put("", null);
 		}
 		dataSet = new ReplacementDataSet(getBuilder(file), replacementObjects, null);
@@ -610,7 +581,7 @@ public abstract class AbstractWorker implements IWorker {
 	// TODO Should be remove.
 	private void initBddForServer() throws FusionException {
 		LOGGER.info("Inserting data needed by the application server to start");
-		load(xmlFileInit);
+		load(conf.getInitFile());
 	}
 
 	/**
@@ -736,14 +707,4 @@ public abstract class AbstractWorker implements IWorker {
 		}
 		return setTables;
 	}
-
-	/**
-	 * Return the path to the directory where xml are save.
-	 * 
-	 * @return
-	 */
-	public String getXmlDirectorySave() {
-		return xmlDirectorySave;
-	}
-
 }
