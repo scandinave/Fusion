@@ -24,11 +24,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import info.scandi.fusion.core.ConfigurationManager;
 import info.scandi.fusion.core.Fusion;
 import info.scandi.fusion.selenium.BySelec;
 import info.scandi.fusion.utils.BrowserDesiredCapabilities;
 import info.scandi.fusion.utils.DriverExecutor;
-import info.scandi.fusion.utils.PropsUtils;
 
 /**
  * Implémentation minimum d'un driver. Les drivers utiliser par projet doivent
@@ -41,6 +41,9 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	@Inject
 	protected Logger logger;
+
+	@Inject
+	ConfigurationManager conf;
 
 	@Inject
 	public AbstractDriver(@DriverExecutor CommandExecutor remoteAddress,
@@ -140,7 +143,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	@Override
 	public void home() {
 		try {
-			this.get(PropsUtils.getProperties().getProperty("application.url"));
+			this.get(conf.getBrowser().getDownloadDir());
 		} catch (Exception e) {
 			Assert.fail(
 					"Unable to access the application.url variable in the file fusion.properties or unable to communite with the browser");

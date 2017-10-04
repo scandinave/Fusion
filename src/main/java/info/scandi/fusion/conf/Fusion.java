@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.03 à 10:13:22 PM CEST 
+// Généré le : 2017.10.04 à 06:52:53 AM CEST 
 //
 
 
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;all>
  *         &lt;element ref="{http://fusion.scandi.info}database"/>
- *         &lt;element ref="{http://fusion.scandi.info}browsers"/>
+ *         &lt;element ref="{http://fusion.scandi.info}browser"/>
  *         &lt;element ref="{http://fusion.scandi.info}common"/>
  *       &lt;/all>
  *     &lt;/restriction>
@@ -46,7 +46,7 @@ public class Fusion {
     @XmlElement(required = true)
     protected Database database;
     @XmlElement(required = true)
-    protected Browsers browsers;
+    protected Browser browser;
     @XmlElement(required = true)
     protected Common common;
 
@@ -75,27 +75,27 @@ public class Fusion {
     }
 
     /**
-     * Obtient la valeur de la propriété browsers.
+     * Obtient la valeur de la propriété browser.
      * 
      * @return
      *     possible object is
-     *     {@link Browsers }
+     *     {@link Browser }
      *     
      */
-    public Browsers getBrowsers() {
-        return browsers;
+    public Browser getBrowser() {
+        return browser;
     }
 
     /**
-     * Définit la valeur de la propriété browsers.
+     * Définit la valeur de la propriété browser.
      * 
      * @param value
      *     allowed object is
-     *     {@link Browsers }
+     *     {@link Browser }
      *     
      */
-    public void setBrowsers(Browsers value) {
-        this.browsers = value;
+    public void setBrowser(Browser value) {
+        this.browser = value;
     }
 
     /**

@@ -20,7 +20,7 @@ public class WorkerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Mockito.when(worker.getRootPath()).thenReturn("rootPath/");
+		// Mockito.when(worker.getRootPath()).thenReturn("rootPath/");
 	}
 
 	@Test

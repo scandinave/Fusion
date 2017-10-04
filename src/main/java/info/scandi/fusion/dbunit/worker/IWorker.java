@@ -26,8 +26,9 @@ public interface IWorker {
 	 * Initializes the worker with the configuration from fusion.properties.
 	 * 
 	 * @throws ConfigurationException
+	 * @throws FusionException
 	 */
-	void init() throws ConfigurationException;
+	void init() throws ConfigurationException, FusionException;
 
 	/**
 	 * Start the initialization process of the database before tests.

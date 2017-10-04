@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.03 à 10:13:22 PM CEST 
+// Généré le : 2017.10.04 à 06:52:53 AM CEST 
 //
 
 
@@ -37,27 +37,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Init }
+     * Create an instance of {@link Fusion }
      * 
      */
-    public Init createInit() {
-        return new Init();
+    public Fusion createFusion() {
+        return new Fusion();
     }
 
     /**
-     * Create an instance of {@link Backup }
+     * Create an instance of {@link Database }
      * 
      */
-    public Backup createBackup() {
-        return new Backup();
+    public Database createDatabase() {
+        return new Database();
     }
 
     /**
-     * Create an instance of {@link Extension }
+     * Create an instance of {@link Liquibase }
      * 
      */
-    public Extension createExtension() {
-        return new Extension();
+    public Liquibase createLiquibase() {
+        return new Liquibase();
     }
 
     /**
@@ -69,11 +69,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Browsers }
+     * Create an instance of {@link Backup }
      * 
      */
-    public Browsers createBrowsers() {
-        return new Browsers();
+    public Backup createBackup() {
+        return new Backup();
+    }
+
+    /**
+     * Create an instance of {@link Init }
+     * 
+     */
+    public Init createInit() {
+        return new Init();
     }
 
     /**
@@ -93,6 +101,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Extension }
+     * 
+     */
+    public Extension createExtension() {
+        return new Extension();
+    }
+
+    /**
      * Create an instance of {@link Options }
      * 
      */
@@ -106,30 +122,6 @@ public class ObjectFactory {
      */
     public Option createOption() {
         return new Option();
-    }
-
-    /**
-     * Create an instance of {@link Liquibase }
-     * 
-     */
-    public Liquibase createLiquibase() {
-        return new Liquibase();
-    }
-
-    /**
-     * Create an instance of {@link Fusion }
-     * 
-     */
-    public Fusion createFusion() {
-        return new Fusion();
-    }
-
-    /**
-     * Create an instance of {@link Database }
-     * 
-     */
-    public Database createDatabase() {
-        return new Database();
     }
 
     /**

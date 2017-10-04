@@ -2,20 +2,20 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.03 à 10:13:22 PM CEST 
+// Généré le : 2017.10.04 à 06:52:53 AM CEST 
 //
 
 
 package info.scandi.fusion.conf;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -40,18 +40,14 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;simpleType>
  *           &lt;restriction>
  *             &lt;simpleType>
- *               &lt;list>
- *                 &lt;simpleType>
- *                   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token">
- *                     &lt;enumeration value="firefox"/>
- *                     &lt;enumeration value="safari"/>
- *                     &lt;enumeration value="edge"/>
- *                     &lt;enumeration value="ie"/>
- *                     &lt;enumeration value="opera"/>
- *                     &lt;enumeration value="chrome"/>
- *                   &lt;/restriction>
- *                 &lt;/simpleType>
- *               &lt;/list>
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token">
+ *                 &lt;enumeration value="firefox"/>
+ *                 &lt;enumeration value="safari"/>
+ *                 &lt;enumeration value="edge"/>
+ *                 &lt;enumeration value="ie"/>
+ *                 &lt;enumeration value="opera"/>
+ *                 &lt;enumeration value="chrome"/>
+ *               &lt;/restriction>
  *             &lt;/simpleType>
  *           &lt;/restriction>
  *         &lt;/simpleType>
@@ -87,7 +83,8 @@ public class Browser {
     @XmlAttribute(name = "remote")
     protected Boolean remote;
     @XmlAttribute(name = "type", required = true)
-    protected List<String> type;
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String type;
 
     /**
      * Obtient la valeur de la propriété extensions.
@@ -266,32 +263,27 @@ public class Browser {
     }
 
     /**
-     * Gets the value of the type property.
+     * Obtient la valeur de la propriété type.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the type property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getType().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<String> getType() {
-        if (type == null) {
-            type = new ArrayList<String>();
-        }
-        return this.type;
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Définit la valeur de la propriété type.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setType(String value) {
+        this.type = value;
     }
 
 }

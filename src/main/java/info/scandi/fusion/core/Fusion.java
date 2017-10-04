@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.io.FileUtils;
@@ -34,6 +35,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 
+import info.scandi.fusion.conf.Extension;
 import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.UtilitaireException;
 import info.scandi.fusion.utils.BrowserCapabilities;
@@ -50,25 +52,11 @@ import info.scandi.fusion.utils.PropsUtils;
 @Named
 public class Fusion {
 	protected final static String ROOT_PATH = "fusion.rootPath";
-	private static final String CONFIGURATION_FILE = "fusion.xml";
-	private final static String PROPERTY_CONNECTION_TYPE = "database.connectionType";
 	private final static String PROPERTY_DATABASE_ENV_URL = "database.envurl";
 	private final static String PROPERTY_DATABASE_ENV_DRIVER = "database.envdriver";
 	private final static String PROPERTY_DATABASE_ENV_USERNAME = "database.envname";
 	private final static String PROPERTY_DATABASE_ENV_PASSWORD = "database.envpassword";
-	private final static String PROPERTY_DATABASE_URL = "database.url";
-	private final static String PROPERTY_DATABASE_DRIVER = "database.driver";
-	private final static String PROPERTY_DATABASE_USERNAME = "database.username";
-	private final static String PROPERTY_DATABASE_PASSWORD = "database.password";
-	private static final String SELENIUM_NAVIGATEUR = "selenium.navigateur";
-	private static final String EXTENSION_AVAILABLE = "extension.available";
-	private static final String EXTENSION_FIREBUG = "extension.firebug";
-	private static final String EXTENSION_WEBDEVELOPER = "extension.webdeveloper";
 	public static final String DOWNLOAD_DIR = "browser.download";
-
-	private static final String BROWSER_REMOTE = "browser.remote";
-	private static final String BROWSER = "browser.type";
-	private static final String SELENIUM_GRID = "selenium.grid";
 
 	public final static int IMPLICITLY_WAIT = 1000;
 	public final static int EXPLICITLE_WAIT = 10;
@@ -78,7 +66,10 @@ public class Fusion {
 	private final static String TYPE_ENV = "env";
 	private static final Object TYPE_CUSTOM = "custom";
 
-	private Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);;
+	private Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+	@Inject
+	private ConfigurationManager conf;
 
 	@Produces
 	public Logger produceLogger(InjectionPoint injectionPoint) {
@@ -100,7 +91,7 @@ public class Fusion {
 	@ApplicationScoped
 	public CommandExecutor produceExecutor() throws UtilitaireException {
 		CommandExecutor driver;
-		boolean remote = Boolean.valueOf((PropsUtils.getProperties().getProperty(BROWSER_REMOTE, "false")));
+		boolean remote = conf.getBrowser().isRemote();
 		if (remote) {
 			driver = openRemoteDriver();
 		} else {
@@ -112,9 +103,9 @@ public class Fusion {
 
 	private CommandExecutor openLocalDriver() throws UtilitaireException {
 		LOGGER.info("Opening Driver...");
-		String browserPath = PropsUtils.getProperties().getProperty(SELENIUM_NAVIGATEUR).trim();
+		String browserPath = conf.getBrowser().getBinary().trim();
 		RemoteWebDriver remoteDriver;
-		switch (PropsUtils.getProperties().getProperty(BROWSER)) {
+		switch (conf.getBrowser().getType()) {
 		case "firefox":
 			// System.setProperty("webdriver.gecko.driver",
 			// "/Users/Ninja/Documents/Developpement/Logiciel/geckodriver");
@@ -163,7 +154,7 @@ public class Fusion {
 
 	private HttpCommandExecutor openRemoteDriver() throws UtilitaireException {
 		try {
-			return new HttpCommandExecutor(new URL(PropsUtils.getProperties().getProperty(SELENIUM_GRID)));
+			return new HttpCommandExecutor(new URL(conf.getBrowser().getGrid()));
 		} catch (MalformedURLException e) {
 			throw new UtilitaireException(e);
 		}
@@ -173,7 +164,7 @@ public class Fusion {
 	@BrowserDesiredCapabilities
 	public DesiredCapabilities produceDesiredCapabilities() throws UtilitaireException {
 		DesiredCapabilities capabilities = null;
-		switch (PropsUtils.getProperties().getProperty(BROWSER)) {
+		switch (conf.getBrowser().getType()) {
 		case "firefox":
 			capabilities = DesiredCapabilities.firefox();
 			break;
@@ -216,32 +207,32 @@ public class Fusion {
 
 	private FirefoxProfile getFireFoxProfile() throws UtilitaireException {
 		FirefoxProfile profile = new FirefoxProfile();
-		boolean extensions = Boolean.valueOf(PropsUtils.getProperties().getProperty(EXTENSION_AVAILABLE, "false"));
-		if (extensions) {
+		if (conf.getBrowser().getExtensions().isEnabled()) {
 			try {
-				profile.addExtension(new File(PropsUtils.getProperties().getProperty(EXTENSION_FIREBUG)));
-				profile.addExtension(new File(PropsUtils.getProperties().getProperty(EXTENSION_WEBDEVELOPER)));
+				for (Extension extension : conf.getBrowser().getExtensions().getExtension()) {
+					profile.addExtension(new File(extension.getPath()));
+				}
 			} catch (IOException e) {
 				throw new UtilitaireException(e);
 			}
+			;
 		}
-		String prop = PropsUtils.getProperties().getProperty(DOWNLOAD_DIR);
+		String prop = conf.getBrowser().getDownloadDir();
 		if (prop != null && !prop.isEmpty()) {
-			// crée le répertoire s'il n'existe pas
-			StringBuilder filePath = new StringBuilder(PropsUtils.getProperties().getProperty(DOWNLOAD_DIR));
+			// Create directory if not exist
+			StringBuilder filePath = new StringBuilder(conf.getBrowser().getDownloadDir());
 			File directory = new File(filePath.toString());
 			if (!directory.exists()) {
 				try {
 					FileUtils.forceMkdir(directory);
 				} catch (IOException e) {
-					throw new UtilitaireException("Impossible de créer le répertoire " + filePath, e);
+					throw new UtilitaireException("Can't create the directory " + filePath, e);
 				}
 			}
 			profile.setPreference("browser.download.folderList", 2);
-			profile.setPreference("browser.download.dir", PropsUtils.getProperties().getProperty(DOWNLOAD_DIR));
-			profile.setPreference("browser.download.defaultFolder",
-					PropsUtils.getProperties().getProperty(DOWNLOAD_DIR));
-			profile.setPreference("browser.download.lastDir", PropsUtils.getProperties().getProperty(DOWNLOAD_DIR));
+			profile.setPreference("browser.download.dir", conf.getBrowser().getDownloadDir());
+			profile.setPreference("browser.download.defaultFolder", conf.getBrowser().getDownloadDir());
+			profile.setPreference("browser.download.lastDir", conf.getBrowser().getDownloadDir());
 			profile.setPreference("browser.download.panel.shown", false);
 			profile.setPreference("browser.download.alertOnEXEOpen", false);
 			// profile.setPreference("network.proxy.autoconfig_url", "");
@@ -290,14 +281,14 @@ public class Fusion {
 	public IDatabaseConnection produceDatabaseConnection() throws ConfigurationException {
 		LOGGER.info("Initialisation de la connexion");
 		try {
-			String datasourceType = PropsUtils.getProperties().getProperty(PROPERTY_CONNECTION_TYPE);
+			String datasourceType = conf.getDatabase().getConnectionType();
 			IDatabaseTester jdbcConnection = null;
-			String databaseDriver = PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_DRIVER);
+			String databaseDriver = conf.getDatabase().getDriver();
 			if (datasourceType.equals(TYPE_CUSTOM)) { // cas jdbc standard
 				LOGGER.info("Connexion depuis propriété jdbc");
-				String databaseUrl = PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_URL);
-				String databaseName = PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_USERNAME);
-				String databasePassword = PropsUtils.getProperties().getProperty(PROPERTY_DATABASE_PASSWORD);
+				String databaseUrl = conf.getDatabase().getUrl();
+				String databaseName = conf.getDatabase().getUsername();
+				String databasePassword = conf.getDatabase().getPassword();
 				checkDatabaseParameter(datasourceType, databaseUrl, databaseDriver, databaseName, databasePassword);
 				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, databaseUrl);
 				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, databaseDriver);

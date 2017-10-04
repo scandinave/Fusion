@@ -57,17 +57,9 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 			</xsd:all>
 			<xsd:attribute name="connectionType" default="custom">
 				<xsd:simpleType>
-					<xsd:restriction>
-						<xsd:simpleType>
-							<xsd:list>
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:token">
-										<xsd:enumeration value="custom" />
-										<xsd:enumeration value="env" />
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:list>
-						</xsd:simpleType>
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="custom" />
+						<xsd:enumeration value="env" />
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
@@ -124,8 +116,8 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 			<xsd:attribute name="type" use="required">
 				<xsd:simpleType>
 					<xsd:restriction>
-						<xsd:simpleType>
-							<xsd:list>
+<!-- 						<xsd:simpleType> -->
+<!-- 							<xsd:list> -->
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:token">
 										<xsd:enumeration value="firefox" />
@@ -136,21 +128,21 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 										<xsd:enumeration value="chrome" />
 									</xsd:restriction>
 								</xsd:simpleType>
-							</xsd:list>
-						</xsd:simpleType>
+<!-- 							</xsd:list> -->
+<!-- 						</xsd:simpleType> -->
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	
-	<xsd:element name="browsers">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="browser" minOccurs="1" maxOccurs="unbounded"/>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
+<!-- 	<xsd:element name="browsers"> -->
+<!-- 		<xsd:complexType> -->
+<!-- 			<xsd:sequence> -->
+<!-- 				<xsd:element ref="browser" minOccurs="1" maxOccurs="unbounded"/> -->
+<!-- 			</xsd:sequence> -->
+<!-- 		</xsd:complexType> -->
+<!-- 	</xsd:element> -->
 
 	<xsd:element name="common">
 		<xsd:complexType>
@@ -167,7 +159,7 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 		<xsd:complexType>
 			<xsd:all>
 				<xsd:element ref="database" />
-				<xsd:element ref="browsers" />
+				<xsd:element ref="browser" />
 				<xsd:element ref="common" />
 			</xsd:all>
 		</xsd:complexType>

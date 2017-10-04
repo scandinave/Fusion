@@ -64,7 +64,7 @@ public class Runner extends Cucumber {
 		}
 		try {
 			worker.init();
-		} catch (ConfigurationException e) {
+		} catch (ConfigurationException | FusionException e) {
 			throw new RuntimeException("Configuration problem : " + e);
 		}
 		try {

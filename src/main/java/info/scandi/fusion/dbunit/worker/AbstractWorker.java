@@ -36,7 +36,6 @@ import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
 import info.scandi.fusion.core.ConfigurationManager;
-import info.scandi.fusion.core.Fusion;
 import info.scandi.fusion.dbunit.Cleaner;
 import info.scandi.fusion.dbunit.Saver;
 import info.scandi.fusion.dbunit.bdd.TableBDD;
@@ -44,7 +43,6 @@ import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.exception.RequestException;
 import info.scandi.fusion.exception.UtilitaireException;
-import info.scandi.fusion.utils.PropsUtils;
 
 /**
  * Abstract base class that implements behavior common to all workers.
@@ -76,20 +74,6 @@ public abstract class AbstractWorker implements IWorker {
 	/**
 	 * Liste des options.
 	 */
-	private final static String ROOT_PATH = "fusion.rootPath";
-
-	private final static String PROPERTY_AVEC_LIQUIBASE = "database.optionalAvecLiquibase";
-	private static final String PROPERTY_LIQUIBASE_SCHEMA_NAME = "database.optionalLiquibaseSchemaName";
-	private static final String PROPERTY_LIQUIBASE_DATABASECHANGELOG = "database.optionalLiquibaseDatabasechangelogName";
-
-	private final static String PROPERTY_AVEC_INIT = "database.optionalAvecInit";
-	private final static String PROPERTY_XML_FILE_INIT = "database.optionalXmlFileInit";
-
-	private final static String PROPERTY_AVEC_SAUVEGARDE = "database.optionalAvecSauvegarde";
-	private final static String PROPERTY_XML_DIRECTORY_SAVE = "database.optionalXmlDirectorySave";
-
-	private final static String PROPERTY_REPLACE_EMPTY_DATABASE_VALUE = "fusion.emptyStringToNull";
-
 	private String feature_path;
 
 	private static String FLATXMLDATASET_DIR;
@@ -97,27 +81,17 @@ public abstract class AbstractWorker implements IWorker {
 	public static String DISTINCT_DIR;
 
 	public static String xmlFileInit;
-	private String xmlDirectorySave;
 
-	private boolean withLiquibase = false;
 	protected boolean withInit = false;
 	protected boolean withSauvegarde = true;
 	public static boolean replaceEmptyDatabaseValue = false;
-	private String liquibaseSchemaName = "liquibase";
-	private String liquibaseDatabasechangelogName = "databasechangelog";
 	protected String[] exclusionSchemas;
 	protected String[] exclusionTables;
 
 	private Map<String, String> allScenarii = new HashMap<String, String>();
 
-	/**
-	 * @throws FusionException
-	 */
-	protected AbstractWorker() throws FusionException {
-		getRootPath();
-		COMMUN_DIR = getCommunDir();
-		DISTINCT_DIR = getDistinctDir();
-		feature_path = getRootPath().concat("scenarii");
+	protected AbstractWorker() {
+
 	}
 
 	/*
@@ -143,14 +117,6 @@ public abstract class AbstractWorker implements IWorker {
 		this.allScenarii = allScenarii;
 	}
 
-	public String getRootPath() throws FusionException {
-		try {
-			return PropsUtils.getProperties().getProperty(ROOT_PATH);
-		} catch (UtilitaireException e) {
-			throw new FusionException(new ConfigurationException(e));
-		}
-	}
-
 	/**
 	 * Méthode getCommunDir.
 	 * 
@@ -160,7 +126,7 @@ public abstract class AbstractWorker implements IWorker {
 	 * @throws UtilitaireException
 	 */
 	public String getCommunDir() throws FusionException {
-		FLATXMLDATASET_DIR = getRootPath() + "flatXmlDataSet";
+		FLATXMLDATASET_DIR = conf.getCommon().getRootPath() + "flatXmlDataSet";
 		COMMUN_DIR = FLATXMLDATASET_DIR.concat("/commun");
 		return COMMUN_DIR;
 	}
@@ -173,7 +139,7 @@ public abstract class AbstractWorker implements IWorker {
 	 * @throws UtilitaireException
 	 */
 	public String getDistinctDir() throws FusionException {
-		FLATXMLDATASET_DIR = getRootPath() + "flatXmlDataSet";
+		FLATXMLDATASET_DIR = conf.getCommon().getRootPath() + "flatXmlDataSet";
 		DISTINCT_DIR = FLATXMLDATASET_DIR.concat("/distinct");
 		return DISTINCT_DIR;
 	}
@@ -183,8 +149,11 @@ public abstract class AbstractWorker implements IWorker {
 	 * @see dbunit.worker.IBDDWorker#init()
 	 */
 	@Override
-	public void init() throws ConfigurationException {
+	public void init() throws ConfigurationException, FusionException {
 		LOGGER.info("Initialisation");
+		COMMUN_DIR = getCommunDir();
+		DISTINCT_DIR = getDistinctDir();
+		feature_path = conf.getCommon().getRootPath().concat("scenarii");
 		initConnexion();
 		try {
 			initFeature();
@@ -445,14 +414,14 @@ public abstract class AbstractWorker implements IWorker {
 	public void stop() throws FusionException {
 		try {
 			databaseConnect.close();
-			String prop = PropsUtils.getProperties().getProperty(Fusion.DOWNLOAD_DIR);
+			String prop = conf.getBrowser().getDownloadDir();
 			if (prop != null && !prop.isEmpty()) {
 				File[] pjs = new File(prop).listFiles();
 				for (File file : pjs) {
 					file.delete();
 				}
 			}
-		} catch (SQLException | UtilitaireException e) {
+		} catch (SQLException e) {
 			throw new FusionException(e);
 		}
 	}

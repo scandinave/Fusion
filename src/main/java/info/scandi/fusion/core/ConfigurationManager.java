@@ -1,7 +1,6 @@
 package info.scandi.fusion.core;
 
 import java.io.File;
-import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -34,8 +33,8 @@ public class ConfigurationManager {
 		return fusion.getCommon();
 	}
 
-	public List<Browser> getBrowser() {
-		return fusion.getBrowsers().getBrowser();
+	public Browser getBrowser() {
+		return fusion.getBrowser();
 	}
 
 	public String getInitFile() {
