@@ -108,7 +108,7 @@ public class Fusion {
 		RemoteWebDriver remoteDriver;
 		switch (conf.getBrowser().getType()) {
 		case "firefox":
-			System.setProperty("webdriver.gecko.driver", "/Users/Ninja/Documents/Developpement/Logiciel/geckodriver");
+			System.setProperty("webdriver.gecko.driver", "C:\\Developement\\Lib\\geckodriver.exe");
 			FirefoxOptions options = new FirefoxOptions();
 			options.setProfile(getFireFoxProfile());
 			if (!browserPath.isEmpty()) {
@@ -312,8 +312,8 @@ public class Fusion {
 	}
 
 	/**
-	 * Permet de vérifier les paramètre de connexion à la base de donnée en
-	 * fonction du type de connexion (env ou custom)
+	 * Permet de vérifier les paramètre de connexion à la base de donnée en fonction
+	 * du type de connexion (env ou custom)
 	 * 
 	 * @param datasourceType
 	 *            Le type de connexion
@@ -326,8 +326,7 @@ public class Fusion {
 	 * @param databasePassword
 	 *            Le mot de passe de connexion à la base de donnée
 	 * @throws ConfigurationException
-	 *             Exception levée si un des paramètre de connexion est
-	 *             manquant.
+	 *             Exception levée si un des paramètre de connexion est manquant.
 	 */
 	private void checkDatabaseParameter(String datasourceType, String databaseUrl, String databaseDriver,
 			String databaseName, String databasePassword) throws ConfigurationException {

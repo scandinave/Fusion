@@ -64,6 +64,7 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 				</xsd:simpleType>
 			</xsd:attribute>
 			<xsd:attribute name="allowEmptyString" default="true" type="xsd:boolean"/>
+			<xsd:attribute name="enabled" default="true" type="xsd:boolean"/>
 		</xsd:complexType>
 	</xsd:element>
 	

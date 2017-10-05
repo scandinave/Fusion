@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
@@ -47,6 +48,7 @@ public class Runner extends Cucumber {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.api.junit.Cucumber#run(org.junit.runner.notification.
 	 * RunNotifier)
 	 */
@@ -57,44 +59,50 @@ public class Runner extends Cucumber {
 
 		IWorker worker = lookup(IWorker.class, new AnnotationLiteral<info.scandi.fusion.utils.Worker>() {
 		});
+		ConfigurationManager conf = lookup(ConfigurationManager.class, new AnnotationLiteral<Any>() {
+		});
 		LOGGER = lookup(Logger.class);
-		if (worker == null) {
-			throw new RuntimeException(
-					"Configuration problem. Missing @Worker on the class you want to see acting as worker");
-		}
-		try {
-			worker.init();
-		} catch (ConfigurationException | FusionException e) {
-			throw new RuntimeException("Configuration problem : " + e);
-		}
-		try {
-			worker.save();
-		} catch (FusionException e) {
-			throw new RuntimeException("Configuration problem : " + e);
-		}
-		try {
-			worker.start();
-		} catch (FusionException e) {
-			e.printStackTrace();
-			LOGGER.info("Can't start worker !");
-			throw new RuntimeException(e);
+		if (conf.getDatabase().isEnabled()) {
+			if (worker == null) {
+				throw new RuntimeException(
+						"Configuration problem. Missing @Worker on the class you want to see acting as worker");
+			}
+			try {
+				worker.init();
+			} catch (ConfigurationException | FusionException e) {
+				throw new RuntimeException("Configuration problem : " + e);
+			}
+			try {
+				worker.save();
+			} catch (FusionException e) {
+				throw new RuntimeException("Configuration problem : " + e);
+			}
+			try {
+				worker.start();
+			} catch (FusionException e) {
+				e.printStackTrace();
+				LOGGER.info("Can't start worker !");
+				throw new RuntimeException(e);
+			}
 		}
 		super.run(notifier);
-		try {
-			worker.restore();
-		} catch (FusionException e) {
-			LOGGER.severe("A problem occurred during restoration of database");
-			LOGGER.fine(e.getMessage());
-			throw new RuntimeException(e);
-		}
-		try {
-			LOGGER.info("Closing worker...");
-			worker.stop();
-			LOGGER.info("Worker closed");
-		} catch (FusionException e) {
-			LOGGER.severe("Can't stop the worker");
-			LOGGER.fine(e.getMessage());
-			throw new RuntimeException(e);
+		if (conf.getDatabase().isEnabled()) {
+			try {
+				worker.restore();
+			} catch (FusionException e) {
+				LOGGER.severe("A problem occurred during restoration of database");
+				LOGGER.fine(e.getMessage());
+				throw new RuntimeException(e);
+			}
+			try {
+				LOGGER.info("Closing worker...");
+				worker.stop();
+				LOGGER.info("Worker closed");
+			} catch (FusionException e) {
+				LOGGER.severe("Can't stop the worker");
+				LOGGER.fine(e.getMessage());
+				throw new RuntimeException(e);
+			}
 		}
 		weld.shutdown();
 	}

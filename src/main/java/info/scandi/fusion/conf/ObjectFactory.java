@@ -1,8 +1,8 @@
 //
-// Ce fichier a Ã©tÃ© gÃ©nÃ©rÃ© par l'implÃ©mentation de rÃ©fÃ©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportÃ©e Ã  ce fichier sera perdue lors de la recompilation du schÃ©ma source. 
-// GÃ©nÃ©rÃ© le : 2017.10.04 Ã  06:52:53 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
+// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+// Généré le : 2017.10.05 à 11:06:26 PM CEST 
 //
 
 
@@ -37,19 +37,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Fusion }
+     * Create an instance of {@link ExclusionSchemas }
      * 
      */
-    public Fusion createFusion() {
-        return new Fusion();
-    }
-
-    /**
-     * Create an instance of {@link Database }
-     * 
-     */
-    public Database createDatabase() {
-        return new Database();
+    public ExclusionSchemas createExclusionSchemas() {
+        return new ExclusionSchemas();
     }
 
     /**
@@ -58,14 +50,6 @@ public class ObjectFactory {
      */
     public Liquibase createLiquibase() {
         return new Liquibase();
-    }
-
-    /**
-     * Create an instance of {@link ExclusionSchemas }
-     * 
-     */
-    public ExclusionSchemas createExclusionSchemas() {
-        return new ExclusionSchemas();
     }
 
     /**
@@ -85,19 +69,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Browser }
+     * Create an instance of {@link Database }
      * 
      */
-    public Browser createBrowser() {
-        return new Browser();
-    }
-
-    /**
-     * Create an instance of {@link Extensions }
-     * 
-     */
-    public Extensions createExtensions() {
-        return new Extensions();
+    public Database createDatabase() {
+        return new Database();
     }
 
     /**
@@ -109,11 +85,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Options }
+     * Create an instance of {@link Extensions }
      * 
      */
-    public Options createOptions() {
-        return new Options();
+    public Extensions createExtensions() {
+        return new Extensions();
     }
 
     /**
@@ -125,11 +101,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Options }
+     * 
+     */
+    public Options createOptions() {
+        return new Options();
+    }
+
+    /**
+     * Create an instance of {@link Browser }
+     * 
+     */
+    public Browser createBrowser() {
+        return new Browser();
+    }
+
+    /**
      * Create an instance of {@link Common }
      * 
      */
     public Common createCommon() {
         return new Common();
+    }
+
+    /**
+     * Create an instance of {@link Fusion }
+     * 
+     */
+    public Fusion createFusion() {
+        return new Fusion();
     }
 
 }

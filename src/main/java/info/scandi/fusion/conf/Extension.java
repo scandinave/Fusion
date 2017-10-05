@@ -1,8 +1,8 @@
 //
-// Ce fichier a Ã©tÃ© gÃ©nÃ©rÃ© par l'implÃ©mentation de rÃ©fÃ©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportÃ©e Ã  ce fichier sera perdue lors de la recompilation du schÃ©ma source. 
-// GÃ©nÃ©rÃ© le : 2017.10.04 Ã  06:52:53 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
+// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+// Généré le : 2017.10.05 à 11:06:26 PM CEST 
 //
 
 
@@ -21,17 +21,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 /**
  * <p>Classe Java pour anonymous complex type.
  * 
- * <p>Le fragment de schÃ©ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType>
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}token" />
- *       &lt;attribute name="path" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}token" /&gt;
+ *       &lt;attribute name="path" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -50,7 +50,7 @@ public class Extension {
     protected String path;
 
     /**
-     * Obtient la valeur de la propriÃ©tÃ© name.
+     * Obtient la valeur de la propriété name.
      * 
      * @return
      *     possible object is
@@ -62,7 +62,7 @@ public class Extension {
     }
 
     /**
-     * DÃ©finit la valeur de la propriÃ©tÃ© name.
+     * Définit la valeur de la propriété name.
      * 
      * @param value
      *     allowed object is
@@ -74,7 +74,7 @@ public class Extension {
     }
 
     /**
-     * Obtient la valeur de la propriÃ©tÃ© path.
+     * Obtient la valeur de la propriété path.
      * 
      * @return
      *     possible object is
@@ -86,7 +86,7 @@ public class Extension {
     }
 
     /**
-     * DÃ©finit la valeur de la propriÃ©tÃ© path.
+     * Définit la valeur de la propriété path.
      * 
      * @param value
      *     allowed object is
