@@ -13,19 +13,20 @@ repositories {
 }
 
 dependencies { 	
-	compile 'info.cukes:cucumber-junit:1.2.4'
-    compile 'info.cukes:cucumber-java:1.2.4'
-    compile 'org.dbunit:dbunit:2.5.1'
-    compile 'junit:junit:4.12'
-    compile 'org.seleniumhq.selenium:selenium-java:2.53.1'
-    compile 'postgresql:postgresql:9.1-901.jdbc4'
-    compile 'org.jboss.weld.se:weld-se:2.3.0.Final'
-    compile 'org.jboss:jandex:1.2.4.Final'
-    compile group: 'org.reflections', name: 'reflections', version: '0.9.10' // Used by ConfigExtension Class
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4' // Used by FusionBean Class
-    compile group: 'commons-io', name: 'commons-io', version: '2.5' // Used by Fusion Class
-    compile group: 'org.apache.commons', name: 'commons-configuration2', version: '2.0'
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+	def withoutGuava = { exclude group: 'com.google.guava', module: 'guava' }
+	compile group: 'io.cucumber', name: 'cucumber-junit', version: '2.0.1', withoutGuava
+    compile group: 'io.cucumber', name: 'cucumber-java', version: '2.0.1', withoutGuava
+    compile 'org.dbunit:dbunit:2.5.4', withoutGuava
+    compile 'junit:junit:4.12', withoutGuava
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.6.0'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '3.6.0' // Support the old api for webdriver wait
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4', withoutGuava
+    compile group: 'org.jboss.weld.se', name: 'weld-se-core', version: '2.4.5.Final', withoutGuava
+    compile group: 'org.jboss', name: 'jandex', version: '2.0.3.Final', withoutGuava
+    compile group: 'io.github.lukehutch', name: 'fast-classpath-scanner', version: '2.7.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4', withoutGuava // Used by FusionBean Class
+    compile group: 'commons-io', name: 'commons-io', version: '2.5', withoutGuava // Used by Fusion Class
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19', withoutGuava
 }
 
 sourceCompatibility = 1.8

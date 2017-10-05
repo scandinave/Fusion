@@ -6,6 +6,7 @@ package info.scandi.fusion.selenium.driver;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -16,13 +17,15 @@ import org.junit.Assert;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import info.scandi.fusion.core.ConfigurationManager;
 import info.scandi.fusion.core.Fusion;
@@ -45,15 +48,19 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	@Inject
 	ConfigurationManager conf;
 
+	protected Wait<WebDriver> wait;
+
 	@Inject
 	public AbstractDriver(@DriverExecutor CommandExecutor remoteAddress,
 			@BrowserDesiredCapabilities DesiredCapabilities desiredCapabilities) {
-		super(remoteAddress, desiredCapabilities, null);
+		super(remoteAddress, desiredCapabilities);
 
 	}
 
 	@PostConstruct
 	public void init() {
+		wait = new FluentWait<WebDriver>(this).withTimeout(30, TimeUnit.SECONDS).pollingEvery(5, TimeUnit.SECONDS)
+				.ignoring(NoSuchElementException.class);
 		// TODO make available at properties
 		manage().window().maximize();
 		manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS)
@@ -84,14 +91,16 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	 */
 	@Override
 	public boolean isElementPresent(By by, long timeoutSec, long timeoutMilliSec) {
-		boolean retour = false;
 		try {
-			new WebDriverWait(this, timeoutSec, timeoutMilliSec).until(ExpectedConditions.presenceOfElementLocated(by));
-			retour = true;
+			return wait.until(new Function<WebDriver, WebElement>() {
+				public WebElement apply(WebDriver driver) {
+					return driver.findElement(by);
+				}
+			}).isEnabled();
 		} catch (Exception e) {
 			System.out.println("The element is missing : " + e.getMessage());
+			return false;
 		}
-		return retour;
 	}
 
 	/*
@@ -115,9 +124,11 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	@Override
 	public boolean waitForVisible(By id) {
 		try {
-			new WebDriverWait(this, Fusion.EXPLICITLE_WAIT, Fusion.IMPLICITLY_WAIT)
-					.until(ExpectedConditions.visibilityOfElementLocated(id));
-			return true;
+			return wait.until(new Function<WebDriver, WebElement>() {
+				public WebElement apply(WebDriver driver) {
+					return driver.findElement(id);
+				}
+			}).isDisplayed();
 		} catch (Exception e) {
 			System.out.println("The element has not become visible : " + e.getMessage());
 			return false;
@@ -146,7 +157,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 			this.get(conf.getBrowser().getDownloadDir());
 		} catch (Exception e) {
 			Assert.fail(
-					"Unable to access the application.url variable in the file fusion.properties or unable to communite with the browser");
+					"Unable to access the application.url variable in the file fusion.xml or unable to communicate with the browser");
 		}
 
 	}
@@ -178,8 +189,10 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	 */
 	@Override
 	public void raffraichir(String type, String selector) {
-		new WebDriverWait(this, Fusion.EXPLICITLE_WAIT, Fusion.IMPLICITLY_WAIT).until(
-				ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(BySelec.get(type, selector))));
+		// new WebDriverWait(this, Fusion.EXPLICITLE_WAIT,
+		// Fusion.IMPLICITLY_WAIT).until(
+		// ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(BySelec.get(type,
+		// selector))));
 
 	}
 

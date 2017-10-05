@@ -45,8 +45,6 @@ public class ConfigurationManager {
 		String BDir = getDatabase().getBackup().getBackupDirectory() != null
 				? getDatabase().getBackup().getBackupDirectory()
 				: "/save.xml";
-		System.out.println(getCommon().getRootPath());
-		System.out.println(getDatabase().getBackup().getBackupDirectory());
 		return getCommon().getRootPath().concat("flatXmlDataSet").concat(BDir);
 	}
 }

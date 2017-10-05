@@ -24,6 +24,7 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
@@ -89,7 +90,7 @@ public class Fusion {
 	@Produces
 	@DriverExecutor
 	@ApplicationScoped
-	public CommandExecutor produceExecutor() throws UtilitaireException {
+	public CommandExecutor produceExecutor() throws UtilitaireException, ConfigurationException {
 		CommandExecutor driver;
 		boolean remote = conf.getBrowser().isRemote();
 		if (remote) {
@@ -101,20 +102,20 @@ public class Fusion {
 		return driver;
 	}
 
-	private CommandExecutor openLocalDriver() throws UtilitaireException {
+	private CommandExecutor openLocalDriver() throws UtilitaireException, ConfigurationException {
 		LOGGER.info("Opening Driver...");
 		String browserPath = conf.getBrowser().getBinary().trim();
 		RemoteWebDriver remoteDriver;
 		switch (conf.getBrowser().getType()) {
 		case "firefox":
-			// System.setProperty("webdriver.gecko.driver",
-			// "/Users/Ninja/Documents/Developpement/Logiciel/geckodriver");
-			if (browserPath.isEmpty()) {
-				remoteDriver = new FirefoxDriver(getFireFoxProfile());
-			} else {
+			System.setProperty("webdriver.gecko.driver", "/Users/Ninja/Documents/Developpement/Logiciel/geckodriver");
+			FirefoxOptions options = new FirefoxOptions();
+			options.setProfile(getFireFoxProfile());
+			if (!browserPath.isEmpty()) {
 				FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
-				remoteDriver = new FirefoxDriver(binary, getFireFoxProfile());
+				options.setBinary(binary);
 			}
+			remoteDriver = new FirefoxDriver(options);
 			break;
 		case "safari":
 			remoteDriver = new SafariDriver(getSafariOptions());
@@ -141,13 +142,7 @@ public class Fusion {
 		// remoteDriver = new Phan
 		// break;
 		default:
-			if (browserPath.isEmpty()) {
-				remoteDriver = new FirefoxDriver(getFireFoxProfile());
-			} else {
-				FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
-				remoteDriver = new FirefoxDriver(binary, getFireFoxProfile());
-			}
-			break;
+			throw new ConfigurationException("Unsuported Browser");
 		}
 		return remoteDriver.getCommandExecutor();
 	}
@@ -208,14 +203,9 @@ public class Fusion {
 	private FirefoxProfile getFireFoxProfile() throws UtilitaireException {
 		FirefoxProfile profile = new FirefoxProfile();
 		if (conf.getBrowser().getExtensions().isEnabled()) {
-			try {
-				for (Extension extension : conf.getBrowser().getExtensions().getExtension()) {
-					profile.addExtension(new File(extension.getPath()));
-				}
-			} catch (IOException e) {
-				throw new UtilitaireException(e);
+			for (Extension extension : conf.getBrowser().getExtensions().getExtension()) {
+				profile.addExtension(new File(extension.getPath()));
 			}
-			;
 		}
 		String prop = conf.getBrowser().getDownloadDir();
 		if (prop != null && !prop.isEmpty()) {
@@ -235,6 +225,7 @@ public class Fusion {
 			profile.setPreference("browser.download.lastDir", conf.getBrowser().getDownloadDir());
 			profile.setPreference("browser.download.panel.shown", false);
 			profile.setPreference("browser.download.alertOnEXEOpen", false);
+			profile.setPreference("app.update.enabled", false);
 			// profile.setPreference("network.proxy.autoconfig_url", "");
 			// profile.setPreference("browser.download.show_plugins_in_list",
 			// false);

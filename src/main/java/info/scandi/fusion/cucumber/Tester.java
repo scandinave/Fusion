@@ -35,6 +35,7 @@ public class Tester extends AbstractTester implements ITester {
 	@Override
 	@Given("^home$")
 	public void home() {
+		System.out.println(this.driver);
 		this.driver.home();
 	}
 
