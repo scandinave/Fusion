@@ -18,22 +18,18 @@ import org.dbunit.IDatabaseTester;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.safari.SafariOptions;
 
 import info.scandi.fusion.conf.Extension;
@@ -61,7 +57,7 @@ public class Fusion {
 
 	public final static int IMPLICITLY_WAIT = 1000;
 	public final static int EXPLICITLE_WAIT = 10;
-	public final static int PAGELOAD_TIMEOUT = 1000;
+	public final static int PAGELOAD_TIMEOUT = 10000;
 	public final static int SCRIPT_TIMEOUT = 10;
 
 	private final static String TYPE_ENV = "env";
@@ -105,32 +101,35 @@ public class Fusion {
 	private CommandExecutor openLocalDriver() throws UtilitaireException, ConfigurationException {
 		LOGGER.info("Opening Driver...");
 		String browserPath = conf.getBrowser().getBinary().trim();
-		RemoteWebDriver remoteDriver;
+		CommandExecutor commandExecutor = null;
 		switch (conf.getBrowser().getType()) {
 		case "firefox":
 			System.setProperty("webdriver.gecko.driver", "C:\\Developement\\Lib\\geckodriver.exe");
 			FirefoxOptions options = new FirefoxOptions();
-			options.setProfile(getFireFoxProfile());
+			// options.setProfile(getFireFoxProfile());
 			if (!browserPath.isEmpty()) {
 				FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
 				options.setBinary(binary);
 			}
-			remoteDriver = new FirefoxDriver(options);
+			DriverService.Builder<?, ?> builder = new GeckoDriverService.Builder()
+					.usingFirefoxBinary(options.getBinary());
+
+			commandExecutor = new DriverCommandExecutor(builder.build());
 			break;
 		case "safari":
-			remoteDriver = new SafariDriver(getSafariOptions());
+			// commandExecutor = new SafariDriver(getSafariOptions());
 			break;
 		case "edge":
-			remoteDriver = new EdgeDriver(getEdgeOptions());
+			// commandExecutor = new EdgeDriver(getEdgeOptions());
 			break;
 		case "ie":
-			remoteDriver = new InternetExplorerDriver();
+			// commandExecutor = new InternetExplorerDriver();
 			break;
 		case "opera":
-			remoteDriver = new OperaDriver(getOperaOptions());
+			// commandExecutor = new OperaDriver(getOperaOptions());
 			break;
 		case "chrome":
-			remoteDriver = new ChromeDriver(getChromeOptions(browserPath));
+			// commandExecutor = new ChromeDriver(getChromeOptions(browserPath));
 			break;
 		// case "htmlUnit":
 		// remoteDriver = new HtmlUnitDriver(false);
@@ -144,7 +143,7 @@ public class Fusion {
 		default:
 			throw new ConfigurationException("Unsuported Browser");
 		}
-		return remoteDriver.getCommandExecutor();
+		return commandExecutor;
 	}
 
 	private HttpCommandExecutor openRemoteDriver() throws UtilitaireException {

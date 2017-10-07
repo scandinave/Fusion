@@ -50,5 +50,4 @@ public class ConfigExtension implements Extension {
 			abd.addBean(new FusionBean<T>((Class<T>) type, bm));
 		});
 	}
-
 }

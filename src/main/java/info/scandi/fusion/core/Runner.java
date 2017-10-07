@@ -24,9 +24,10 @@ import cucumber.api.junit.Cucumber;
 import info.scandi.fusion.dbunit.worker.IWorker;
 import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.FusionException;
+import info.scandi.fusion.utils.Worker;
 
 /**
- * Entry point to launch Fsion test. This runner must be use with the JUnit
+ * Entry point to launch Fusion test. This runner must be use with the JUnit
  * RunWith annotation.
  * 
  * @author Scandinave
@@ -57,7 +58,7 @@ public class Runner extends Cucumber {
 		Weld weld = new Weld();
 		weldContainer = weld.initialize();
 
-		IWorker worker = lookup(IWorker.class, new AnnotationLiteral<info.scandi.fusion.utils.Worker>() {
+		IWorker worker = lookup(IWorker.class, new AnnotationLiteral<Worker>() {
 		});
 		ConfigurationManager conf = lookup(ConfigurationManager.class, new AnnotationLiteral<Any>() {
 		});

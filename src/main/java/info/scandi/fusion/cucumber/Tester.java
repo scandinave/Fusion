@@ -3,13 +3,9 @@
  */
 package info.scandi.fusion.cucumber;
 
-import javax.inject.Inject;
-
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import info.scandi.fusion.exception.FusionException;
-import info.scandi.fusion.selenium.driver.IDriver;
-import info.scandi.fusion.utils.Driver;
 
 /**
  * Test générique valable pour l'ensemble des projets.
@@ -24,23 +20,24 @@ public class Tester extends AbstractTester implements ITester {
 	 */
 	private static final long serialVersionUID = -6581608978102622951L;
 
-	@Inject
-	@Driver
-	private IDriver driver;
+	// @Inject
+	// @Driver
+	// private IDriver driver;
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#home()
 	 */
 	@Override
 	@Given("^home$")
 	public void home() {
-		System.out.println(this.driver);
 		this.driver.home();
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#ok()
 	 */
 	@Override
@@ -51,6 +48,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#wait(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -61,6 +59,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#refresh(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -71,6 +70,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#html5Erreur(java.lang.String)
 	 */
 	@Override
@@ -81,6 +81,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#click(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -91,6 +92,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#fill(java.lang.String, java.lang.String,
 	 * java.lang.String)
 	 */
@@ -102,6 +104,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#select(java.lang.String, java.lang.String,
 	 * java.lang.String)
 	 */
@@ -113,6 +116,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isDisabled(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -123,6 +127,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isEnabled(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -133,6 +138,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isFull(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -143,6 +149,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isEmpty(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -153,6 +160,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isVisible(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -163,6 +171,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isHidden(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -173,6 +182,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#check(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -183,6 +193,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#isSelected(java.lang.String)
 	 */
 	@Override
@@ -193,6 +204,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#connection(java.lang.String)
 	 */
 	@Override
@@ -203,6 +215,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#disconnection()
 	 */
 	@Override
@@ -214,6 +227,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#navigation(java.lang.String)
 	 */
 	@Override
@@ -225,6 +239,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#waitForPage()
 	 */
 	@Override
@@ -236,6 +251,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#errorMessage()
 	 */
 	@Override
@@ -247,6 +263,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#warningMessage()
 	 */
 	@Override
@@ -257,6 +274,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#infoMessage()
 	 */
 	@Override
@@ -268,8 +286,8 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
-	 * @see cucumber.ITester#countRowsTable(java.lang.String, java.lang.String,
-	 * int)
+	 * 
+	 * @see cucumber.ITester#countRowsTable(java.lang.String, java.lang.String, int)
 	 */
 	@Override
 	@Then("^count row in table " + REGTEXT + ":" + REGTEXT + ", expected:" + REGTEXT + "$")
@@ -279,6 +297,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#acceptPopupWindow()
 	 */
 	@Override
@@ -290,6 +309,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#cancelPopupWindow()
 	 */
 	@Override
@@ -301,6 +321,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#hasvalue(java.lang.String, java.lang.String, int)
 	 */
 	@Override
@@ -312,6 +333,7 @@ public class Tester extends AbstractTester implements ITester {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.ITester#hasClass(java.lang.String, java.lang.String, int)
 	 */
 	@Override

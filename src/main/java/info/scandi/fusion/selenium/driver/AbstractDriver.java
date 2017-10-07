@@ -54,6 +54,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	public AbstractDriver(@DriverExecutor CommandExecutor remoteAddress,
 			@BrowserDesiredCapabilities DesiredCapabilities desiredCapabilities) {
 		super(remoteAddress, desiredCapabilities);
+		System.out.println(this.hashCode());
 
 	}
 
@@ -68,15 +69,18 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 				.setScriptTimeout(Fusion.SCRIPT_TIMEOUT, TimeUnit.MILLISECONDS);
 		manage().deleteAllCookies();
 		navigate().refresh();
+
 	}
 
 	@PreDestroy
 	public void finish() {
+		System.out.println(this.hashCode());
 		this.quit();
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#index()
 	 */
 	@Override
@@ -86,13 +90,15 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see selenium.driver.IDriver#isElementPresent(org.openqa.selenium.By,
-	 * long, long)
+	 * 
+	 * @see selenium.driver.IDriver#isElementPresent(org.openqa.selenium.By, long,
+	 * long)
 	 */
 	@Override
 	public boolean isElementPresent(By by, long timeoutSec, long timeoutMilliSec) {
 		try {
 			return wait.until(new Function<WebDriver, WebElement>() {
+				@Override
 				public WebElement apply(WebDriver driver) {
 					return driver.findElement(by);
 				}
@@ -105,6 +111,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#isElementPresent(org.openqa.selenium.By)
 	 */
 	@Override
@@ -119,12 +126,14 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#waitForVisible(org.openqa.selenium.By)
 	 */
 	@Override
 	public boolean waitForVisible(By id) {
 		try {
 			return wait.until(new Function<WebDriver, WebElement>() {
+				@Override
 				public WebElement apply(WebDriver driver) {
 					return driver.findElement(id);
 				}
@@ -137,6 +146,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#confirmation()
 	 */
 	@Override
@@ -149,13 +159,14 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#accueil()
 	 */
 	@Override
 	public void home() {
-		try {
-			this.get(conf.getBrowser().getDownloadDir());
-		} catch (Exception e) {
+		if (!conf.getCommon().getAppUrl().isEmpty()) {
+			this.navigate().to(conf.getCommon().getAppUrl());
+		} else {
 			Assert.fail(
 					"Unable to access the application.url variable in the file fusion.xml or unable to communicate with the browser");
 		}
@@ -164,6 +175,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#ok()
 	 */
 	@Override
@@ -173,6 +185,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#attendre(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -184,8 +197,8 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see selenium.driver.IDriver#raffraichir(java.lang.String,
-	 * java.lang.String)
+	 * 
+	 * @see selenium.driver.IDriver#raffraichir(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void raffraichir(String type, String selector) {
@@ -198,6 +211,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#html5Erreur(java.lang.String)
 	 */
 	@Override
@@ -212,6 +226,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#cliquer(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -222,6 +237,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#remplir(java.lang.String, java.lang.String,
 	 * java.lang.String)
 	 */
@@ -234,8 +250,9 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see selenium.driver.IDriver#selectionner(java.lang.String,
-	 * java.lang.String, java.lang.String)
+	 * 
+	 * @see selenium.driver.IDriver#selectionner(java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public void selectionner(String type, String selector, String valeur) {
@@ -246,6 +263,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#etreDesactiver(java.lang.String,
 	 * java.lang.String)
 	 */
@@ -258,8 +276,8 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see selenium.driver.IDriver#etreActiver(java.lang.String,
-	 * java.lang.String)
+	 * 
+	 * @see selenium.driver.IDriver#etreActiver(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void etreActiver(String type, String selector) {
@@ -272,8 +290,8 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see selenium.driver.IDriver#etrePlein(java.lang.String,
-	 * java.lang.String)
+	 * 
+	 * @see selenium.driver.IDriver#etrePlein(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void etrePlein(String type, String selector) {
@@ -291,6 +309,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#etreVide(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -311,8 +330,8 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see selenium.driver.IDriver#etreVisible(java.lang.String,
-	 * java.lang.String)
+	 * 
+	 * @see selenium.driver.IDriver#etreVisible(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void etreVisible(String type, String selector) {
@@ -324,6 +343,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#etreInvisible(java.lang.String,
 	 * java.lang.String)
 	 */
@@ -337,6 +357,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#checker(java.lang.String, java.lang.String,
 	 * java.lang.String)
 	 */
@@ -358,6 +379,7 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see selenium.driver.IDriver#etreSelectionne(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
@@ -381,8 +403,8 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * info.scandi.fusion.selenium.driver.IDriver#hasClass(java.lang.String,
+	 * 
+	 * @see info.scandi.fusion.selenium.driver.IDriver#hasClass(java.lang.String,
 	 * java.lang.String, int)
 	 */
 	@Override

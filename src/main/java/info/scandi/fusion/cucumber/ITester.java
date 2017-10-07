@@ -17,8 +17,8 @@ import info.scandi.fusion.selenium.driver.AbstractDriver;
 public interface ITester {
 
 	/**
-	 * Log in the user to the application. This method must be implemented by
-	 * the application driver.
+	 * Log in the user to the application. This method must be implemented by the
+	 * application driver.
 	 * 
 	 * @param user
 	 *            User login.
@@ -28,14 +28,14 @@ public interface ITester {
 	void connection(String login) throws FusionException;
 
 	/**
-	 * Log of the user to the application. This method must be implemented by
-	 * the application driver.
+	 * Log of the user to the application. This method must be implemented by the
+	 * application driver.
 	 */
 	void disconnection();
 
 	/**
-	 * Loads a page by clicking on a link. This method must be implemented by
-	 * the application driver.
+	 * Loads a page by clicking on a link. This method must be implemented by the
+	 * application driver.
 	 * 
 	 * @param target
 	 *            Target text link.
@@ -43,9 +43,9 @@ public interface ITester {
 	void navigation(String target);
 
 	/**
-	 * Wait for page to load. This method is a shortcut of the refresh method
-	 * with a predefined element. This method must be implemented by the
-	 * application driver.
+	 * Wait for page to load. This method is a shortcut of the refresh method with a
+	 * predefined element. This method must be implemented by the application
+	 * driver.
 	 */
 	void waitForPage();
 
@@ -68,8 +68,8 @@ public interface ITester {
 	void infoMessage();
 
 	/**
-	 * Counts the number of row in the table. This method must be implemented by
-	 * the application driver.
+	 * Counts the number of row in the table. This method must be implemented by the
+	 * application driver.
 	 * 
 	 * @param type
 	 *            Selector type {@link BySelec}
@@ -86,8 +86,8 @@ public interface ITester {
 	void home();
 
 	/**
-	 * Convenience method to tell that this test is good at this moment if no
-	 * other result is awaited.
+	 * Convenience method to tell that this test is good at this moment if no other
+	 * result is awaited.
 	 */
 	void ok();
 
