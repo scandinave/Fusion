@@ -3,7 +3,9 @@ package info.scandi.fusion.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,10 +36,12 @@ import org.openqa.selenium.safari.SafariOptions;
 
 import info.scandi.fusion.conf.Extension;
 import info.scandi.fusion.exception.ConfigurationException;
+import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.exception.UtilitaireException;
 import info.scandi.fusion.utils.BrowserCapabilities;
 import info.scandi.fusion.utils.BrowserDesiredCapabilities;
 import info.scandi.fusion.utils.DriverExecutor;
+import info.scandi.fusion.utils.OSType;
 import info.scandi.fusion.utils.PropsUtils;
 
 /**
@@ -86,7 +90,8 @@ public class Fusion {
 	@Produces
 	@DriverExecutor
 	@ApplicationScoped
-	public CommandExecutor produceExecutor() throws UtilitaireException, ConfigurationException {
+	public CommandExecutor produceExecutor()
+			throws UtilitaireException, ConfigurationException, FusionException, URISyntaxException {
 		CommandExecutor driver;
 		boolean remote = conf.getBrowser().isRemote();
 		if (remote) {
@@ -98,15 +103,33 @@ public class Fusion {
 		return driver;
 	}
 
-	private CommandExecutor openLocalDriver() throws UtilitaireException, ConfigurationException {
+	private CommandExecutor openLocalDriver()
+			throws UtilitaireException, ConfigurationException, FusionException, URISyntaxException {
 		LOGGER.info("Opening Driver...");
 		String browserPath = conf.getBrowser().getBinary().trim();
 		CommandExecutor commandExecutor = null;
 		switch (conf.getBrowser().getType()) {
 		case "firefox":
-			System.setProperty("webdriver.gecko.driver", "C:\\Developement\\Lib\\geckodriver.exe");
+			String driverDirectory = "driver".concat(File.separator);
+			switch (getOSType()) {
+			case LINUX:
+				System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
+						.getResource(driverDirectory.concat("geckodriver-linux")).toURI().getPath());
+				break;
+			case WINDOWS:
+				System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
+						.getResource(driverDirectory.concat("geckodriver.exe")).toURI().getPath());
+				break;
+			case MACOS:
+				System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
+						.getResource(driverDirectory.concat("geckodriver-mac")).toURI().getPath());
+				break;
+			default:
+				break;
+			}
+
 			FirefoxOptions options = new FirefoxOptions();
-			// options.setProfile(getFireFoxProfile());
+			options.setProfile(getFireFoxProfile());
 			if (!browserPath.isEmpty()) {
 				FirefoxBinary binary = new FirefoxBinary(new File(browserPath));
 				options.setBinary(binary);
@@ -151,6 +174,20 @@ public class Fusion {
 			return new HttpCommandExecutor(new URL(conf.getBrowser().getGrid()));
 		} catch (MalformedURLException e) {
 			throw new UtilitaireException(e);
+		}
+	}
+
+	private OSType getOSType() throws FusionException {
+		String osName = System.getProperty("os.name");
+		String osNameMatch = osName.toLowerCase(Locale.FRANCE);
+		if (osNameMatch.contains("linux")) {
+			return OSType.LINUX;
+		} else if (osNameMatch.contains("windows")) {
+			return OSType.WINDOWS;
+		} else if (osNameMatch.contains("mac os") || osNameMatch.contains("macos") || osNameMatch.contains("darwin")) {
+			return OSType.MACOS;
+		} else {
+			throw new FusionException("Unsupported OS");
 		}
 	}
 

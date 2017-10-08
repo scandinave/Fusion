@@ -17,6 +17,7 @@ public class CucumberFactory implements ObjectFactory {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.api.java.ObjectFactory#start()
 	 */
 	@Override
@@ -26,6 +27,7 @@ public class CucumberFactory implements ObjectFactory {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see cucumber.api.java.ObjectFactory#stop()
 	 */
 	@Override
@@ -39,7 +41,8 @@ public class CucumberFactory implements ObjectFactory {
 
 	@Override
 	public <T> T getInstance(Class<T> type) {
-		return weld.instance().select(type, new AnnotationLiteral<info.scandi.fusion.utils.Tester>() {
+		return weld.select(type, new AnnotationLiteral<info.scandi.fusion.utils.Tester>() {
+			private static final long serialVersionUID = -4039773026320876671L;
 		}).get();
 	}
 
