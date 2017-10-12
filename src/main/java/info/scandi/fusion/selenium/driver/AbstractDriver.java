@@ -10,7 +10,6 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -54,7 +53,6 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 	public AbstractDriver(@DriverExecutor CommandExecutor remoteAddress,
 			@BrowserDesiredCapabilities DesiredCapabilities desiredCapabilities) {
 		super(remoteAddress, desiredCapabilities);
-		System.out.println(this.hashCode());
 
 	}
 
@@ -72,11 +70,10 @@ public abstract class AbstractDriver extends RemoteWebDriver implements IDriver 
 
 	}
 
-	@PreDestroy
-	public void finish() {
-		System.out.println(this.hashCode());
-		this.quit();
-	}
+	// @PreDestroy
+	// public void finish() {
+	// this.quit();
+	// }
 
 	/*
 	 * (non-Javadoc)

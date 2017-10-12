@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.generators;
+package info.scandi.fusion.database.generators;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import info.scandi.fusion.dbunit.FlatXmlBuilder;
-import info.scandi.fusion.dbunit.bdd.TableBDD;
-import info.scandi.fusion.dbunit.worker.AbstractWorker;
+import info.scandi.fusion.database.FlatXmlBuilder;
+import info.scandi.fusion.database.bdd.TableBDD;
+import info.scandi.fusion.database.worker.AbstractWorker;
 
 /**
  * Generates purge.xml file used purge the database. Some table can be skip by redefining the worker save method .

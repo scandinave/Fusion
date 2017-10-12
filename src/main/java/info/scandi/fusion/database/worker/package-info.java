@@ -5,4 +5,4 @@
  * @author Scandinave
  *
  */
-package info.scandi.fusion.dbunit.worker;
+package info.scandi.fusion.database.worker;

@@ -1,13 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-configurations {
-
-    all {
-        transitive = true
-    }
-}
-
 repositories {
 	mavenCentral()
 }
@@ -27,6 +20,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4', withoutGuava // Used by FusionBean Class
     compile group: 'commons-io', name: 'commons-io', version: '2.5', withoutGuava // Used by Fusion Class
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19', withoutGuava
+    
 }
 
 sourceCompatibility = 1.8
@@ -38,10 +32,3 @@ jar {
 	}
 }
 
-uploadArchives {
-	repositories {
-		flatDir {
-			dirs 'repos'
-		}
-	}
-}

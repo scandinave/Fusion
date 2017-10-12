@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.worker;
+package info.scandi.fusion.database.worker;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,13 +11,21 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
+import org.dbunit.IDatabaseTester;
+import org.dbunit.PropertiesBasedJdbcDatabaseTester;
+import org.dbunit.database.IDatabaseConnection;
+
 import info.scandi.fusion.conf.ExclusionSchemas;
-import info.scandi.fusion.dbunit.bdd.SequenceBDD;
-import info.scandi.fusion.dbunit.bdd.TableBDD;
+import info.scandi.fusion.core.Fusion;
+import info.scandi.fusion.database.bdd.SequenceBDD;
+import info.scandi.fusion.database.bdd.TableBDD;
+import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.exception.RequestException;
+import info.scandi.fusion.exception.UtilitaireException;
 
 /**
  * Default implementation of the PostgreSQL DBMS worker.
@@ -53,6 +61,7 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#toogleContrainte(boolean)
 	 */
 	@Override
@@ -69,9 +78,10 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see dbunit.worker.IWorker#cleanSequence()
+	/**
+	 * Initializes sequence to 0.
+	 * 
+	 * @throws FusionException
 	 */
 	@Override
 	public void cleanSequence() throws FusionException {
@@ -84,6 +94,12 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 		LOGGER.fine("Sequences update finish.");
 	}
 
+	/**
+	 * Synchronizes the sequence with data after table update.
+	 * 
+	 * @throws FusionException
+	 */
+	@Override
 	public void majSequence() throws FusionException {
 		TreeSet<SequenceBDD> sequences = getSequences(conf.getDatabase().getLiquibase().getExclusionSchemas(), null);
 		for (SequenceBDD sequence : sequences) {
@@ -190,4 +206,74 @@ public abstract class AbstractPosgreSQLWorker extends AbstractWorker {
 			throw new FusionException("can't make a vacum full", e);
 		}
 	}
+
+	@Produces
+	@ApplicationScoped
+	public IDatabaseConnection produceDatabaseConnection() throws ConfigurationException {
+		LOGGER.info("Initialisation de la connexion");
+		try {
+			checkDatabaseParameter();
+			String datasourceType = conf.getDatabase().getConnectionType();
+			IDatabaseTester jdbcConnection = null;
+			String databaseDriver = conf.getDatabase().getDriver();
+			String databaseUrl = "jdbc:postgresql://" + conf.getDatabase().getHost() + ":"
+					+ conf.getDatabase().getPort() + "/" + conf.getDatabase().getName();
+			String databaseId = conf.getDatabase().getUsername();
+			String databasePassword = conf.getDatabase().getPassword();
+			if (datasourceType.equals(Fusion.TYPE_CUSTOM)) { // cas jdbc standard
+				LOGGER.info("Connexion depuis propriété jdbc");
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, databaseUrl);
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, databaseDriver);
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, databaseId);
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, databasePassword);
+			} else if (datasourceType.equals(Fusion.TYPE_ENV)) { // cas datasource
+				LOGGER.info("Connexion depuis variable d'environnement");
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, System.getenv(databaseUrl));
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, databaseDriver);
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, System.getenv(databaseId));
+				System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, System.getenv(databasePassword));
+			} else {
+				throw new ConfigurationException(
+						"Aucun type de connexion défini. Veuillez choisir entre 'custom' et 'env'");
+			}
+			jdbcConnection = new PropertiesBasedJdbcDatabaseTester();
+			return jdbcConnection.getConnection();
+		} catch (UtilitaireException e) {
+			throw new ConfigurationException(
+					"Impossible de récupérer les informations de connexion à la base de données.", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ConfigurationException(
+					"Un problème est survenu lors de l'initialisation de la connexion à la base de donnée", e);
+		}
+	}
+
+	/**
+	 * Permet de vérifier les paramètre de connexion à la base de donnée en fonction
+	 * du type de connexion (env ou custom)
+	 * 
+	 * @throws ConfigurationException
+	 *             Exception levée si un des paramètre de connexion est manquant.
+	 */
+	private void checkDatabaseParameter() throws ConfigurationException {
+		if (conf.getDatabase().getHost() == null) {
+			throw new ConfigurationException("The property database.host is missing");
+		}
+		if (conf.getDatabase().getPort() == null) {
+			throw new ConfigurationException("The property database.port is missing");
+		}
+		if (conf.getDatabase().getName() == null) {
+			throw new ConfigurationException("The property database.name is missing");
+		}
+		if (conf.getDatabase().getDriver() == null) {
+			throw new ConfigurationException("The property database.driver is missing");
+		}
+		if (conf.getDatabase().getUsername() == null) {
+			throw new ConfigurationException("The property database.name is missing");
+		}
+		if (conf.getDatabase().getPassword() == null) {
+			throw new ConfigurationException("The property database.password is missing");
+		}
+	}
+
 }

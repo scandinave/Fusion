@@ -1,6 +1,7 @@
 package info.scandi.fusion.core;
 
 import java.io.File;
+import java.util.Locale;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -11,6 +12,8 @@ import javax.xml.bind.Unmarshaller;
 import info.scandi.fusion.conf.Browser;
 import info.scandi.fusion.conf.Common;
 import info.scandi.fusion.conf.Database;
+import info.scandi.fusion.exception.FusionException;
+import info.scandi.fusion.utils.OSType;
 
 @Named
 @ApplicationScoped
@@ -44,7 +47,21 @@ public class ConfigurationManager {
 	public String getBackupDirectory() {
 		String BDir = getDatabase().getBackup().getBackupDirectory() != null
 				? getDatabase().getBackup().getBackupDirectory()
-				: "/save.xml";
+				: "/save";
 		return getCommon().getRootPath().concat("flatXmlDataSet").concat(BDir);
+	}
+
+	public OSType getOSType() throws FusionException {
+		String osName = System.getProperty("os.name");
+		String osNameMatch = osName.toLowerCase(Locale.FRANCE);
+		if (osNameMatch.contains("linux")) {
+			return OSType.LINUX;
+		} else if (osNameMatch.contains("windows")) {
+			return OSType.WINDOWS;
+		} else if (osNameMatch.contains("mac os") || osNameMatch.contains("macos") || osNameMatch.contains("darwin")) {
+			return OSType.MACOS;
+		} else {
+			throw new FusionException("Unsupported OS");
+		}
 	}
 }

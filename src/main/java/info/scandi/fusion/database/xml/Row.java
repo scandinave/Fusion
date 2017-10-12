@@ -1,4 +1,4 @@
-package info.scandi.fusion.dbunit.xml;
+package info.scandi.fusion.database.xml;
 
 import java.util.HashMap;
 import java.util.Map;

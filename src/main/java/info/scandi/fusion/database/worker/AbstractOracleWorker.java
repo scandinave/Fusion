@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.worker;
+package info.scandi.fusion.database.worker;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;

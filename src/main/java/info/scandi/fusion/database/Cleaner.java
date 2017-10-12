@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit;
+package info.scandi.fusion.database;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -15,8 +15,8 @@ import javax.inject.Named;
 
 import org.dbunit.database.IDatabaseConnection;
 
-import info.scandi.fusion.dbunit.bdd.TableBDD;
-import info.scandi.fusion.dbunit.worker.AbstractWorker;
+import info.scandi.fusion.database.bdd.TableBDD;
+import info.scandi.fusion.database.worker.AbstractWorker;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.exception.RequestException;
 import info.scandi.fusion.utils.Worker;

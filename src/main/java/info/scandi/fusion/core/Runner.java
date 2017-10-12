@@ -21,7 +21,7 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
 import cucumber.api.junit.Cucumber;
-import info.scandi.fusion.dbunit.worker.IWorker;
+import info.scandi.fusion.database.worker.IWorker;
 import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.utils.Worker;

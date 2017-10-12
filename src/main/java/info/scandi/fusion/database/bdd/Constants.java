@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.bdd;
+package info.scandi.fusion.database.bdd;
 
 /**
  * Common constants used by Fusion

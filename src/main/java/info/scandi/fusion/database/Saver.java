@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit;
+package info.scandi.fusion.database;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,8 +23,8 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import info.scandi.fusion.core.ConfigurationManager;
-import info.scandi.fusion.dbunit.bdd.TableBDD;
-import info.scandi.fusion.dbunit.worker.AbstractWorker;
+import info.scandi.fusion.database.bdd.TableBDD;
+import info.scandi.fusion.database.worker.AbstractWorker;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.utils.FileUtil;
 import info.scandi.fusion.utils.Worker;

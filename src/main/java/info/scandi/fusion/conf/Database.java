@@ -2,12 +2,13 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
 // Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.05 à 11:06:26 PM CEST 
+// Généré le : 2017.10.11 à 09:24:59 PM CEST 
 //
 
 
 package info.scandi.fusion.conf;
 
+import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -31,7 +32,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *       &lt;all&gt;
  *         &lt;element ref="{http://fusion.scandi.info}liquibase"/&gt;
  *         &lt;element name="driver" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element name="url" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
+ *         &lt;element name="host" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
+ *         &lt;element name="port" type="{http://www.w3.org/2001/XMLSchema}integer"/&gt;
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
  *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
  *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
  *         &lt;element ref="{http://fusion.scandi.info}backup"/&gt;
@@ -68,9 +71,14 @@ public class Database {
     @XmlSchemaType(name = "token")
     protected String driver;
     @XmlElement(required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String host;
+    @XmlElement(required = true)
+    protected BigInteger port;
+    @XmlElement(required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "token")
-    protected String url;
+    protected String name;
     @XmlElement(required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "token")
@@ -140,27 +148,75 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriété url.
+     * Obtient la valeur de la propriété host.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getUrl() {
-        return url;
+    public String getHost() {
+        return host;
     }
 
     /**
-     * Définit la valeur de la propriété url.
+     * Définit la valeur de la propriété host.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setUrl(String value) {
-        this.url = value;
+    public void setHost(String value) {
+        this.host = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété port.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    public BigInteger getPort() {
+        return port;
+    }
+
+    /**
+     * Définit la valeur de la propriété port.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setPort(BigInteger value) {
+        this.port = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété name.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Définit la valeur de la propriété name.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**

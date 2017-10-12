@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import info.scandi.fusion.dbunit.worker.AbstractWorker;
+import info.scandi.fusion.database.worker.AbstractWorker;
 import info.scandi.fusion.exception.FusionException;
 
 @RunWith(MockitoJUnitRunner.class)

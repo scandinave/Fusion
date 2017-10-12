@@ -1,4 +1,4 @@
-package info.scandi.fusion.dbunit.generators;
+package info.scandi.fusion.database.generators;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import info.scandi.fusion.dbunit.FlatXmlBuilder;
-import info.scandi.fusion.dbunit.bdd.RowLiquibaseDatabasechangelogBDD;
+import info.scandi.fusion.database.FlatXmlBuilder;
+import info.scandi.fusion.database.bdd.RowLiquibaseDatabasechangelogBDD;
 
 /**
  * Generates liquibase.xml file used to save the liquibase datachangelog before the purge. 

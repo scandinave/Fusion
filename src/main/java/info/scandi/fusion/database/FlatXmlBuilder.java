@@ -1,4 +1,4 @@
-package info.scandi.fusion.dbunit;
+package info.scandi.fusion.database;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import info.scandi.fusion.dbunit.xml.Row;
+import info.scandi.fusion.database.xml.Row;
 import info.scandi.fusion.exception.FusionException;
 
 /**

@@ -5,4 +5,4 @@
  * @author Scandinave
  *
  */
-package info.scandi.fusion.dbunit;
+package info.scandi.fusion.driver;

@@ -5,4 +5,4 @@
  * @author Scandinave
  *
  */
-package driver;
+package info.scandi.fusion.database;

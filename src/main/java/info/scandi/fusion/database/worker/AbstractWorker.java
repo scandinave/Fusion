@@ -1,7 +1,7 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.worker;
+package info.scandi.fusion.database.worker;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,18 +36,18 @@ import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
 import info.scandi.fusion.core.ConfigurationManager;
-import info.scandi.fusion.dbunit.Cleaner;
-import info.scandi.fusion.dbunit.Saver;
-import info.scandi.fusion.dbunit.bdd.TableBDD;
+import info.scandi.fusion.database.Cleaner;
+import info.scandi.fusion.database.Saver;
+import info.scandi.fusion.database.bdd.TableBDD;
 import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.FusionException;
 import info.scandi.fusion.exception.RequestException;
 import info.scandi.fusion.exception.UtilitaireException;
 
 /**
- * Abstract base class that implements behavior common to all workers.
- * Every workers implementation must extend this class.
- * All worker implementation must implement the singleton pattern.
+ * Abstract base class that implements behavior common to all workers. Every
+ * workers implementation must extend this class. All worker implementation must
+ * implement the singleton pattern.
  * 
  * @author Scandinave
  */
@@ -96,6 +96,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IWorker#getAllScenarii()
 	 */
 	@Override
@@ -146,6 +147,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#init()
 	 */
 	@Override
@@ -243,8 +245,18 @@ public abstract class AbstractWorker implements IWorker {
 		}
 	}
 
+	/**
+	 * Toggles constraints on a database.
+	 * 
+	 * @param toogle
+	 *            if true enables constraints, if false disables constraints
+	 * @throws FusionException
+	 */
+	public abstract void toogleContrainte(boolean toogle) throws FusionException;
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#clean()
 	 */
 	@Override
@@ -258,6 +270,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#start()
 	 */
 	@Override
@@ -292,6 +305,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#reset()
 	 */
 	@Override
@@ -302,6 +316,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#insert(java.lang.String)
 	 */
 	@Override
@@ -314,6 +329,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#delete(java.lang.String)
 	 */
 	@Override
@@ -324,21 +340,35 @@ public abstract class AbstractWorker implements IWorker {
 		this.toogleContrainte(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see dbunit.worker.IBDDWorker#load(java.lang.String)
+	/**
+	 * Loads the content of a data file(xml, json) file into database.
+	 * 
+	 * @param file
+	 *            File to load
+	 * @param operation
+	 *            Database operation to execute.
+	 * @throws FusionException
 	 */
-	@Override
 	public void load(String filePath, DatabaseOperation operation) throws FusionException {
 		File file = new File(filePath);
 		load(file, operation);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see dbunit.worker.IBDDWorker#load(java.io.File)
-	 */
 	@Override
+	public void load(String filePath) throws FusionException {
+		File file = new File(filePath);
+		load(file, DatabaseOperation.INSERT);
+	}
+
+	/**
+	 * Loads the content of a data file(xml, json) into database.
+	 * 
+	 * @param filePath
+	 *            Path of the file to load.
+	 * @param operation
+	 *            Database operation to execute.
+	 * @throws FusionException
+	 */
 	public void load(File file, DatabaseOperation operation) throws FusionException {
 		if (file.exists()) {
 			recursive(file, operation);
@@ -355,6 +385,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#load(java.io.File)
 	 */
 	@Override
@@ -364,6 +395,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IWorker#save()
 	 */
 	@Override
@@ -374,8 +406,23 @@ public abstract class AbstractWorker implements IWorker {
 		}
 	}
 
+	/**
+	 * Reset table identifier to 0.
+	 * 
+	 * @throws FusionException
+	 */
+	public abstract void cleanSequence() throws FusionException;
+
+	/**
+	 * Update table identifier after inserting data.
+	 * 
+	 * @throws FusionException
+	 */
+	public abstract void majSequence() throws FusionException;
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IWorker#restore()
 	 */
 	@Override
@@ -408,6 +455,7 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see dbunit.worker.IBDDWorker#stop()
 	 */
 	@Override
@@ -554,10 +602,8 @@ public abstract class AbstractWorker implements IWorker {
 	}
 
 	/**
-	 * Returns all table with type Table.
-	 * Other type are "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
-	 * TEMPORARY", "ALIAS",
-	 * "SYNONYM"
+	 * Returns all table with type Table. Other type are "VIEW", "SYSTEM TABLE",
+	 * "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
 	 * 
 	 * @return List of table with type Table.
 	 * @throws FusionException
@@ -568,10 +614,8 @@ public abstract class AbstractWorker implements IWorker {
 	}
 
 	/**
-	 * Returns all table with target type.
-	 * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
-	 * TEMPORARY", "ALIAS",
-	 * "SYNONYM"
+	 * Returns all table with target type. Type are "TABLE", "VIEW", "SYSTEM TABLE",
+	 * "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
 	 * 
 	 * @param types
 	 *            Filter return table by type.
@@ -583,11 +627,9 @@ public abstract class AbstractWorker implements IWorker {
 	}
 
 	/**
-	 * Returns all table with type table. Can be filter by schema or specific
-	 * table.
+	 * Returns all table with type table. Can be filter by schema or specific table.
 	 * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
-	 * TEMPORARY", "ALIAS",
-	 * "SYNONYM"
+	 * TEMPORARY", "ALIAS", "SYNONYM"
 	 * 
 	 * @param schemaExclusions
 	 *            Remove schema from the result.
@@ -604,10 +646,8 @@ public abstract class AbstractWorker implements IWorker {
 
 	/**
 	 * Returns all table with target type. Can be filter by schema or specific
-	 * table.
-	 * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
-	 * TEMPORARY", "ALIAS",
-	 * "SYNONYM"
+	 * table. Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
+	 * TEMPORARY", "ALIAS", "SYNONYM"
 	 * 
 	 * @param schemaExclusions
 	 *            Remove schema from the result.

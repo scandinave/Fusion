@@ -1,11 +1,11 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.bdd;
+package info.scandi.fusion.database.bdd;
 
 import java.util.Map;
 
-import info.scandi.fusion.dbunit.xml.Row;
+import info.scandi.fusion.database.xml.Row;
 
 /**
  * Corresponds to an entry in the Liquibase table.

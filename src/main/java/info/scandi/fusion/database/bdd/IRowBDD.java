@@ -1,9 +1,9 @@
 /**
  * 
  */
-package info.scandi.fusion.dbunit.bdd;
+package info.scandi.fusion.database.bdd;
 
-import info.scandi.fusion.dbunit.xml.Row;
+import info.scandi.fusion.database.xml.Row;
 
 /**
  * @author Nonorc

@@ -49,7 +49,9 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 			<xsd:all>
 				<xsd:element ref="liquibase" />
 				<xsd:element name="driver" type="xsd:token"/>
-				<xsd:element name="url" type="xsd:token"/>
+				<xsd:element name="host" type="xsd:anyURI"/>
+				<xsd:element name="port" type="xsd:integer"/>
+				<xsd:element name="name" type="xsd:token"/>
 				<xsd:element name="username" type="xsd:token"/>
 				<xsd:element name="password" type="xsd:token"/>
 				<xsd:element ref="backup"/>
