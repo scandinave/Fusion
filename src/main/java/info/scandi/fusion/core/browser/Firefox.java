@@ -34,23 +34,24 @@ public class Firefox {
 
 	public CommandExecutor getCommandExecutor() throws FusionException, URISyntaxException, UtilitaireException {
 		String browserPath = conf.getBrowser().getBinary().trim();
-		String driverDirectory = "/info/scandi/fusion/driver".concat(File.separator);
-		switch (conf.getOSType()) {
-		case LINUX:
-			System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
-					.getResource(driverDirectory.concat("geckodriver-linux")).toURI().getPath());
-			break;
-		case WINDOWS:
-			System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
-					.getResource(driverDirectory.concat("geckodriver.exe")).toURI().getPath());
-			break;
-		case MACOS:
-			System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
-					.getResource(driverDirectory.concat("geckodriver-mac")).toURI().getPath());
-			break;
-		default:
-			break;
-		}
+		// String driverDirectory = "/info/scandi/fusion/driver".concat(File.separator);
+		System.setProperty("webdriver.gecko.driver", this.conf.getBrowser().getDriver());
+		// switch (conf.getOSType()) {
+		// case LINUX:
+		// System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
+		// .getResource(driverDirectory.concat("geckodriver-linux")).toURI().getPath());
+		// break;
+		// case WINDOWS:
+		// System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
+		// .getResource(driverDirectory.concat("geckodriver.exe")).toURI().getPath());
+		// break;
+		// case MACOS:
+		// System.setProperty("webdriver.gecko.driver", this.getClass().getClassLoader()
+		// .getResource(driverDirectory.concat("geckodriver-mac")).toURI().getPath());
+		// break;
+		// default:
+		// break;
+		// }
 
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(getFireFoxProfile());

@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
 // Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.11 à 09:24:59 PM CEST 
+// Généré le : 2017.10.12 à 10:11:45 PM CEST 
 //
 
 
@@ -11,6 +11,7 @@ package info.scandi.fusion.conf;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -29,7 +30,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element ref="{http://fusion.scandi.info}extensions" minOccurs="0"/&gt;
- *         &lt;element name="binary" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/&gt;
+ *         &lt;element name="binary" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
+ *         &lt;element name="driver" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
  *         &lt;element name="downloadDir" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/&gt;
  *         &lt;element ref="{http://fusion.scandi.info}options" minOccurs="0"/&gt;
  *         &lt;element name="grid" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/&gt;
@@ -63,6 +65,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "", propOrder = {
     "extensions",
     "binary",
+    "driver",
     "downloadDir",
     "options",
     "grid"
@@ -71,8 +74,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Browser {
 
     protected Extensions extensions;
+    @XmlElement(required = true)
     @XmlSchemaType(name = "anyURI")
     protected String binary;
+    @XmlElement(required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String driver;
     @XmlSchemaType(name = "anyURI")
     protected String downloadDir;
     protected Options options;
@@ -132,6 +139,30 @@ public class Browser {
      */
     public void setBinary(String value) {
         this.binary = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété driver.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDriver() {
+        return driver;
+    }
+
+    /**
+     * Définit la valeur de la propriété driver.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDriver(String value) {
+        this.driver = value;
     }
 
     /**

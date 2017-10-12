@@ -107,7 +107,8 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="extensions" minOccurs="0" maxOccurs="1"/>
-				<xsd:element name="binary" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="binary" type="xsd:anyURI" minOccurs="1" maxOccurs="1"/>
+				<xsd:element name="driver" type="xsd:anyURI" minOccurs="1" maxOccurs="1"/>
 				<xsd:element name="downloadDir" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="options" minOccurs="0" maxOccurs="1"/>
 				<xsd:element name="grid" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>

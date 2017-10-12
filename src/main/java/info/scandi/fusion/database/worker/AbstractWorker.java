@@ -190,44 +190,6 @@ public abstract class AbstractWorker implements IWorker {
 	}
 
 	/**
-	 * Initializes Fusion properties with the fusion.properties file.
-	 * 
-	 * @throws FusionException
-	 */
-	private void initOptions() throws ConfigurationException {
-		LOGGER.info("initialization of Fusion base on fusion.properties file.");
-		// TODO used liquibase property
-		// String propertyAvecLiquibase =
-		// PropsUtils.getProperties().getProperty(PROPERTY_AVEC_LIQUIBASE);
-		// if (propertyAvecLiquibase != null &&
-		// !"".equals(propertyAvecLiquibase)) {
-		// withLiquibase = "true".equals(propertyAvecLiquibase) ? true :
-		// false;
-		//
-		// String propertyLiquibaseSchemaName = PropsUtils.getProperties()
-		// .getProperty(PROPERTY_LIQUIBASE_SCHEMA_NAME);
-		// if (propertyLiquibaseSchemaName != null &&
-		// !"".equals(propertyLiquibaseSchemaName)) {
-		// liquibaseSchemaName = propertyLiquibaseSchemaName;
-		// }
-		//
-		// if (withLiquibase) {
-		// exclusionSchemas = new String[] { liquibaseSchemaName };
-		// }
-		//
-		// String propertyLiquibaseDatabasechangelogName =
-		// PropsUtils.getProperties()
-		// .getProperty(PROPERTY_LIQUIBASE_DATABASECHANGELOG);
-		// if (propertyLiquibaseDatabasechangelogName != null
-		// && !"".equals(propertyLiquibaseDatabasechangelogName)) {
-		// liquibaseDatabasechangelogName =
-		// propertyLiquibaseDatabasechangelogName;
-		// }
-		// }
-
-	}
-
-	/**
 	 * Initializes the database connection.
 	 * 
 	 * @throws ConfigurationException

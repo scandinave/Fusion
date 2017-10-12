@@ -13,7 +13,6 @@ dependencies {
     compile 'junit:junit:4.12', withoutGuava
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.6.0'
     compile group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '3.6.0' // Support the old api for webdriver wait
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4', withoutGuava
     compile group: 'org.jboss.weld.se', name: 'weld-se-core', version: '2.4.5.Final', withoutGuava
     compile group: 'org.jboss', name: 'jandex', version: '2.0.3.Final', withoutGuava
     compile group: 'io.github.lukehutch', name: 'fast-classpath-scanner', version: '2.7.2'
