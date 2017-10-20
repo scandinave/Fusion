@@ -1,8 +1,8 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
-// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.12 à 10:11:45 PM CEST 
+// Ce fichier a Ã©tÃ© gÃ©nÃ©rÃ© par l'implÃ©mentation de rÃ©fÃ©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Toute modification apportÃ©e Ã  ce fichier sera perdue lors de la recompilation du schÃ©ma source. 
+// GÃ©nÃ©rÃ© le : 2017.10.20 Ã  07:25:18 PM CEST 
 //
 
 
@@ -22,19 +22,19 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 /**
  * <p>Classe Java pour anonymous complex type.
  * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>Le fragment de schÃ©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;all&gt;
- *         &lt;element name="backupDirectory" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *       &lt;/all&gt;
- *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;all>
+ *         &lt;element name="backupDirectory" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *       &lt;/all>
+ *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -54,7 +54,7 @@ public class Backup {
     protected Boolean enabled;
 
     /**
-     * Obtient la valeur de la propriété backupDirectory.
+     * Obtient la valeur de la propriÃ©tÃ© backupDirectory.
      * 
      * @return
      *     possible object is
@@ -66,7 +66,7 @@ public class Backup {
     }
 
     /**
-     * Définit la valeur de la propriété backupDirectory.
+     * DÃ©finit la valeur de la propriÃ©tÃ© backupDirectory.
      * 
      * @param value
      *     allowed object is
@@ -78,7 +78,7 @@ public class Backup {
     }
 
     /**
-     * Obtient la valeur de la propriété enabled.
+     * Obtient la valeur de la propriÃ©tÃ© enabled.
      * 
      * @return
      *     possible object is
@@ -94,7 +94,7 @@ public class Backup {
     }
 
     /**
-     * Définit la valeur de la propriété enabled.
+     * DÃ©finit la valeur de la propriÃ©tÃ© enabled.
      * 
      * @param value
      *     allowed object is

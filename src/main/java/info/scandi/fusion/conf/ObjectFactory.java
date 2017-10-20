@@ -1,8 +1,8 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
-// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.12 à 10:11:45 PM CEST 
+// Ce fichier a Ã©tÃ© gÃ©nÃ©rÃ© par l'implÃ©mentation de rÃ©fÃ©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Toute modification apportÃ©e Ã  ce fichier sera perdue lors de la recompilation du schÃ©ma source. 
+// GÃ©nÃ©rÃ© le : 2017.10.20 Ã  07:25:18 PM CEST 
 //
 
 
@@ -37,6 +37,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Init }
+     * 
+     */
+    public Init createInit() {
+        return new Init();
+    }
+
+    /**
+     * Create an instance of {@link Backup }
+     * 
+     */
+    public Backup createBackup() {
+        return new Backup();
+    }
+
+    /**
+     * Create an instance of {@link Extension }
+     * 
+     */
+    public Extension createExtension() {
+        return new Extension();
+    }
+
+    /**
      * Create an instance of {@link ExclusionSchemas }
      * 
      */
@@ -53,19 +77,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Backup }
+     * Create an instance of {@link ExclusionTables }
      * 
      */
-    public Backup createBackup() {
-        return new Backup();
+    public ExclusionTables createExclusionTables() {
+        return new ExclusionTables();
     }
 
     /**
-     * Create an instance of {@link Init }
+     * Create an instance of {@link Fusion }
      * 
      */
-    public Init createInit() {
-        return new Init();
+    public Fusion createFusion() {
+        return new Fusion();
     }
 
     /**
@@ -77,11 +101,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Extension }
+     * Create an instance of {@link Browser }
      * 
      */
-    public Extension createExtension() {
-        return new Extension();
+    public Browser createBrowser() {
+        return new Browser();
     }
 
     /**
@@ -93,14 +117,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Option }
-     * 
-     */
-    public Option createOption() {
-        return new Option();
-    }
-
-    /**
      * Create an instance of {@link Options }
      * 
      */
@@ -109,11 +125,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Browser }
+     * Create an instance of {@link Option }
      * 
      */
-    public Browser createBrowser() {
-        return new Browser();
+    public Option createOption() {
+        return new Option();
     }
 
     /**
@@ -122,14 +138,6 @@ public class ObjectFactory {
      */
     public Common createCommon() {
         return new Common();
-    }
-
-    /**
-     * Create an instance of {@link Fusion }
-     * 
-     */
-    public Fusion createFusion() {
-        return new Fusion();
     }
 
 }

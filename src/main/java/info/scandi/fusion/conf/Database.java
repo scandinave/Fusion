@@ -1,8 +1,8 @@
 //
-// Ce fichier a ÈtÈ gÈnÈrÈ par l'implÈmentation de rÈfÈrence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
-// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
-// Toute modification apportÈe ‡ ce fichier sera perdue lors de la recompilation du schÈma source. 
-// GÈnÈrÈ le : 2017.10.12 ‡ 10:11:45 PM CEST 
+// Ce fichier a √©t√© g√©n√©r√© par l'impl√©mentation de r√©f√©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Toute modification apport√©e √† ce fichier sera perdue lors de la recompilation du sch√©ma source. 
+// G√©n√©r√© le : 2017.10.20 √† 07:25:18 PM CEST 
 //
 
 
@@ -23,36 +23,47 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 /**
  * <p>Classe Java pour anonymous complex type.
  * 
- * <p>Le fragment de schÈma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>Le fragment de sch√©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;all&gt;
- *         &lt;element ref="{http://fusion.scandi.info}liquibase"/&gt;
- *         &lt;element name="driver" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element name="host" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
- *         &lt;element name="port" type="{http://www.w3.org/2001/XMLSchema}integer"/&gt;
- *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element ref="{http://fusion.scandi.info}backup"/&gt;
- *         &lt;element ref="{http://fusion.scandi.info}init"/&gt;
- *       &lt;/all&gt;
- *       &lt;attribute name="connectionType" default="custom"&gt;
- *         &lt;simpleType&gt;
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token"&gt;
- *             &lt;enumeration value="custom"/&gt;
- *             &lt;enumeration value="env"/&gt;
- *           &lt;/restriction&gt;
- *         &lt;/simpleType&gt;
- *       &lt;/attribute&gt;
- *       &lt;attribute name="allowEmptyString" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" /&gt;
- *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;all>
+ *         &lt;element ref="{http://fusion.scandi.info}liquibase"/>
+ *         &lt;element name="driver" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *         &lt;element name="host" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
+ *         &lt;element name="port" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *         &lt;element ref="{http://fusion.scandi.info}backup"/>
+ *         &lt;element ref="{http://fusion.scandi.info}init"/>
+ *       &lt;/all>
+ *       &lt;attribute name="connectionType" default="custom">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token">
+ *             &lt;enumeration value="custom"/>
+ *             &lt;enumeration value="env"/>
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
+ *       &lt;attribute name="allowEmptyString" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
+ *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
+ *       &lt;attribute name="type" use="required">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token">
+ *             &lt;enumeration value="postgresql"/>
+ *             &lt;enumeration value="oracle"/>
+ *             &lt;enumeration value="mongodb"/>
+ *             &lt;enumeration value="mysql"/>
+ *             &lt;enumeration value="mariadb"/>
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -98,9 +109,12 @@ public class Database {
     protected Boolean allowEmptyString;
     @XmlAttribute(name = "enabled")
     protected Boolean enabled;
+    @XmlAttribute(name = "type", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String type;
 
     /**
-     * Obtient la valeur de la propriÈtÈ liquibase.
+     * Obtient la valeur de la propri√©t√© liquibase.
      * 
      * @return
      *     possible object is
@@ -112,7 +126,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ liquibase.
+     * D√©finit la valeur de la propri√©t√© liquibase.
      * 
      * @param value
      *     allowed object is
@@ -124,7 +138,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ driver.
+     * Obtient la valeur de la propri√©t√© driver.
      * 
      * @return
      *     possible object is
@@ -136,7 +150,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ driver.
+     * D√©finit la valeur de la propri√©t√© driver.
      * 
      * @param value
      *     allowed object is
@@ -148,7 +162,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ host.
+     * Obtient la valeur de la propri√©t√© host.
      * 
      * @return
      *     possible object is
@@ -160,7 +174,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ host.
+     * D√©finit la valeur de la propri√©t√© host.
      * 
      * @param value
      *     allowed object is
@@ -172,7 +186,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ port.
+     * Obtient la valeur de la propri√©t√© port.
      * 
      * @return
      *     possible object is
@@ -184,7 +198,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ port.
+     * D√©finit la valeur de la propri√©t√© port.
      * 
      * @param value
      *     allowed object is
@@ -196,7 +210,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ name.
+     * Obtient la valeur de la propri√©t√© name.
      * 
      * @return
      *     possible object is
@@ -208,7 +222,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ name.
+     * D√©finit la valeur de la propri√©t√© name.
      * 
      * @param value
      *     allowed object is
@@ -220,7 +234,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ username.
+     * Obtient la valeur de la propri√©t√© username.
      * 
      * @return
      *     possible object is
@@ -232,7 +246,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ username.
+     * D√©finit la valeur de la propri√©t√© username.
      * 
      * @param value
      *     allowed object is
@@ -244,7 +258,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ password.
+     * Obtient la valeur de la propri√©t√© password.
      * 
      * @return
      *     possible object is
@@ -256,7 +270,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ password.
+     * D√©finit la valeur de la propri√©t√© password.
      * 
      * @param value
      *     allowed object is
@@ -268,7 +282,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ backup.
+     * Obtient la valeur de la propri√©t√© backup.
      * 
      * @return
      *     possible object is
@@ -280,7 +294,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ backup.
+     * D√©finit la valeur de la propri√©t√© backup.
      * 
      * @param value
      *     allowed object is
@@ -292,7 +306,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ init.
+     * Obtient la valeur de la propri√©t√© init.
      * 
      * @return
      *     possible object is
@@ -304,7 +318,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ init.
+     * D√©finit la valeur de la propri√©t√© init.
      * 
      * @param value
      *     allowed object is
@@ -316,7 +330,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ connectionType.
+     * Obtient la valeur de la propri√©t√© connectionType.
      * 
      * @return
      *     possible object is
@@ -332,7 +346,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ connectionType.
+     * D√©finit la valeur de la propri√©t√© connectionType.
      * 
      * @param value
      *     allowed object is
@@ -344,7 +358,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ allowEmptyString.
+     * Obtient la valeur de la propri√©t√© allowEmptyString.
      * 
      * @return
      *     possible object is
@@ -360,7 +374,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ allowEmptyString.
+     * D√©finit la valeur de la propri√©t√© allowEmptyString.
      * 
      * @param value
      *     allowed object is
@@ -372,7 +386,7 @@ public class Database {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ enabled.
+     * Obtient la valeur de la propri√©t√© enabled.
      * 
      * @return
      *     possible object is
@@ -388,7 +402,7 @@ public class Database {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ enabled.
+     * D√©finit la valeur de la propri√©t√© enabled.
      * 
      * @param value
      *     allowed object is
@@ -397,6 +411,30 @@ public class Database {
      */
     public void setEnabled(Boolean value) {
         this.enabled = value;
+    }
+
+    /**
+     * Obtient la valeur de la propri√©t√© type.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * D√©finit la valeur de la propri√©t√© type.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setType(String value) {
+        this.type = value;
     }
 
 }

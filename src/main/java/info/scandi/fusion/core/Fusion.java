@@ -37,20 +37,6 @@ import info.scandi.fusion.utils.DriverExecutor;
 @ApplicationScoped
 @Named
 public class Fusion {
-	protected final static String ROOT_PATH = "fusion.rootPath";
-	private final static String PROPERTY_DATABASE_ENV_URL = "database.envurl";
-	private final static String PROPERTY_DATABASE_ENV_DRIVER = "database.envdriver";
-	private final static String PROPERTY_DATABASE_ENV_USERNAME = "database.envname";
-	private final static String PROPERTY_DATABASE_ENV_PASSWORD = "database.envpassword";
-	public static final String DOWNLOAD_DIR = "browser.download";
-
-	public final static int IMPLICITLY_WAIT = 1000;
-	public final static int EXPLICITLE_WAIT = 10;
-	public final static int PAGELOAD_TIMEOUT = 10000;
-	public final static int SCRIPT_TIMEOUT = 10;
-
-	public final static String TYPE_ENV = "env";
-	public static final Object TYPE_CUSTOM = "custom";
 
 	private Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -113,7 +99,8 @@ public class Fusion {
 			// commandExecutor = new OperaDriver(getOperaOptions());
 			break;
 		case "chrome":
-			// commandExecutor = new ChromeDriver(getChromeOptions(browserPath));
+			// commandExecutor = new
+			// ChromeDriver(getChromeOptions(browserPath));
 			break;
 		// case "htmlUnit":
 		// remoteDriver = new HtmlUnitDriver(false);

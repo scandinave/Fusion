@@ -36,8 +36,6 @@ import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
 import info.scandi.fusion.core.ConfigurationManager;
-import info.scandi.fusion.database.Cleaner;
-import info.scandi.fusion.database.Saver;
 import info.scandi.fusion.database.bdd.TableBDD;
 import info.scandi.fusion.exception.ConfigurationException;
 import info.scandi.fusion.exception.FusionException;
@@ -57,12 +55,6 @@ public abstract class AbstractWorker implements IWorker {
 	protected Logger LOGGER;
 	@Inject
 	protected IDatabaseConnection databaseConnect;
-	@Inject
-	protected Saver saver;
-	@Inject
-	protected Cleaner clenear;
-	@Inject
-	protected Cleaner cleanerRestore;
 	@Inject
 	protected ConfigurationManager conf;
 
@@ -85,8 +77,6 @@ public abstract class AbstractWorker implements IWorker {
 	protected boolean withInit = false;
 	protected boolean withSauvegarde = true;
 	public static boolean replaceEmptyDatabaseValue = false;
-	protected String[] exclusionSchemas;
-	protected String[] exclusionTables;
 
 	private Map<String, String> allScenarii = new HashMap<String, String>();
 
@@ -96,7 +86,6 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IWorker#getAllScenarii()
 	 */
 	@Override
@@ -147,7 +136,6 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#init()
 	 */
 	@Override
@@ -218,21 +206,6 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see dbunit.worker.IBDDWorker#clean()
-	 */
-	@Override
-	public void clean() throws FusionException {
-		clean(exclusionSchemas, exclusionTables);
-	}
-
-	public void clean(String[] exclusionSchemas, String[] exclusionTables) throws FusionException {
-		cleanerRestore.start(exclusionSchemas, exclusionTables);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#start()
 	 */
 	@Override
@@ -245,7 +218,8 @@ public abstract class AbstractWorker implements IWorker {
 			if (conf.getDatabase().getInit().isEnabled()) {
 				this.reset();
 			} else {
-				this.clean();
+				this.clean(this.conf.getDatabase().getLiquibase().getExclusionSchemas().getExclusionSchema(),
+						this.conf.getDatabase().getLiquibase().getExclusionTables().getExclusionTables());
 			}
 			databaseConnect.getConnection().commit();
 			LOGGER.info("Inserting test data...");
@@ -267,18 +241,17 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#reset()
 	 */
 	@Override
 	public void reset() throws FusionException {
-		this.clean();
+		this.clean(this.conf.getDatabase().getLiquibase().getExclusionSchemas().getExclusionSchema(),
+				this.conf.getDatabase().getLiquibase().getExclusionTables().getExclusionTables());
 		this.initBddForServer();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#insert(java.lang.String)
 	 */
 	@Override
@@ -291,7 +264,6 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#delete(java.lang.String)
 	 */
 	@Override
@@ -347,25 +319,11 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#load(java.io.File)
 	 */
 	@Override
 	public void load(File file) throws FusionException {
 		this.load(file, DatabaseOperation.INSERT);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see dbunit.worker.IWorker#save()
-	 */
-	@Override
-	public void save() throws FusionException {
-		if (this.conf.getDatabase().getBackup().isEnabled()) {
-			LOGGER.info("Saving database...");
-			saver.start();
-		}
 	}
 
 	/**
@@ -384,7 +342,6 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IWorker#restore()
 	 */
 	@Override
@@ -395,9 +352,7 @@ public abstract class AbstractWorker implements IWorker {
 				databaseConnect.getConnection().setAutoCommit(false);
 				this.toogleContrainte(false);
 
-				Set<TableBDD> tables = getAllTablesTypeTable();
-				cleanerRestore.setTables(tables);
-				cleanerRestore.execution();
+				this.clean(null, null);
 
 				load(conf.getBackupDirectory(), DatabaseOperation.INSERT);
 				this.majSequence();
@@ -417,7 +372,6 @@ public abstract class AbstractWorker implements IWorker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see dbunit.worker.IBDDWorker#stop()
 	 */
 	@Override
@@ -434,6 +388,122 @@ public abstract class AbstractWorker implements IWorker {
 		} catch (SQLException e) {
 			throw new FusionException(e);
 		}
+	}
+
+	/**
+	 * Returns all table with type Table. Other type are "VIEW", "SYSTEM TABLE",
+	 * "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+	 * 
+	 * @return List of table with type Table.
+	 * @throws FusionException
+	 */
+	public Set<TableBDD> getAllTablesTypeTable() throws FusionException {
+		String[] types = { "TABLE" };
+		return getTablesParTypeWithExclusions(types, null, null);
+	}
+
+	/**
+	 * Returns all table with target type. Type are "TABLE", "VIEW", "SYSTEM
+	 * TABLE",
+	 * "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+	 * 
+	 * @param types
+	 *            Filter return table by type.
+	 * @return List of table with target type.
+	 * @throws FusionException
+	 */
+	public Set<TableBDD> getTablesParType(String[] types) throws FusionException {
+		return getTablesParTypeWithExclusions(types, null, null);
+	}
+
+	/**
+	 * Returns all table with type <i>TABLE</i>. Can be filter by schema or
+	 * specific table.
+	 * 
+	 * @param schemaExclusions
+	 *            Remove schema from the result.
+	 * @param tablesExclusions
+	 *            Remove table from the result.
+	 * @return List of table with type <i>TABLE</i>.
+	 * @throws FusionException
+	 */
+	public Set<TableBDD> getTablesTypeTableWithExclusions(List<String> schemaExclusions, List<String> tablesExclusions)
+			throws FusionException {
+		String[] types = { "TABLE" };
+		return getTablesParTypeWithExclusions(types, schemaExclusions, tablesExclusions);
+	}
+
+	/**
+	 * Returns all table with target type. Can be filter by schema or specific
+	 * table. Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY",
+	 * "LOCAL
+	 * TEMPORARY", "ALIAS", "SYNONYM"
+	 * 
+	 * @param schemaExclusions
+	 *            Remove schema from the result.
+	 * @param tablesExclusions
+	 *            Remove table from the result.
+	 * @return List of table with target type.
+	 * @throws FusionException
+	 */
+	// TODO verifier que l'implémentation n'est pas scécifique à PostgreSQL.
+	// Sinon adapter la méthode ou la déplacer dans le worker de postgresql
+	public Set<TableBDD> getTablesParTypeWithExclusions(String[] types, List<String> schemaExclusions,
+			List<String> tablesExclusions) throws FusionException {
+		TableBDD tableBDD;
+		String nomTable;
+		TreeSet<TableBDD> setTables = new TreeSet<TableBDD>();
+		ResultSet schemas = null;
+		ResultSet tables = null;
+		try {
+			DatabaseMetaData meta = databaseConnect.getConnection().getMetaData();
+			schemas = meta.getSchemas();
+			while (schemas.next()) {
+				String schemaName = schemas.getString("TABLE_SCHEM");
+				if (schemaExclusions != null) {
+					for (int i = 0; i < schemaExclusions.size(); i++) {
+						String schemaAExclure = schemaExclusions.get(i);
+						if (!schemaName.equals(schemaAExclure)) {
+							tables = meta.getTables(null, schemaName, null, types);
+							while (tables.next()) {
+								nomTable = tables.getString("TABLE_NAME");
+								if (tablesExclusions != null) {
+									for (int j = 0; j < tablesExclusions.size(); j++) {
+										String tableAExclure = tablesExclusions.get(i);
+										if (!nomTable.equals(tableAExclure)) {
+											tableBDD = new TableBDD(schemaName, nomTable);
+											setTables.add(tableBDD);
+										}
+									}
+								} else {
+									tableBDD = new TableBDD(schemaName, nomTable);
+									setTables.add(tableBDD);
+								}
+							}
+						}
+					}
+				} else {
+					tables = meta.getTables(null, schemaName, null, types);
+					while (tables.next()) {
+						nomTable = tables.getString("TABLE_NAME");
+						tableBDD = new TableBDD(schemaName, nomTable);
+						setTables.add(tableBDD);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new FusionException(new RequestException(e));
+		} catch (Exception e) {
+			throw new FusionException(e);
+		} finally {
+			try {
+				schemas.close();
+				tables.close();
+			} catch (SQLException e) {
+				throw new FusionException(e);
+			}
+		}
+		return setTables;
 	}
 
 	/**
@@ -561,121 +631,5 @@ public abstract class AbstractWorker implements IWorker {
 	private void initBddForServer() throws FusionException {
 		LOGGER.info("Inserting data needed by the application server to start");
 		load(conf.getInitFile());
-	}
-
-	/**
-	 * Returns all table with type Table. Other type are "VIEW", "SYSTEM TABLE",
-	 * "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
-	 * 
-	 * @return List of table with type Table.
-	 * @throws FusionException
-	 */
-	public Set<TableBDD> getAllTablesTypeTable() throws FusionException {
-		String[] types = { "TABLE" };
-		return getTablesParTypeWithExclusions(types, null, null);
-	}
-
-	/**
-	 * Returns all table with target type. Type are "TABLE", "VIEW", "SYSTEM TABLE",
-	 * "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
-	 * 
-	 * @param types
-	 *            Filter return table by type.
-	 * @return List of table with target type.
-	 * @throws FusionException
-	 */
-	public Set<TableBDD> getTablesParType(String[] types) throws FusionException {
-		return getTablesParTypeWithExclusions(types, null, null);
-	}
-
-	/**
-	 * Returns all table with type table. Can be filter by schema or specific table.
-	 * Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
-	 * TEMPORARY", "ALIAS", "SYNONYM"
-	 * 
-	 * @param schemaExclusions
-	 *            Remove schema from the result.
-	 * @param tablesExclusions
-	 *            Remove table from the result.
-	 * @return List of table with type table.
-	 * @throws FusionException
-	 */
-	public Set<TableBDD> getTablesTypeTableWithExclusions(String[] schemaExclusions, String[] tablesExclusions)
-			throws FusionException {
-		String[] types = { "TABLE" };
-		return getTablesParTypeWithExclusions(types, schemaExclusions, tablesExclusions);
-	}
-
-	/**
-	 * Returns all table with target type. Can be filter by schema or specific
-	 * table. Type are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL
-	 * TEMPORARY", "ALIAS", "SYNONYM"
-	 * 
-	 * @param schemaExclusions
-	 *            Remove schema from the result.
-	 * @param tablesExclusions
-	 *            Remove table from the result.
-	 * @return List of table with target type.
-	 * @throws FusionException
-	 */
-	// TODO verifier que l'implémentation n'est pas scécifique à PostgreSQL.
-	// Sinon adapter la méthode ou la déplacer dans le worker de postgresql
-	public Set<TableBDD> getTablesParTypeWithExclusions(String[] types, String[] schemaExclusions,
-			String[] tablesExclusions) throws FusionException {
-		TableBDD tableBDD;
-		String nomTable;
-		TreeSet<TableBDD> setTables = new TreeSet<TableBDD>();
-		ResultSet schemas = null;
-		ResultSet tables = null;
-		try {
-			DatabaseMetaData meta = databaseConnect.getConnection().getMetaData();
-			schemas = meta.getSchemas();
-			while (schemas.next()) {
-				String nomSchema = schemas.getString("TABLE_SCHEM");
-				if (schemaExclusions != null) {
-					for (int i = 0; i < schemaExclusions.length; i++) {
-						String schemaAExclure = schemaExclusions[i];
-						if (!nomSchema.equals(schemaAExclure)) {
-							tables = databaseConnect.getConnection().getMetaData().getTables(null, nomSchema, null,
-									types);
-							while (tables.next()) {
-								nomTable = tables.getString("TABLE_NAME");
-								if (tablesExclusions != null) {
-									for (int j = 0; j < tablesExclusions.length; j++) {
-										String tableAExclure = tablesExclusions[j];
-										if (!nomTable.equals(tableAExclure)) {
-											tableBDD = new TableBDD(nomSchema, nomTable);
-											setTables.add(tableBDD);
-										}
-									}
-								} else {
-									tableBDD = new TableBDD(nomSchema, nomTable);
-									setTables.add(tableBDD);
-								}
-							}
-						}
-					}
-				} else {
-					tables = databaseConnect.getConnection().getMetaData().getTables(null, nomSchema, null, types);
-					while (tables.next()) {
-						nomTable = tables.getString("TABLE_NAME");
-						tableBDD = new TableBDD(nomSchema, nomTable);
-						setTables.add(tableBDD);
-					}
-				}
-			}
-		} catch (SQLException e) {
-			throw new FusionException(new RequestException(e));
-		} catch (Exception e) {
-			throw new FusionException(e);
-		} finally {
-			try {
-				schemas.close();
-				tables.close();
-			} catch (SQLException e) {
-				throw new FusionException(e);
-			}
-		}
-		return setTables;
 	}
 }

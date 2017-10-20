@@ -4,6 +4,7 @@
 package info.scandi.fusion.database.worker;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import info.scandi.fusion.exception.ConfigurationException;
@@ -35,9 +36,12 @@ public interface IWorker {
 	void start() throws FusionException;
 
 	/**
-	 * Restores the database if the save and restore were activated and closes the
-	 * connection to the database. Also delete all attachment donwload during test.
-	 * Any actions that must be perform after the tests can be done by overriding
+	 * Restores the database if the save and restore were activated and closes
+	 * the
+	 * connection to the database. Also delete all attachment donwload during
+	 * test.
+	 * Any actions that must be perform after the tests can be done by
+	 * overriding
 	 * this method.
 	 * 
 	 * @throws FusionException
@@ -49,7 +53,7 @@ public interface IWorker {
 	 * 
 	 * @throws FusionException
 	 */
-	void clean() throws FusionException;
+	void clean(List<String> list, List<String> list2) throws FusionException;
 
 	/**
 	 * Make a clean then initialize the database with reference data required to
@@ -103,7 +107,8 @@ public interface IWorker {
 	void save() throws FusionException;
 
 	/**
-	 * Restores the database with the data file(xml, json) files produced during the
+	 * Restores the database with the data file(xml, json) files produced during
+	 * the
 	 * backup.
 	 * 
 	 * @throws FusionException

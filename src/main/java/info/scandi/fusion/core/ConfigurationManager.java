@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -63,5 +64,37 @@ public class ConfigurationManager {
 		} else {
 			throw new FusionException("Unsupported OS");
 		}
+	}
+
+	public Integer getImpliciteWait() {
+		return 1000;
+	}
+
+	public Integer getExpliciteWait() {
+		return 10;
+	}
+
+	public Integer getPageLoadTimeout() {
+		return 10000;
+	}
+
+	public Integer getScriptTimeout() {
+		return 10;
+	}
+
+	public String getDatabasePrefix() throws ConfigurationException {
+		String prefix = "";
+		switch (this.getDatabase().getType()) {
+		case "postgresql":
+			prefix = "jdbc:postgresql://";
+			break;
+
+		case "oracle":
+			prefix = "jdbc:oracle:thin:@";
+			break;
+		default:
+			throw new ConfigurationException("Unsupported database type.");
+		}
+		return prefix;
 	}
 }

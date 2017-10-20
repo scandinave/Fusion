@@ -1,8 +1,8 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
-// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.10.12 à 10:11:45 PM CEST 
+// Ce fichier a Ã©tÃ© gÃ©nÃ©rÃ© par l'implÃ©mentation de rÃ©fÃ©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Toute modification apportÃ©e Ã  ce fichier sera perdue lors de la recompilation du schÃ©ma source. 
+// GÃ©nÃ©rÃ© le : 2017.10.20 Ã  07:25:18 PM CEST 
 //
 
 
@@ -22,41 +22,37 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 /**
  * <p>Classe Java pour anonymous complex type.
  * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>Le fragment de schÃ©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element ref="{http://fusion.scandi.info}extensions" minOccurs="0"/&gt;
- *         &lt;element name="binary" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
- *         &lt;element name="driver" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
- *         &lt;element name="downloadDir" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/&gt;
- *         &lt;element ref="{http://fusion.scandi.info}options" minOccurs="0"/&gt;
- *         &lt;element name="grid" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" /&gt;
- *       &lt;attribute name="remote" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" /&gt;
- *       &lt;attribute name="type" use="required"&gt;
- *         &lt;simpleType&gt;
- *           &lt;restriction&gt;
- *             &lt;simpleType&gt;
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token"&gt;
- *                 &lt;enumeration value="firefox"/&gt;
- *                 &lt;enumeration value="safari"/&gt;
- *                 &lt;enumeration value="edge"/&gt;
- *                 &lt;enumeration value="ie"/&gt;
- *                 &lt;enumeration value="opera"/&gt;
- *                 &lt;enumeration value="chrome"/&gt;
- *               &lt;/restriction&gt;
- *             &lt;/simpleType&gt;
- *           &lt;/restriction&gt;
- *         &lt;/simpleType&gt;
- *       &lt;/attribute&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element ref="{http://fusion.scandi.info}extensions" minOccurs="0"/>
+ *         &lt;element name="binary" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
+ *         &lt;element name="driver" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
+ *         &lt;element name="downloadDir" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/>
+ *         &lt;element ref="{http://fusion.scandi.info}options" minOccurs="0"/>
+ *         &lt;element name="grid" type="{http://www.w3.org/2001/XMLSchema}anyURI" minOccurs="0"/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *       &lt;attribute name="remote" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *       &lt;attribute name="type" use="required">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token">
+ *             &lt;enumeration value="firefox"/>
+ *             &lt;enumeration value="safari"/>
+ *             &lt;enumeration value="edge"/>
+ *             &lt;enumeration value="ie"/>
+ *             &lt;enumeration value="opera"/>
+ *             &lt;enumeration value="chrome"/>
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -94,7 +90,7 @@ public class Browser {
     protected String type;
 
     /**
-     * Obtient la valeur de la propriété extensions.
+     * Obtient la valeur de la propriÃ©tÃ© extensions.
      * 
      * @return
      *     possible object is
@@ -106,7 +102,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété extensions.
+     * DÃ©finit la valeur de la propriÃ©tÃ© extensions.
      * 
      * @param value
      *     allowed object is
@@ -118,7 +114,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété binary.
+     * Obtient la valeur de la propriÃ©tÃ© binary.
      * 
      * @return
      *     possible object is
@@ -130,7 +126,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété binary.
+     * DÃ©finit la valeur de la propriÃ©tÃ© binary.
      * 
      * @param value
      *     allowed object is
@@ -142,7 +138,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété driver.
+     * Obtient la valeur de la propriÃ©tÃ© driver.
      * 
      * @return
      *     possible object is
@@ -154,7 +150,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété driver.
+     * DÃ©finit la valeur de la propriÃ©tÃ© driver.
      * 
      * @param value
      *     allowed object is
@@ -166,7 +162,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété downloadDir.
+     * Obtient la valeur de la propriÃ©tÃ© downloadDir.
      * 
      * @return
      *     possible object is
@@ -178,7 +174,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété downloadDir.
+     * DÃ©finit la valeur de la propriÃ©tÃ© downloadDir.
      * 
      * @param value
      *     allowed object is
@@ -190,7 +186,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété options.
+     * Obtient la valeur de la propriÃ©tÃ© options.
      * 
      * @return
      *     possible object is
@@ -202,7 +198,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété options.
+     * DÃ©finit la valeur de la propriÃ©tÃ© options.
      * 
      * @param value
      *     allowed object is
@@ -214,7 +210,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété grid.
+     * Obtient la valeur de la propriÃ©tÃ© grid.
      * 
      * @return
      *     possible object is
@@ -226,7 +222,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété grid.
+     * DÃ©finit la valeur de la propriÃ©tÃ© grid.
      * 
      * @param value
      *     allowed object is
@@ -238,7 +234,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété enabled.
+     * Obtient la valeur de la propriÃ©tÃ© enabled.
      * 
      * @return
      *     possible object is
@@ -254,7 +250,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété enabled.
+     * DÃ©finit la valeur de la propriÃ©tÃ© enabled.
      * 
      * @param value
      *     allowed object is
@@ -266,7 +262,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété remote.
+     * Obtient la valeur de la propriÃ©tÃ© remote.
      * 
      * @return
      *     possible object is
@@ -282,7 +278,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété remote.
+     * DÃ©finit la valeur de la propriÃ©tÃ© remote.
      * 
      * @param value
      *     allowed object is
@@ -294,7 +290,7 @@ public class Browser {
     }
 
     /**
-     * Obtient la valeur de la propriété type.
+     * Obtient la valeur de la propriÃ©tÃ© type.
      * 
      * @return
      *     possible object is
@@ -306,7 +302,7 @@ public class Browser {
     }
 
     /**
-     * Définit la valeur de la propriété type.
+     * DÃ©finit la valeur de la propriÃ©tÃ© type.
      * 
      * @param value
      *     allowed object is

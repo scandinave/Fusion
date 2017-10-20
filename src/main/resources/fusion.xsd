@@ -12,12 +12,21 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 		</xsd:complexType>
 	</xsd:element>
 	
+	<xsd:element name="exclusionTables">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="exclusionTables" type="xsd:token" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
 	<xsd:element name="liquibase">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="schemaName" type="xsd:token" minOccurs="1" maxOccurs="1"/>
 				<xsd:element name="databaseChangelogName" type="xsd:token" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="exclusionSchemas" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="exclusionTables" minOccurs="0" maxOccurs="1"/>
 			</xsd:sequence>
 			<xsd:attribute name="enabled" type="xsd:boolean"
 				default="false" />
@@ -67,6 +76,17 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 			</xsd:attribute>
 			<xsd:attribute name="allowEmptyString" default="true" type="xsd:boolean"/>
 			<xsd:attribute name="enabled" default="true" type="xsd:boolean"/>
+			<xsd:attribute name="type" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="postgresql" />
+						<xsd:enumeration value="oracle" />
+						<xsd:enumeration value="mongodb" />
+						<xsd:enumeration value="mysql" />
+						<xsd:enumeration value="mariadb" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	
@@ -119,21 +139,13 @@ xmlns="http://fusion.scandi.info" elementFormDefault="qualified">
 				default="false" />
 			<xsd:attribute name="type" use="required">
 				<xsd:simpleType>
-					<xsd:restriction>
-<!-- 						<xsd:simpleType> -->
-<!-- 							<xsd:list> -->
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:token">
-										<xsd:enumeration value="firefox" />
-										<xsd:enumeration value="safari" />
-										<xsd:enumeration value="edge" />
-										<xsd:enumeration value="ie" />
-										<xsd:enumeration value="opera" />
-										<xsd:enumeration value="chrome" />
-									</xsd:restriction>
-								</xsd:simpleType>
-<!-- 							</xsd:list> -->
-<!-- 						</xsd:simpleType> -->
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="firefox" />
+						<xsd:enumeration value="safari" />
+						<xsd:enumeration value="edge" />
+						<xsd:enumeration value="ie" />
+						<xsd:enumeration value="opera" />
+						<xsd:enumeration value="chrome" />
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>

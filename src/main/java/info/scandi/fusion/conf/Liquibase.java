@@ -1,8 +1,8 @@
 //
-// Ce fichier a ÈtÈ gÈnÈrÈ par l'implÈmentation de rÈfÈrence JavaTM Architecture for XML Binding (JAXB), v2.3.0-b170531.0717 
-// Voir <a href="https://jaxb.java.net/">https://jaxb.java.net/</a> 
-// Toute modification apportÈe ‡ ce fichier sera perdue lors de la recompilation du schÈma source. 
-// GÈnÈrÈ le : 2017.10.12 ‡ 10:11:45 PM CEST 
+// Ce fichier a √©t√© g√©n√©r√© par l'impl√©mentation de r√©f√©rence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Toute modification apport√©e √† ce fichier sera perdue lors de la recompilation du sch√©ma source. 
+// G√©n√©r√© le : 2017.10.20 √† 07:25:18 PM CEST 
 //
 
 
@@ -22,21 +22,22 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 /**
  * <p>Classe Java pour anonymous complex type.
  * 
- * <p>Le fragment de schÈma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>Le fragment de sch√©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="schemaName" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element name="databaseChangelogName" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
- *         &lt;element ref="{http://fusion.scandi.info}exclusionSchemas" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="schemaName" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *         &lt;element name="databaseChangelogName" type="{http://www.w3.org/2001/XMLSchema}token"/>
+ *         &lt;element ref="{http://fusion.scandi.info}exclusionSchemas" minOccurs="0"/>
+ *         &lt;element ref="{http://fusion.scandi.info}exclusionTables" minOccurs="0"/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -45,7 +46,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "", propOrder = {
     "schemaName",
     "databaseChangelogName",
-    "exclusionSchemas"
+    "exclusionSchemas",
+    "exclusionTables"
 })
 @XmlRootElement(name = "liquibase")
 public class Liquibase {
@@ -59,11 +61,12 @@ public class Liquibase {
     @XmlSchemaType(name = "token")
     protected String databaseChangelogName;
     protected ExclusionSchemas exclusionSchemas;
+    protected ExclusionTables exclusionTables;
     @XmlAttribute(name = "enabled")
     protected Boolean enabled;
 
     /**
-     * Obtient la valeur de la propriÈtÈ schemaName.
+     * Obtient la valeur de la propri√©t√© schemaName.
      * 
      * @return
      *     possible object is
@@ -75,7 +78,7 @@ public class Liquibase {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ schemaName.
+     * D√©finit la valeur de la propri√©t√© schemaName.
      * 
      * @param value
      *     allowed object is
@@ -87,7 +90,7 @@ public class Liquibase {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ databaseChangelogName.
+     * Obtient la valeur de la propri√©t√© databaseChangelogName.
      * 
      * @return
      *     possible object is
@@ -99,7 +102,7 @@ public class Liquibase {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ databaseChangelogName.
+     * D√©finit la valeur de la propri√©t√© databaseChangelogName.
      * 
      * @param value
      *     allowed object is
@@ -111,7 +114,7 @@ public class Liquibase {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ exclusionSchemas.
+     * Obtient la valeur de la propri√©t√© exclusionSchemas.
      * 
      * @return
      *     possible object is
@@ -123,7 +126,7 @@ public class Liquibase {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ exclusionSchemas.
+     * D√©finit la valeur de la propri√©t√© exclusionSchemas.
      * 
      * @param value
      *     allowed object is
@@ -135,7 +138,31 @@ public class Liquibase {
     }
 
     /**
-     * Obtient la valeur de la propriÈtÈ enabled.
+     * Obtient la valeur de la propri√©t√© exclusionTables.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ExclusionTables }
+     *     
+     */
+    public ExclusionTables getExclusionTables() {
+        return exclusionTables;
+    }
+
+    /**
+     * D√©finit la valeur de la propri√©t√© exclusionTables.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ExclusionTables }
+     *     
+     */
+    public void setExclusionTables(ExclusionTables value) {
+        this.exclusionTables = value;
+    }
+
+    /**
+     * Obtient la valeur de la propri√©t√© enabled.
      * 
      * @return
      *     possible object is
@@ -151,7 +178,7 @@ public class Liquibase {
     }
 
     /**
-     * DÈfinit la valeur de la propriÈtÈ enabled.
+     * D√©finit la valeur de la propri√©t√© enabled.
      * 
      * @param value
      *     allowed object is
